@@ -3,6 +3,11 @@ params ["_display"];
 diag_log "[ZEN Filter] Zeus display 312 opened";
 systemChat "ZEN Filter detected Zeus display 312";
 
+_display displayAddEventHandler ["Unload", {
+    zen_filter_main_zeusDisplaySeen = false;
+    diag_log "[ZEN Filter] Zeus display 312 closed";
+}];
+
 private _search = _display displayCtrl 283;
 private _searchGroup = ctrlParentControlsGroup _search;
 private _searchPosition = ctrlPosition _search;
