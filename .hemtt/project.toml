@@ -7,3 +7,15 @@ major = 0
 minor = 1
 patch = 0
 git_hash = 0
+
+[hemtt.launch.default]
+workshop = [
+    "450814997", # CBA_A3
+    "1779063631", # Zeus Enhanced
+]
+parameters = [
+    "-skipIntro",
+    "-noSplash",
+    "-showScriptErrors",
+    "-debug",
+]
