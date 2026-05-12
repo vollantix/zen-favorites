@@ -3,18 +3,6 @@ params ["_display"];
 diag_log "[ZEN Filter] Zeus display 312 opened";
 systemChat "ZEN Filter detected Zeus display 312";
 
-{
-    if (_forEachIndex < 30) then {
-        diag_log format [
-            "[ZEN Filter] control %1: idc=%2 class=%3 text=%4",
-            _forEachIndex,
-            ctrlIDC _x,
-            ctrlClassName _x,
-            ctrlText _x
-        ];
-    };
-} forEach allControls _display;
-
 private _search = _display displayCtrl 283;
 private _searchGroup = ctrlParentControlsGroup _search;
 private _searchPosition = ctrlPosition _search;
