@@ -5,9 +5,22 @@ class CfgPatches {
         requiredVersion = 2.18;
         requiredAddons[] = {
             "cba_main",
+            "cba_xeh",
             "zen_main"
         };
         units[] = {};
         weapons[] = {};
+    };
+};
+
+class Extended_PreInit_EventHandlers {
+    class zen_filter_main {
+        init = "call compile preprocessFileLineNumbers 'z\zen_filter\addons\main\XEH_preInit.sqf'";
+    };
+};
+
+class Extended_PostInit_EventHandlers {
+    class zen_filter_main {
+        init = "call compile preprocessFileLineNumbers 'z\zen_filter\addons\main\XEH_postInit.sqf'";
     };
 };
