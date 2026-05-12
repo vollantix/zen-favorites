@@ -8,5 +8,5 @@ zen_filter_main_zeusDisplaySeen = false;
     if (isNull _display || {zen_filter_main_zeusDisplaySeen}) exitWith {};
 
     zen_filter_main_zeusDisplaySeen = true;
-    [_display] call compile preprocessFileLineNumbers "z\zen_filter\addons\main\functions\fnc_onZeusDisplayOpened.sqf";
+    [_display] call zen_filter_main_fnc_onzeusdisplayopened;
 }] call CBA_fnc_addPerFrameHandler;

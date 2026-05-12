@@ -24,3 +24,13 @@ class Extended_PostInit_EventHandlers {
         init = "call compile preprocessFileLineNumbers 'z\zen_filter\addons\main\XEH_postInit.sqf'";
     };
 };
+
+class CfgFunctions {
+    class zen_filter_main {
+        class main {
+            file = "z\zen_filter\addons\main\functions";
+
+            class onzeusdisplayopened {};
+        };
+    };
+};
