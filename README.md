@@ -72,11 +72,13 @@ profileNamespace setVariable ["zen_filter_main_emptyFavorites_groups", []];
 saveProfileNamespace;
 ```
 
-The Empty Unit favorites clear action is also available in:
+The Empty Unit favorites clear toggle is also available in:
 
 ```text
 Options > Addon Options > ZEN Filter > Maintenance
 ```
+
+Turn it on to clear saved favorites. It resets itself after clearing.
 
 ## Known Issues
 

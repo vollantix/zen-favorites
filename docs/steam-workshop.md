@@ -87,7 +87,7 @@ profileNamespace setVariable ["zen_filter_main_emptyFavorites_groups", []];
 saveProfileNamespace;
 ```
 
-The same clear action is available under the `Maintenance` section in CBA Addon Options.
+The same clear toggle is available under the `Maintenance` section in CBA Addon Options. Turn it on to clear saved favorites; it resets itself after clearing.
 
 ## Planned Features
 
