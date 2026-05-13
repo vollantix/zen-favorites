@@ -8,13 +8,13 @@ private _pictureControls = allControls _display select {
     ctrlShown _x && {".paa" in toLower ctrlText _x}
 };
 
-[ZEN_FILTER_LOG_LEVEL_INFO, format [
+[ZEN_FILTER_LOG_LEVEL_DEBUG, format [
     "visible picture controls with textures=%1",
     count _pictureControls
 ]] call zen_filter_main_fnc_log;
 
 {
-    [ZEN_FILTER_LOG_LEVEL_INFO, format [
+    [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
         "picture control idc=%1 class=%2 text=%3 position=%4",
         ctrlIDC _x,
         ctrlClassName _x,

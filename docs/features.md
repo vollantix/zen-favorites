@@ -43,11 +43,10 @@ The first version will not support favoriting units, subgroups, vehicles, or ind
 
 The Empty side has different behavior from the normal faction sides.
 
-When Empty is selected in the Zeus Create window, ZEN Filter should add a new top-level category named `Favorites` at the very top of the Empty tree.
+When Empty Units is selected in the Zeus Create window, ZEN Filter should add a new top-level category named `Favorites` at the very top of the Empty tree.
 
-The user should be able to favorite Empty-side placeable content, including:
+The user should be able to favorite Empty-side Units placeable content, including:
 
-- groups
 - units
 - entities
 - objects
@@ -66,6 +65,8 @@ Example:
 Empty favorites should persist on the client side. The intent is that whenever a user launches Arma, loads Zeus, and has this mod enabled, their Empty favorites are available again.
 
 If a saved favorite no longer exists because a required mod is missing or the class was removed, ZEN Filter should silently skip that favorite and write a debug log line. Missing favorites should not show an error popup to the Zeus user.
+
+Empty Groups and compositions are intentionally paused for now. ZEN/ZEN composition placement uses different runtime state than single Empty objects, and the first stable pass should keep the normal tree functional instead of forcing generated Favorites rows into a path that places incorrectly.
 
 ## Debugging Expectations
 

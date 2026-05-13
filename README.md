@@ -25,6 +25,11 @@ The filtered log is written to:
 logs\zen_filter_latest.log
 ```
 
+## Documentation
+
+- [Feature description](docs/features.md)
+- [Steam Workshop description draft](docs/steam-workshop.md)
+
 ## Runtime Log Level
 
 ZEN Filter logs use this mission namespace variable:
@@ -51,6 +56,17 @@ zen_filter_main_logLevel = 3;
 
 Use `3` for debug logs and `4` for very noisy trace logs.
 
+## Maintenance Commands
+
+Clear persisted Empty favorites from the Arma debug console:
+
+```sqf
+profileNamespace setVariable ["zen_filter_main_emptyFavorites_units", []];
+profileNamespace setVariable ["zen_filter_main_emptyFavorites_groups", []];
+saveProfileNamespace;
+```
+
 ## Known Issues
 
 - Favorite star clicks use a short delayed selection read to keep faction row paths reliable. Very fast double-clicks may toggle the same faction twice instead of toggling two different factions.
+- Empty Units favorites are supported. Empty Groups and composition favorites are intentionally disabled while their placement behavior is investigated.

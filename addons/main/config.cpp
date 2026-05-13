@@ -6,7 +6,9 @@ class CfgPatches {
         requiredAddons[] = {
             "cba_main",
             "cba_xeh",
-            "zen_main"
+            "zen_main",
+            "zen_compositions",
+            "zen_placement"
         };
         units[] = {};
         weapons[] = {};
@@ -37,6 +39,7 @@ class CfgFunctions {
             class onzeusdisplayopened {};
             class renderemptyfavoritescategory {};
             class renderfactionstars {};
+            class syncemptyfavoriterow {};
             class toggleemptyfavorite {};
             class toggleselectedrootfavorite {};
         };

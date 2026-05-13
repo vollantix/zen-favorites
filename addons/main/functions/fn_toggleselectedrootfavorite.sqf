@@ -18,38 +18,52 @@ if !(_mode in ["units", "groups"]) exitWith {
 };
 
 private _path = if (_pathOverride isEqualTo []) then {tvCurSel _tree} else {_pathOverride};
+private _searchText = ctrlText (_display displayCtrl 283);
+private _isSearching = _searchText != "";
 
 if ((count _path) == 0) exitWith {
     [ZEN_FILTER_LOG_LEVEL_WARN, "cannot toggle favorite: no selected tree row"] call zen_filter_main_fnc_log;
 };
 
 if (_side == "empty") exitWith {
-    [_tree, _path] call zen_filter_main_fnc_toggleemptyfavorite;
+    [_tree, _path, _mode] call zen_filter_main_fnc_toggleemptyfavorite;
 };
 
 private _favoritePath = _path;
 
+if (_isSearching && {_side != "empty"}) then {
+    if (_mode == "units" && {(count _path) > 1}) then {
+        _favoritePath = [_path select 0];
+    };
+
+    if (_mode == "groups" && {(count _path) > 2}) then {
+        _favoritePath = [_path select 0, _path select 1];
+    };
+};
+
 [ZEN_FILTER_LOG_LEVEL_INFO, format [
-    "favorite toggle target mode=%1 side=%2 idc=%3 path=%4 text=%5 override=%6",
+    "favorite toggle target mode=%1 side=%2 idc=%3 path=%4 text=%5 override=%6 search=%7 sourcePath=%8",
     _mode,
     _side,
     _idc,
     _favoritePath,
     _tree tvText _favoritePath,
-    _pathOverride isNotEqualTo []
+    _pathOverride isNotEqualTo [],
+    _isSearching,
+    _path
 ]] call zen_filter_main_fnc_log;
 
-if (_mode == "units" && {(count _path) > 1}) exitWith {
+if (_mode == "units" && {(count _favoritePath) > 1}) exitWith {
     [ZEN_FILTER_LOG_LEVEL_INFO, format [
         "unit favorite toggle skipped for non-root path=%1",
-        _path
+        _favoritePath
     ]] call zen_filter_main_fnc_log;
 };
 
-if (_mode == "groups" && {(count _path) != 2}) exitWith {
+if (_mode == "groups" && {(count _favoritePath) != 2}) exitWith {
     [ZEN_FILTER_LOG_LEVEL_INFO, format [
         "group favorite toggle skipped: select a faction below the side root path=%1",
-        _path
+        _favoritePath
     ]] call zen_filter_main_fnc_log;
 };
 
@@ -84,7 +98,12 @@ if (_factionName in _favorites) then {
 
 _favoriteStore set [_favoriteKey, _favorites];
 missionNamespace setVariable ["zen_filter_main_factionFavorites", _favoriteStore];
-[_display, true] call zen_filter_main_fnc_applyfactionfavoriteorder;
+
+if (!_isSearching) then {
+    [_display, true] call zen_filter_main_fnc_applyfactionfavoriteorder;
+} else {
+    _tree setVariable ["zen_filter_main_lastFavoriteOrderSignature", ""];
+};
 
 [ZEN_FILTER_LOG_LEVEL_INFO, format [
     "favorites key=%1 values=%2",

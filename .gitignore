@@ -6,3 +6,4 @@ releases/
 *.bikey
 .hemttprivatekey
 logs/
+.tmp/
