@@ -1,12 +1,14 @@
 params ["_display"];
 
+private _buttonIdc = 712300;
+private _existingButtons = allControls _display select {ctrlIDC _x == _buttonIdc};
+
+if (_existingButtons isNotEqualTo []) exitWith {
+    diag_log "[ZEN Filter] button already exists";
+};
+
 diag_log "[ZEN Filter] Zeus display 312 opened";
 systemChat "ZEN Filter detected Zeus display 312";
-
-_display displayAddEventHandler ["Unload", {
-    zen_filter_main_zeusDisplaySeen = false;
-    diag_log "[ZEN Filter] Zeus display 312 closed";
-}];
 
 private _search = _display displayCtrl 283;
 private _searchGroup = ctrlParentControlsGroup _search;
@@ -19,9 +21,9 @@ diag_log format [
 ];
 
 private _button = if (isNull _searchGroup) then {
-    _display ctrlCreate ["RscButton", -1]
+    _display ctrlCreate ["RscButton", _buttonIdc]
 } else {
-    _display ctrlCreate ["RscButton", -1, _searchGroup]
+    _display ctrlCreate ["RscButton", _buttonIdc, _searchGroup]
 };
 
 _button ctrlSetText "ZF";
