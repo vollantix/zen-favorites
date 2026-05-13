@@ -15,6 +15,11 @@ missionNamespace setVariable ["zen_filter_main_emptyFavorites_groups", _emptyGro
     count _emptyGroupFavorites
 ]] call zen_filter_main_fnc_log;
 
+zen_filter_main_clearEmptyFavorites = false;
+["zen_filter_main_clearEmptyFavorites", false, nil, "client"] call CBA_settings_fnc_set;
+["zen_filter_main_clearEmptyFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
+["zen_filter_main_clearEmptyFavorites", false, nil, "server"] call CBA_settings_fnc_set;
+
 ["ModuleCurator_F", "Init", {
     params ["_logic"];
 
@@ -32,6 +37,15 @@ missionNamespace setVariable ["zen_filter_main_emptyFavorites_groups", _emptyGro
 
 [{
     private _display = findDisplay 312;
+
+    if (missionNamespace getVariable ["zen_filter_main_clearEmptyFavorites", false]) then {
+        [] call zen_filter_main_fnc_clearemptyfavorites;
+
+        zen_filter_main_clearEmptyFavorites = false;
+        ["zen_filter_main_clearEmptyFavorites", false, nil, "client"] call CBA_settings_fnc_set;
+        ["zen_filter_main_clearEmptyFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
+        ["zen_filter_main_clearEmptyFavorites", false, nil, "server"] call CBA_settings_fnc_set;
+    };
 
     if (isNull _display) exitWith {};
 

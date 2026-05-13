@@ -3,7 +3,10 @@
 params ["_display"];
 
 [ZEN_FILTER_LOG_LEVEL_INFO, "Zeus display 312 opened"] call zen_filter_main_fnc_log;
-systemChat "ZEN Filter detected Zeus display 312";
+
+if ((missionNamespace getVariable ["zen_filter_main_logLevel", ZEN_FILTER_LOG_LEVEL_INFO]) >= ZEN_FILTER_LOG_LEVEL_DEBUG) then {
+    systemChat "ZEN Filter detected Zeus display 312";
+};
 
 if !(_display getVariable ["zen_filter_main_displayMouseHandlerAdded", false]) then {
     _display setVariable ["zen_filter_main_displayMouseHandlerAdded", true];

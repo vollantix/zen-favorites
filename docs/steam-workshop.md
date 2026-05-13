@@ -52,6 +52,17 @@ If a saved favorite is missing because a mod was removed or a class no longer ex
 - Right-click an Empty Units favorite: jump to the original item in the normal tree.
 - Right-click in Zeus while an Empty Units favorite preview is active: cancel the preview.
 
+## Settings
+
+ZEN Filter settings are available in:
+
+```text
+Options > Addon Options > ZEN Filter
+```
+
+- `Debugging > Log level`: controls RPT logging verbosity.
+- `Maintenance > Clear Empty Unit favorites`: clears saved Empty Unit favorites from the current Arma profile.
+
 ## Known Quirks
 
 - Very fast double-clicks on faction stars may toggle the same faction twice instead of toggling two different factions.
@@ -62,12 +73,6 @@ If a saved favorite is missing because a mod was removed or a class no longer ex
 ## Debugging And Maintenance
 
 ZEN Filter writes diagnostic lines to the Arma RPT with the `[ZEN Filter]` prefix.
-
-Settings are available in:
-
-```text
-Options > Addon Options > ZEN Filter
-```
 
 Runtime log levels can be changed from the Arma debug console:
 
@@ -93,4 +98,5 @@ The same clear toggle is available under the `Maintenance` section in CBA Addon 
 
 - CBA settings for clearing saved favorites.
 - Better Empty Groups/composition support if it can be implemented without breaking normal ZEN placement behavior.
+- Adjustable Zeus Create panel width, if the owning panel controls can be identified reliably.
 - Additional filtering tools for the Zeus Create menu.

@@ -84,3 +84,4 @@ The first feature pass will not implement:
 - custom settings UI
 - import/export of favorite lists
 - advanced search or filtering beyond favorites
+- adjustable Zeus Create panel width
