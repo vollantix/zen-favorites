@@ -6,21 +6,21 @@ private _buttonIdc = ZEN_FILTER_BUTTON_IDC;
 private _existingButtons = allControls _display select {ctrlIDC _x == _buttonIdc};
 
 if (_existingButtons isNotEqualTo []) exitWith {
-    diag_log "[ZEN Filter] button already exists";
+    [ZEN_FILTER_LOG_LEVEL_TRACE, "button already exists"] call zen_filter_main_fnc_log;
 };
 
-diag_log "[ZEN Filter] Zeus display 312 opened";
+[ZEN_FILTER_LOG_LEVEL_INFO, "Zeus display 312 opened"] call zen_filter_main_fnc_log;
 systemChat "ZEN Filter detected Zeus display 312";
 
 private _search = _display displayCtrl 283;
 private _searchGroup = ctrlParentControlsGroup _search;
 private _searchPosition = ctrlPosition _search;
 
-diag_log format [
-    "[ZEN Filter] search position=%1 parentGroupNull=%2",
+[ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+    "search position=%1 parentGroupNull=%2",
     _searchPosition,
     isNull _searchGroup
-];
+]] call zen_filter_main_fnc_log;
 
 private _button = if (isNull _searchGroup) then {
     _display ctrlCreate ["RscButton", _buttonIdc]
@@ -49,7 +49,7 @@ if (isNull _searchGroup) then {
 _button ctrlCommit 0;
 _button ctrlAddEventHandler ["ButtonClick", {
     hint "ZEN Filter button clicked";
-    diag_log "[ZEN Filter] button clicked";
+    [ZEN_FILTER_LOG_LEVEL_INFO, "button clicked"] call zen_filter_main_fnc_log;
 }];
 
-diag_log "[ZEN Filter] button created";
+[ZEN_FILTER_LOG_LEVEL_INFO, "button created"] call zen_filter_main_fnc_log;

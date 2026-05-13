@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 
-diag_log "[ZEN Filter] postInit ran";
+[ZEN_FILTER_LOG_LEVEL_INFO, "postInit ran"] call zen_filter_main_fnc_log;
 
 [{
     private _display = findDisplay 312;
