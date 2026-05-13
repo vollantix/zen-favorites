@@ -50,3 +50,7 @@ zen_filter_main_logLevel = 3;
 ```
 
 Use `3` for debug logs and `4` for very noisy trace logs.
+
+## Known Issues
+
+- Favorite star clicks use a short delayed selection read to keep faction row paths reliable. Very fast double-clicks may toggle the same faction twice instead of toggling two different factions.

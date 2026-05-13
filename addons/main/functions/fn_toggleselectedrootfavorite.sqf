@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 
-params ["_display"];
+params ["_display", ["_pathOverride", []]];
 
 private _activeTree = [_display] call zen_filter_main_fnc_getactivecreatetree;
 _activeTree params ["_tree", "_idc", "_mode", "_side"];
@@ -21,13 +21,23 @@ if (_side == "empty") exitWith {
     [ZEN_FILTER_LOG_LEVEL_INFO, "favorite toggle skipped for Empty tree"] call zen_filter_main_fnc_log;
 };
 
-private _path = tvCurSel _tree;
+private _path = if (_pathOverride isEqualTo []) then {tvCurSel _tree} else {_pathOverride};
 
 if ((count _path) == 0) exitWith {
     [ZEN_FILTER_LOG_LEVEL_WARN, "cannot toggle favorite: no selected tree row"] call zen_filter_main_fnc_log;
 };
 
 private _favoritePath = _path;
+
+[ZEN_FILTER_LOG_LEVEL_INFO, format [
+    "favorite toggle target mode=%1 side=%2 idc=%3 path=%4 text=%5 override=%6",
+    _mode,
+    _side,
+    _idc,
+    _favoritePath,
+    _tree tvText _favoritePath,
+    _pathOverride isNotEqualTo []
+]] call zen_filter_main_fnc_log;
 
 if (_mode == "units" && {(count _path) > 1}) exitWith {
     [ZEN_FILTER_LOG_LEVEL_INFO, format [
@@ -73,6 +83,7 @@ if (_factionName in _favorites) then {
 
 _favoriteStore set [_favoriteKey, _favorites];
 missionNamespace setVariable ["zen_filter_main_factionFavorites", _favoriteStore];
+[_display, true] call zen_filter_main_fnc_applyfactionfavoriteorder;
 
 [ZEN_FILTER_LOG_LEVEL_INFO, format [
     "favorites key=%1 values=%2",
