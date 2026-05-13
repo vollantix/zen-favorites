@@ -35,6 +35,7 @@ class CfgFunctions {
             class inspectcreatetree {};
             class log {};
             class onzeusdisplayopened {};
+            class renderemptyfavoritescategory {};
             class renderfactionstars {};
             class toggleemptyfavorite {};
             class toggleselectedrootfavorite {};

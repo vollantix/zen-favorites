@@ -57,6 +57,8 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
 };
 
 if (_side == "empty") exitWith {
+    [_tree] call zen_filter_main_fnc_renderemptyfavoritescategory;
+
     private _emptyFavorites = missionNamespace getVariable ["zen_filter_main_emptyFavorites", []];
     private _emptyFavoriteClasses = _emptyFavorites apply {_x select 1};
     private _renderEmptyPath = {
