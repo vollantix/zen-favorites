@@ -34,6 +34,8 @@ class CfgFunctions {
             class inspectcreatetree {};
             class log {};
             class onzeusdisplayopened {};
+            class renderfactionstars {};
+            class toggleselectedrootfavorite {};
         };
     };
 };

@@ -4,6 +4,25 @@ params ["_display"];
 
 [ZEN_FILTER_LOG_LEVEL_INFO, "inspecting Zeus Create tree"] call zen_filter_main_fnc_log;
 
+private _pictureControls = allControls _display select {
+    ctrlShown _x && {".paa" in toLower ctrlText _x}
+};
+
+[ZEN_FILTER_LOG_LEVEL_INFO, format [
+    "visible picture controls with textures=%1",
+    count _pictureControls
+]] call zen_filter_main_fnc_log;
+
+{
+    [ZEN_FILTER_LOG_LEVEL_INFO, format [
+        "picture control idc=%1 class=%2 text=%3 position=%4",
+        ctrlIDC _x,
+        ctrlClassName _x,
+        ctrlText _x,
+        ctrlPosition _x
+    ]] call zen_filter_main_fnc_log;
+} forEach (_pictureControls select [0, 30]);
+
 private _activeTree = [_display] call zen_filter_main_fnc_getactivecreatetree;
 _activeTree params ["_tree", "_idc", "_mode", "_side"];
 
