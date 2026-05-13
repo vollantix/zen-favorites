@@ -30,6 +30,8 @@ class CfgFunctions {
         class main {
             file = "z\zen_filter\addons\main\functions";
 
+            class getactivecreatetree {};
+            class inspectcreatetree {};
             class log {};
             class onzeusdisplayopened {};
         };

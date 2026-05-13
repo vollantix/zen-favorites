@@ -11,14 +11,14 @@ This document describes intended behavior, not final implementation.
 
 ## Faction Favorites
 
-Faction favorites apply to the faction tree shown in the Zeus Create window for these sides:
+Faction favorites apply to the faction and group trees shown in the Zeus Create window for these sides:
 
 - BLUFOR
 - OPFOR
 - Independent
 - Civilian
 
-When one of these sides is selected, each top-level faction row should have a favorite star aligned on the far right side of the faction list row, ideally just left of the scrollbar if the list has one.
+When one of these sides is selected, each top-level faction row should have a favorite star aligned on the far right side of the faction or group list row, ideally just left of the scrollbar if the list has one.
 
 Example:
 
@@ -31,13 +31,13 @@ Favorited factions should move to the top of that side's faction list. If multip
 
 Unfavoriting a faction should remove it from the favorites group and return it to its normal position in the side's faction list.
 
-Faction favorites are independent per side. Favoriting a BLUFOR faction must not affect OPFOR, Independent, Civilian, or Empty.
+Faction favorites are independent per side and per create mode. Favoriting a BLUFOR units faction must not affect OPFOR, Independent, Civilian, Empty, or BLUFOR groups. Favoriting a BLUFOR group faction is a separate favorite from favoriting a BLUFOR units faction.
 
 Favorited factions should be expanded by default at the first tree level. They should not appear collapsed when the user first opens or refreshes that side's list.
 
 Faction favorites are mission-local. They should last for the current mission/session, but they do not need to persist across game restarts, Arma profile changes, or future missions.
 
-The first version will not support favoriting units, subgroups, vehicles, or individual classes inside normal side factions.
+The first version will not support favoriting units, subgroups, vehicles, or individual classes inside normal side factions or groups.
 
 ## Empty Favorites
 

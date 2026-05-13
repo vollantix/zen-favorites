@@ -48,8 +48,13 @@ if (isNull _searchGroup) then {
 
 _button ctrlCommit 0;
 _button ctrlAddEventHandler ["ButtonClick", {
-    hint "ZEN Filter button clicked";
+    params ["_button"];
+
+    private _display = ctrlParent _button;
+
+    hint "ZEN Filter inspected Create tree";
     [ZEN_FILTER_LOG_LEVEL_INFO, "button clicked"] call zen_filter_main_fnc_log;
+    [_display] call zen_filter_main_fnc_inspectcreatetree;
 }];
 
 [ZEN_FILTER_LOG_LEVEL_INFO, "button created"] call zen_filter_main_fnc_log;
