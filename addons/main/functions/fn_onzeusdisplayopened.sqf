@@ -48,22 +48,8 @@ _button ctrlAddEventHandler ["ButtonClick", {
     [_display] call zen_filter_main_fnc_toggleselectedrootfavorite;
 }];
 
-private _star = _display ctrlCreate ["RscPicture", ZEN_FILTER_STAR_TEST_IDC];
-private _starSize = 0.035;
-
-_star ctrlSetText ZEN_FILTER_STAR_TEXTURE;
-_star ctrlSetTextColor [1, 1, 1, 0.9];
-_star ctrlSetPosition [
-    _buttonX - _starSize - 0.005,
-    _buttonY,
-    _starSize,
-    _starSize
-];
-_star ctrlCommit 0;
-
 [ZEN_FILTER_LOG_LEVEL_INFO, format [
-    "button created position=%1 starPosition=%2 paneWidth=%3",
+    "button created position=%1 paneWidth=%2",
     ctrlPosition _button,
-    ctrlPosition _star,
     _createPaneWidth
 ]] call zen_filter_main_fnc_log;
