@@ -63,6 +63,12 @@ If a saved favorite is missing because a mod was removed or a class no longer ex
 
 ZEN Filter writes diagnostic lines to the Arma RPT with the `[ZEN Filter]` prefix.
 
+Settings are available in:
+
+```text
+Options > Addon Options > ZEN Filter
+```
+
 Runtime log levels can be changed from the Arma debug console:
 
 ```sqf
@@ -81,9 +87,10 @@ profileNamespace setVariable ["zen_filter_main_emptyFavorites_groups", []];
 saveProfileNamespace;
 ```
 
+The same clear action is available under the `Maintenance` section in CBA Addon Options.
+
 ## Planned Features
 
 - CBA settings for clearing saved favorites.
 - Better Empty Groups/composition support if it can be implemented without breaking normal ZEN placement behavior.
 - Additional filtering tools for the Zeus Create menu.
-

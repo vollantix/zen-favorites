@@ -56,6 +56,12 @@ zen_filter_main_logLevel = 3;
 
 Use `3` for debug logs and `4` for very noisy trace logs.
 
+The same setting is also available in:
+
+```text
+Options > Addon Options > ZEN Filter > Debugging
+```
+
 ## Maintenance Commands
 
 Clear persisted Empty favorites from the Arma debug console:
@@ -64,6 +70,12 @@ Clear persisted Empty favorites from the Arma debug console:
 profileNamespace setVariable ["zen_filter_main_emptyFavorites_units", []];
 profileNamespace setVariable ["zen_filter_main_emptyFavorites_groups", []];
 saveProfileNamespace;
+```
+
+The Empty Unit favorites clear action is also available in:
+
+```text
+Options > Addon Options > ZEN Filter > Maintenance
 ```
 
 ## Known Issues

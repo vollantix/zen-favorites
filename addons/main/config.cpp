@@ -5,6 +5,7 @@ class CfgPatches {
         requiredVersion = 2.18;
         requiredAddons[] = {
             "cba_main",
+            "cba_settings",
             "cba_xeh",
             "zen_main",
             "zen_compositions",
@@ -37,6 +38,8 @@ class CfgFunctions {
             class inspectcreatetree {};
             class log {};
             class onzeusdisplayopened {};
+            class clearemptyfavorites {};
+            class registersettings {};
             class renderemptyfavoritescategory {};
             class renderfactionstars {};
             class syncemptyfavoriterow {};
