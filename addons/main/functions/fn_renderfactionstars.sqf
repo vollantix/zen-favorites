@@ -27,28 +27,6 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
         private _hoverPath = _tree getVariable ["zen_filter_main_mousePath", []];
         private _selectedPath = tvCurSel _tree;
 
-        if (missionNamespace getVariable ["zen_filter_main_logNextTreeMouseUp", false]) then {
-            missionNamespace setVariable ["zen_filter_main_logNextTreeMouseUp", false];
-
-            [ZEN_FILTER_LOG_LEVEL_INFO, format [
-                "tree mouse-up coordinate sample idc=%1 button=%2 x=%3 y=%4 treePosition=%5 treeRight=%6 currentStarClickX=%7 distanceFromRight=%8 isStarClick=%9 hoverPath=%10 hoverText=%11 selectedPath=%12 selectedText=%13 search=%14",
-                ctrlIDC _tree,
-                _button,
-                _xPos,
-                _yPos,
-                _treePosition,
-                _treeRight,
-                _starClickX,
-                _treeRight - _xPos,
-                _isStarClick,
-                _hoverPath,
-                _tree tvText _hoverPath,
-                _selectedPath,
-                _tree tvText _selectedPath,
-                _searchText
-            ]] call zen_filter_main_fnc_log;
-        };
-
         if (_button == 1) then {
             if (missionNamespace getVariable ["zen_filter_main_emptyFavoritePreviewActive", false]) then {
                 _tree setVariable ["zen_filter_main_previewSuppressedPath", _hoverPath];

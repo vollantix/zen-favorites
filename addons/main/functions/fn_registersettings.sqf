@@ -40,7 +40,11 @@
         [] call zen_filter_main_fnc_clearemptyfavorites;
 
         [{
-            ["zen_filter_main_clearEmptyFavorites", false] call CBA_settings_fnc_set;
-        }, []] call CBA_fnc_execNextFrame;
+            zen_filter_main_clearEmptyFavorites = false;
+
+            ["zen_filter_main_clearEmptyFavorites", false, nil, "client"] call CBA_settings_fnc_set;
+            ["zen_filter_main_clearEmptyFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
+            ["zen_filter_main_clearEmptyFavorites", false, nil, "server"] call CBA_settings_fnc_set;
+        }, [], 0.25] call CBA_fnc_waitAndExecute;
     }
 ] call CBA_fnc_addSetting;

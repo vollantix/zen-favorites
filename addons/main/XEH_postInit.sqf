@@ -32,11 +32,11 @@ missionNamespace setVariable ["zen_filter_main_emptyFavorites_groups", _emptyGro
 
 [{
     private _display = findDisplay 312;
-    private _buttonExists = !isNull _display && {{ctrlIDC _x == ZEN_FILTER_BUTTON_IDC} count allControls _display > 0};
 
     if (isNull _display) exitWith {};
 
-    if (!_buttonExists) then {
+    if !(_display getVariable ["zen_filter_main_displayOpenedHandled", false]) then {
+        _display setVariable ["zen_filter_main_displayOpenedHandled", true];
         [_display] call zen_filter_main_fnc_onzeusdisplayopened;
     };
 

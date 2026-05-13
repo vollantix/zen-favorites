@@ -1,4 +1,3 @@
-#define ZEN_FILTER_BUTTON_IDC 712300
 #define ZEN_FILTER_STAR_TEXTURE "\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeRecent_ca.paa"
 
 #define ZEN_FILTER_IDC_CREATE_UNITS_WEST 270
