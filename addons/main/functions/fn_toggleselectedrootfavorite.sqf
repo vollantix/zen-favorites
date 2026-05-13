@@ -60,6 +60,7 @@ private _factionName = _tree tvText _favoritePath;
 
 if (_factionName in _favorites) then {
     _favorites deleteAt (_favorites find _factionName);
+    _tree tvCollapse _favoritePath;
     hint format ["Removed favorite: %1", _factionName];
 
     [ZEN_FILTER_LOG_LEVEL_INFO, format [

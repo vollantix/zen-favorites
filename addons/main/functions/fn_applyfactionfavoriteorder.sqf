@@ -45,7 +45,14 @@ if (_mode == "units") then {
     _tree tvSortByValue [[], true];
 
     for "_index" from 0 to (_rootCount - 1) do {
-        _orderAfterSort pushBack (_tree tvText [_index]);
+        private _path = [_index];
+        private _factionName = _tree tvText _path;
+
+        _orderAfterSort pushBack _factionName;
+
+        if (_factionName in _favorites) then {
+            _tree tvExpand _path;
+        };
     };
 };
 
@@ -74,7 +81,14 @@ if (_mode == "groups") then {
     _tree tvSortByValue [[0], true];
 
     for "_index" from 0 to (_factionCount - 1) do {
-        _orderAfterSort pushBack (_tree tvText [0, _index]);
+        private _path = [0, _index];
+        private _factionName = _tree tvText _path;
+
+        _orderAfterSort pushBack _factionName;
+
+        if (_factionName in _favorites) then {
+            _tree tvExpand _path;
+        };
     };
 };
 
