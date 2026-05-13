@@ -17,14 +17,14 @@ if !(_mode in ["units", "groups"]) exitWith {
     ]] call zen_filter_main_fnc_log;
 };
 
-if (_side == "empty") exitWith {
-    [ZEN_FILTER_LOG_LEVEL_INFO, "favorite toggle skipped for Empty tree"] call zen_filter_main_fnc_log;
-};
-
 private _path = if (_pathOverride isEqualTo []) then {tvCurSel _tree} else {_pathOverride};
 
 if ((count _path) == 0) exitWith {
     [ZEN_FILTER_LOG_LEVEL_WARN, "cannot toggle favorite: no selected tree row"] call zen_filter_main_fnc_log;
+};
+
+if (_side == "empty") exitWith {
+    [_tree, _path] call zen_filter_main_fnc_toggleemptyfavorite;
 };
 
 private _favoritePath = _path;

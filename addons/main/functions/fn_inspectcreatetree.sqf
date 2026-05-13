@@ -54,3 +54,47 @@ for "_index" from 0 to ((_rootCount - 1) min 20) do {
         _tree tvCount _path
     ]] call zen_filter_main_fnc_log;
 };
+
+private _selectedPath = tvCurSel _tree;
+
+if (_selectedPath isEqualTo []) exitWith {
+    [ZEN_FILTER_LOG_LEVEL_INFO, "active tree has no selected row"] call zen_filter_main_fnc_log;
+};
+
+[ZEN_FILTER_LOG_LEVEL_INFO, format [
+    "selected row path=%1 text=%2 data=%3 children=%4",
+    _selectedPath,
+    _tree tvText _selectedPath,
+    _tree tvData _selectedPath,
+    _tree tvCount _selectedPath
+]] call zen_filter_main_fnc_log;
+
+private _ancestorPath = [];
+
+{
+    _ancestorPath pushBack _x;
+
+    [ZEN_FILTER_LOG_LEVEL_INFO, format [
+        "selected ancestor path=%1 text=%2 data=%3 children=%4",
+        _ancestorPath,
+        _tree tvText _ancestorPath,
+        _tree tvData _ancestorPath,
+        _tree tvCount _ancestorPath
+    ]] call zen_filter_main_fnc_log;
+} forEach _selectedPath;
+
+private _childCount = _tree tvCount _selectedPath;
+
+for "_index" from 0 to ((_childCount - 1) min 20) do {
+    private _childPath = +_selectedPath;
+    _childPath pushBack _index;
+
+    [ZEN_FILTER_LOG_LEVEL_INFO, format [
+        "selected child %1 path=%2 text=%3 data=%4 children=%5",
+        _index,
+        _childPath,
+        _tree tvText _childPath,
+        _tree tvData _childPath,
+        _tree tvCount _childPath
+    ]] call zen_filter_main_fnc_log;
+};

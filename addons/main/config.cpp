@@ -36,6 +36,7 @@ class CfgFunctions {
             class log {};
             class onzeusdisplayopened {};
             class renderfactionstars {};
+            class toggleemptyfavorite {};
             class toggleselectedrootfavorite {};
         };
     };

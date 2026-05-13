@@ -7,11 +7,7 @@ _activeTree params ["_tree", "_idc", "_mode", "_side"];
 
 if (isNull _tree) exitWith {};
 if !(_mode in ["units", "groups"]) exitWith {};
-if (_side == "empty") exitWith {};
 
-private _favoriteKey = format ["%1:%2", _mode, _side];
-private _favoriteStore = missionNamespace getVariable ["zen_filter_main_factionFavorites", createHashMap];
-private _favorites = _favoriteStore getOrDefault [_favoriteKey, []];
 private _favoriteColor = [1, 0.82, 0.25, 1];
 private _normalColor = [1, 1, 1, 0.35];
 
@@ -59,6 +55,44 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
         ctrlIDC _tree
     ]] call zen_filter_main_fnc_log;
 };
+
+if (_side == "empty") exitWith {
+    private _emptyFavorites = missionNamespace getVariable ["zen_filter_main_emptyFavorites", []];
+    private _emptyFavoriteClasses = _emptyFavorites apply {_x select 1};
+    private _renderEmptyPath = {
+        params ["_path"];
+
+        private _childCount = _tree tvCount _path;
+
+        if (_childCount == 0) then {
+            private _className = _tree tvData _path;
+
+            if (_className != "") then {
+                private _color = [_normalColor, _favoriteColor] select (_className in _emptyFavoriteClasses);
+
+                _tree tvSetPictureRight [_path, ZEN_FILTER_STAR_TEXTURE];
+                _tree tvSetPictureRightColor [_path, _color];
+                _tree tvSetPictureRightColorSelected [_path, _color];
+            };
+        } else {
+            for "_index" from 0 to ((_childCount - 1) min 50) do {
+                private _childPath = +_path;
+                _childPath pushBack _index;
+                [_childPath] call _renderEmptyPath;
+            };
+        };
+    };
+
+    private _rootCount = _tree tvCount [];
+
+    for "_index" from 0 to ((_rootCount - 1) min 50) do {
+        [[_index]] call _renderEmptyPath;
+    };
+};
+
+private _favoriteKey = format ["%1:%2", _mode, _side];
+private _favoriteStore = missionNamespace getVariable ["zen_filter_main_factionFavorites", createHashMap];
+private _favorites = _favoriteStore getOrDefault [_favoriteKey, []];
 
 [_display] call zen_filter_main_fnc_applyfactionfavoriteorder;
 
