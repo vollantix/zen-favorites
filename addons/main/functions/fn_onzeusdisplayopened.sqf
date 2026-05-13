@@ -1,6 +1,8 @@
+#include "..\script_component.hpp"
+
 params ["_display"];
 
-private _buttonIdc = 712300;
+private _buttonIdc = ZEN_FILTER_BUTTON_IDC;
 private _existingButtons = allControls _display select {ctrlIDC _x == _buttonIdc};
 
 if (_existingButtons isNotEqualTo []) exitWith {
