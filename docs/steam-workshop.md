@@ -74,6 +74,21 @@ Options > Addon Options > ZEN Filter
 
 ZEN Filter writes diagnostic lines to the Arma RPT with the `[ZEN Filter]` prefix.
 
+Empty Unit favorites are stored in the Arma profile. You can view or export them from the Arma debug console:
+
+```sqf
+copyToClipboard str (profileNamespace getVariable ["zen_filter_main_emptyFavorites_units", []]);
+```
+
+Restore saved Empty Unit favorites from a copied value:
+
+```sqf
+profileNamespace setVariable ["zen_filter_main_emptyFavorites_units", PASTE_ARRAY_HERE];
+saveProfileNamespace;
+```
+
+Saved favorites may reference classes from mods that are not currently loaded. ZEN Filter skips unavailable favorites and keeps the rest working.
+
 Runtime log levels can be changed from the Arma debug console:
 
 ```sqf

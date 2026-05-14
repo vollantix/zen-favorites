@@ -28,6 +28,7 @@ logs\zen_filter_latest.log
 ## Documentation
 
 - [Feature description](docs/features.md)
+- [Empty Groups favorites plan](docs/empty-groups-plan.md)
 - [Steam Workshop description draft](docs/steam-workshop.md)
 
 ## Runtime Log Level
@@ -63,6 +64,27 @@ Options > Addon Options > ZEN Filter > Debugging
 ```
 
 ## Maintenance Commands
+
+Empty Unit favorites are stored in the Arma profile:
+
+```sqf
+profileNamespace getVariable ["zen_filter_main_emptyFavorites_units", []];
+```
+
+View saved Empty Unit favorites in the debug console:
+
+```sqf
+copyToClipboard str (profileNamespace getVariable ["zen_filter_main_emptyFavorites_units", []]);
+```
+
+Restore saved Empty Unit favorites from a copied value:
+
+```sqf
+profileNamespace setVariable ["zen_filter_main_emptyFavorites_units", PASTE_ARRAY_HERE];
+saveProfileNamespace;
+```
+
+Saved favorites can reference classes from mods that are not currently loaded. ZEN Filter skips unavailable favorites and keeps the rest working.
 
 Clear persisted Empty favorites from the Arma debug console:
 

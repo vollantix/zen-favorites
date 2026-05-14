@@ -68,6 +68,8 @@ If a saved favorite no longer exists because a required mod is missing or the cl
 
 Empty Groups and compositions are intentionally paused for now. ZEN/ZEN composition placement uses different runtime state than single Empty objects, and the first stable pass should keep the normal tree functional instead of forcing generated Favorites rows into a path that places incorrectly.
 
+See `docs/empty-groups-plan.md` for the planned Empty Groups implementation approach.
+
 ## Debugging Expectations
 
 While the addon is in early development, important behavior should be visible in the Arma RPT through `[ZEN Filter]` log lines.

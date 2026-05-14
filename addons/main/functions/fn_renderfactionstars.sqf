@@ -144,16 +144,34 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
             missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
         };
 
-        private _className = "";
+        if ((_tree tvCount _path) > 0) exitWith {
+            [] call zen_placement_fnc_setupPreview;
+            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
 
-        if ((_tree tvCount _path) == 0) then {
-            _className = _tree tvData _path;
+            [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+                "ignored Empty favorite folder selection path=%1 text=%2",
+                _path,
+                _tree tvText _path
+            ]] call zen_filter_main_fnc_log;
         };
+
+        private _className = _tree tvData _path;
 
         private _objectType = ["", _className] select (
             isClass (configFile >> "CfgVehicles" >> _className) &&
             {!(_className isKindOf "Logic")}
         );
+
+        if (_objectType == "") exitWith {
+            [] call zen_placement_fnc_setupPreview;
+            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+
+            [ZEN_FILTER_LOG_LEVEL_WARN, format [
+                "ignored Empty favorite leaf with invalid CfgVehicles class path=%1 class=%2",
+                _path,
+                _className
+            ]] call zen_filter_main_fnc_log;
+        };
 
         [_objectType] call zen_placement_fnc_setupPreview;
         missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", _objectType != ""];
