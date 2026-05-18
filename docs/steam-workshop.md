@@ -49,6 +49,7 @@ If a saved favorite is missing because a mod was removed or a class no longer ex
 
 - Left-click a star: add or remove a favorite.
 - Left-click an Empty Units favorite: select it for placement.
+- Hold Shift while placing an Empty Units favorite: rotate the placement preview.
 - Right-click an Empty Units favorite: jump to the original item in the normal tree.
 - Right-click in Zeus while an Empty Units favorite preview is active: cancel the preview.
 
@@ -66,7 +67,8 @@ Options > Addon Options > ZEN Filter
 ## Known Quirks
 
 - Very fast double-clicks on faction stars may toggle the same faction twice instead of toggling two different factions.
-- Empty Groups and composition favorites are intentionally disabled for now while their placement behavior is investigated.
+- Empty Groups and composition favorites are still experimental and may use temporary shortcut behavior while placement behavior is investigated.
+- Empty Units favorite previews can be rotated with Shift, but placed objects may lose that preview rotation when placed.
 - Favorites are client-side. They are not synced between players or stored on the server.
 - Faction favorites only last for the current mission/session.
 

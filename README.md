@@ -105,4 +105,5 @@ Turn it on to clear saved favorites. It resets itself after clearing.
 ## Known Issues
 
 - Favorite star clicks use a short delayed selection read to keep faction row paths reliable. Very fast double-clicks may toggle the same faction twice instead of toggling two different factions.
-- Empty Units favorites are supported. Empty Groups and composition favorites are intentionally disabled while their placement behavior is investigated.
+- Empty Groups favorites currently use a temporary shortcut behavior while placement behavior is investigated.
+- Empty Units favorite previews can be rotated with Shift, but placed objects may lose that preview rotation when placed.

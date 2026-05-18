@@ -42,14 +42,94 @@ zen_filter_main_clearEmptyFavorites = false;
     params ["_logic"];
 
     _logic addEventHandler ["CuratorObjectPlaced", {
+        params ["", "_object"];
+
         if !(missionNamespace getVariable ["zen_filter_main_emptyFavoritePreviewActive", false]) exitWith {};
 
-        [{
-            [] call zen_placement_fnc_setupPreview;
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+        private _previewType = "<nil>";
+        private _typeMatches = false;
+        private _helperNull = true;
+        private _helperDir = -1;
+        private _helperVectorDir = [];
+        private _helperVectorUp = [];
 
-            [ZEN_FILTER_LOG_LEVEL_INFO, "cleared Empty favorite placement preview after object placement"] call zen_filter_main_fnc_log;
-        }, []] call CBA_fnc_execNextFrame;
+        if !(isNil "zen_placement_object") then {
+            if !(isNull zen_placement_object) then {
+                _previewType = typeOf zen_placement_object;
+                _typeMatches = typeOf _object == _previewType;
+            };
+        };
+
+        if !(isNil "zen_placement_helper") then {
+            _helperNull = isNull zen_placement_helper;
+
+            if (!_helperNull) then {
+                _helperDir = getDir zen_placement_helper;
+                _helperVectorDir = vectorDir zen_placement_helper;
+                _helperVectorUp = vectorUp zen_placement_helper;
+            };
+        };
+
+        [ZEN_FILTER_LOG_LEVEL_INFO, format [
+            "Empty favorite object placed pre-cleanup placedType=%1 placedDir=%2 previewType=%3 typeMatches=%4 helperNull=%5 helperDir=%6 helperVectorDir=%7 helperVectorUp=%8 objectVectorDir=%9 objectVectorUp=%10",
+            typeOf _object,
+            getDir _object,
+            _previewType,
+            _typeMatches,
+            _helperNull,
+            _helperDir,
+            _helperVectorDir,
+            _helperVectorUp,
+            vectorDir _object,
+            vectorUp _object
+        ]] call zen_filter_main_fnc_log;
+
+        private _helperPosition = if (!_helperNull) then {getPosASL zen_placement_helper} else {getPosASL _object};
+        private _helperDirAndUp = if (!_helperNull) then {
+            [vectorDir zen_placement_helper, vectorUp zen_placement_helper]
+        } else {
+            [vectorDir _object, vectorUp _object]
+        };
+
+        [{
+            params ["_object", "_helperPosition", "_helperDirAndUp"];
+
+            if (!isNull _object) then {
+                _object setPosASL _helperPosition;
+                _object setVectorDirAndUp _helperDirAndUp;
+                _object setVelocity [0, 0, 0];
+            };
+
+            private _previewType = "<nil>";
+            private _helperNull = true;
+
+            if !(isNil "zen_placement_object") then {
+                if !(isNull zen_placement_object) then {
+                    _previewType = typeOf zen_placement_object;
+                };
+            };
+
+            if !(isNil "zen_placement_helper") then {
+                _helperNull = isNull zen_placement_helper;
+            };
+
+            [ZEN_FILTER_LOG_LEVEL_INFO, format [
+                "Empty favorite object placed next-frame applied transform placedType=%1 placedDir=%2 placedVectorDir=%3 placedVectorUp=%4 previewType=%5 helperNull=%6",
+                typeOf _object,
+                getDir _object,
+                vectorDir _object,
+                vectorUp _object,
+                _previewType,
+                _helperNull
+            ]] call zen_filter_main_fnc_log;
+
+            [{
+                [] call zen_placement_fnc_setupPreview;
+                missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+
+                [ZEN_FILTER_LOG_LEVEL_INFO, "cleared Empty favorite placement preview after object placement"] call zen_filter_main_fnc_log;
+            }, []] call CBA_fnc_execNextFrame;
+        }, [_object, _helperPosition, _helperDirAndUp]] call CBA_fnc_execNextFrame;
     }];
 }, true, [], true] call CBA_fnc_addClassEventHandler;
 

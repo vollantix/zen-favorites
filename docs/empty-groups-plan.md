@@ -9,8 +9,9 @@ Empty Groups and compositions are different. They are not always simple `CfgVehi
 ## Current Status
 
 - Empty Units favorites are supported and persistent.
-- Empty Groups favorites are disabled for now.
-- Clicking a star in Empty Groups currently shows a hint and logs that group favorites need a separate implementation.
+- Empty Groups favorites currently support saved metadata and a temporary shortcut Favorites section.
+- Clicking a generated Empty Groups favorite selects the matching original ZEN tree row.
+- This shortcut behavior is intentionally temporary. It proves that saved favorites can resolve back to original rows, but it still collapses/rebuilds the Favorites branch and visibly selects the original row.
 - `zen_compositions` remains a required addon because Empty Groups support is planned.
 
 ## What We Learned
@@ -25,7 +26,7 @@ Empty Groups and compositions are different. They are not always simple `CfgVehi
 
 ## Design Direction
 
-The safest direction is to treat Empty Groups favorites as shortcuts to the original ZEN tree rows, not as independently placeable generated rows.
+The current safe direction is to treat Empty Groups favorites as shortcuts to the original ZEN tree rows while we learn ZEN's internal placement state.
 
 Instead of trying to make a fake Favorites row behave exactly like the original row:
 
@@ -35,6 +36,39 @@ Instead of trying to make a fake Favorites row behave exactly like the original 
 4. Let ZEN's own placement logic handle previews and placement.
 
 This is less magical than placing directly from the Favorites row, but it should preserve the behavior of groups, custom compositions, Steam compositions, and Eden-created compositions.
+
+The final direction should not stop at visible shortcuts. The desired behavior is still a real Favorites section where selecting a favorite activates the same behavior as the original ZEN row, ideally without visibly jumping the tree selection.
+
+Preview quality note:
+
+- The final behavior does not need to use ZEN's richer object-preview style if that is difficult for groups/compositions.
+- It is acceptable, and probably preferable, to make group favorites use the same placement bubbles that the original Empty Groups tree uses.
+- Uniform behavior with the original ZEN rows is more important than a fancier generated preview.
+
+## ZEN Source Findings
+
+Useful source files inspected:
+
+- `.tmp/ZEN-source/addons/placement/XEH_postInit.sqf`
+- `.tmp/ZEN-source/addons/placement/functions/fnc_handleTreeSelect.sqf`
+- `.tmp/ZEN-source/addons/compositions/functions/fnc_initDisplayCurator.sqf`
+- `.tmp/ZEN-source/addons/compositions/functions/fnc_handleTreeSelect.sqf`
+- `.tmp/ZEN-source/addons/compositions/functions/fnc_processTreeAdditions.sqf`
+- `.tmp/ZEN-source/addons/compositions/functions/fnc_initHelper.sqf`
+
+Important findings:
+
+- ZEN placement attaches `TreeSelChanged` preview handling only to Create Units trees and the Recent tree, not to the Empty Groups tree.
+- Empty Groups composition handling lives in the `zen_compositions` addon.
+- ZEN custom composition rows use `tvData == "zen_compositions_composition"`.
+- When a custom composition row is selected, `zen_compositions_fnc_handleTreeSelect` reads the composition array from a variable stored on the tree control.
+- That variable key is based on the row's parent category and row name: `zen_compositions_<category>:<name>`.
+- `zen_compositions_fnc_initHelper` places the composition by deserializing `zen_compositions_selected` at the helper object's position.
+
+Implication:
+
+- For ZEN custom compositions, a generated Favorites row can probably become a real selectable row if it copies both the visible row data and the tree variable used by ZEN.
+- For built-in engine groups/compositions, behavior is likely still tied to the original tree path/config data. These may need a different strategy or may remain shortcut-based longer.
 
 ## Data To Capture
 
@@ -96,9 +130,7 @@ The inspector logs:
 
 ### Milestone 2: Save Favorite Metadata
 
-In progress. Empty Groups leaf rows get favorite stars, but clicking a star only stores/removes metadata.
-
-No Favorites category is rendered yet, and no placement behavior changes are made.
+Implemented. Empty Groups leaf rows get favorite stars and clicking a star stores/removes metadata.
 
 Stored metadata shape:
 
@@ -125,6 +157,32 @@ First proof of concept should be intentionally narrow:
 
 Do not support custom compositions, Steam compositions, or generated direct placement in the first proof of concept.
 
+### Milestone 3: Temporary Shortcut Favorites
+
+Implemented as a temporary baseline.
+
+- Empty Groups renders a top-level Favorites category.
+- Favorite rows keep the full original display path.
+- Selecting a favorite leaf resolves the original row by display path and selects it.
+- This preserves original ZEN behavior but visibly jumps to the original row.
+- Unfavoriting works, but the Favorites branch may collapse because it is rebuilt.
+
+### Milestone 4: Real Custom Composition Favorites
+
+Planned next investigation/implementation.
+
+For generated Favorites rows that represent ZEN custom compositions:
+
+1. Set `tvData` on the generated leaf to `zen_compositions_composition`.
+2. Copy the original tree variable containing the composition array.
+3. Store that variable under the generated favorite row's parent category/name key.
+4. Let ZEN's existing `zen_compositions_fnc_handleTreeSelect` populate `zen_compositions_selected`.
+5. Test whether the helper placement works without selecting the original row.
+
+This should be tested first with one ZEN-created custom composition before supporting Steam or Eden composition categories.
+
+The first target is not a custom object preview. The first target is getting the same placement bubbles and placement behavior that the original Empty Groups row provides.
+
 ## Test Checklist
 
 Run each test with the normal row first, then the favorite shortcut:
@@ -148,11 +206,12 @@ Expected behavior for missing content:
 
 ## Open Questions
 
-- Can a favorite shortcut select the original row without stealing placement focus?
+- Can generated favorite rows for custom compositions fully replace shortcut selection by copying ZEN's tree variables?
 - Does left-click on a favorite shortcut feel acceptable, or should right-click jump and left-click attempt direct placement?
 - Can ZEN composition categories be resolved reliably from display path alone?
 - Do Steam and profile compositions share the same selection data path?
-- Should Empty Groups favorites appear at the top or bottom of the Groups tree?
+- For built-in engine groups, is there a public or reliable internal path to trigger the same placement behavior without selecting the original tree row?
+- Can expansion state be preserved when rebuilding the Favorites branch?
 
 ## Cleanup Notes
 

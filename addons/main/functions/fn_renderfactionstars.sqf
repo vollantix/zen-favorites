@@ -176,11 +176,38 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
         [_objectType] call zen_placement_fnc_setupPreview;
         missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", _objectType != ""];
 
+        private _previewType = "<nil>";
+        private _helperNull = true;
+        private _helperDir = -1;
+        private _helperVectorDir = [];
+        private _helperVectorUp = [];
+
+        if !(isNil "zen_placement_object") then {
+            if !(isNull zen_placement_object) then {
+                _previewType = typeOf zen_placement_object;
+            };
+        };
+
+        if !(isNil "zen_placement_helper") then {
+            _helperNull = isNull zen_placement_helper;
+
+            if (!_helperNull) then {
+                _helperDir = getDir zen_placement_helper;
+                _helperVectorDir = vectorDir zen_placement_helper;
+                _helperVectorUp = vectorUp zen_placement_helper;
+            };
+        };
+
         [ZEN_FILTER_LOG_LEVEL_INFO, format [
-            "updated ZEN placement preview from Empty favorite path=%1 class=%2 objectType=%3",
+            "updated ZEN placement preview from Empty favorite path=%1 class=%2 objectType=%3 previewType=%4 helperNull=%5 helperDir=%6 helperVectorDir=%7 helperVectorUp=%8",
             _path,
             _className,
-            _objectType
+            _objectType,
+            _previewType,
+            _helperNull,
+            _helperDir,
+            _helperVectorDir,
+            _helperVectorUp
         ]] call zen_filter_main_fnc_log;
     }];
 
