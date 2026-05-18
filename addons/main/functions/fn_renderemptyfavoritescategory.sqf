@@ -122,12 +122,12 @@ private _favoritesRootPath = +_favoritesParentPath;
 _favoritesRootPath pushBack _favoritesRootIndex;
 private _favoriteBranchTextPaths = [];
 
-_tree tvSetValue [_favoritesRootPath, [999999, -1000] select (_mode != "groups")];
+_tree tvSetValue [_favoritesRootPath, -1000];
 
 {
     private _displayPath = _x select 0;
     private _className = _x select 1;
-    private _originalPath = if (_className == "zen_compositions_composition") then {
+    private _originalPath = if (_mode == "groups") then {
         [_displayPath] call _findPathByDisplayPath
     } else {
         [[], _className] call _findPathByData
@@ -141,10 +141,6 @@ _tree tvSetValue [_favoritesRootPath, [999999, -1000] select (_mode != "groups")
             _displayPath
         ]] call zen_filter_main_fnc_log;
         continue;
-    };
-
-    if (_mode == "groups" && {_relativeDisplayPath isNotEqualTo []} && {_rootCount > 0} && {(_relativeDisplayPath select 0) == (_tree tvText [0])}) then {
-        _relativeDisplayPath deleteAt 0;
     };
 
     if (_mode == "units") then {
@@ -210,7 +206,7 @@ if (_favoritesParentPath isEqualTo []) then {
         private _rootText = _tree tvText _path;
         private _originalIndex = _originalRootOrder find _rootText;
         private _sortValue = if (_rootText == "Favorites") then {
-            [999999, -1000] select (_mode != "groups")
+            -1000
         } else {
             1000 + ([_newRootCount, _originalIndex] select (_originalIndex >= 0))
         };

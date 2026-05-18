@@ -35,6 +35,7 @@ class CfgFunctions {
 
             class applyfactionfavoriteorder {};
             class getactivecreatetree {};
+            class inspectemptygrouprow {};
             class inspectcreatetree {};
             class log {};
             class onzeusdisplayopened {};

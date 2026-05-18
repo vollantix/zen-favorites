@@ -75,6 +75,46 @@ setupPreview
 
 ## Proof Of Concept
 
+### Milestone 1: Inspect Original Rows
+
+Implemented as debug-only logging through `zen_filter_main_fnc_inspectemptygrouprow`.
+
+Set the ZEN Filter log level to `Debug`, select rows in Empty Groups, then export the filtered log.
+
+The inspector logs:
+
+- path
+- display path
+- row text
+- `tvData`
+- `tvValue`
+- child count
+- picture and right picture
+- tooltip
+- current `zen_compositions_selected` type/count
+- a sample of child rows for folders
+
+### Milestone 2: Save Favorite Metadata
+
+In progress. Empty Groups leaf rows get favorite stars, but clicking a star only stores/removes metadata.
+
+No Favorites category is rendered yet, and no placement behavior changes are made.
+
+Stored metadata shape:
+
+```sqf
+[
+    displayPath,
+    tvData,
+    favoriteId,
+    tvValue,
+    tvText,
+    tvPicture
+]
+```
+
+For now, `favoriteId` is the stringified display path. This is deliberately path-based because multiple composition rows can share generic `tvData`, especially `zen_compositions_composition`.
+
 First proof of concept should be intentionally narrow:
 
 1. In Empty Groups, star one normal built-in group row.
@@ -117,4 +157,3 @@ Expected behavior for missing content:
 ## Cleanup Notes
 
 There is still experimental composition-selection code in the current tree rendering path. Before implementing the proof of concept, review that code and either remove it or isolate it behind the new shortcut-based experiment.
-

@@ -4,10 +4,28 @@
 
 private _legacyEmptyFavorites = profileNamespace getVariable ["zen_filter_main_emptyFavorites", []];
 private _emptyUnitFavorites = profileNamespace getVariable ["zen_filter_main_emptyFavorites_units", _legacyEmptyFavorites];
-private _emptyGroupFavorites = profileNamespace getVariable ["zen_filter_main_emptyFavorites_groups", []];
+private _rawEmptyGroupFavorites = profileNamespace getVariable ["zen_filter_main_emptyFavorites_groups", []];
+private _emptyGroupFavorites = _rawEmptyGroupFavorites select {
+    (_x isEqualType []) &&
+    {count _x >= 6} &&
+    {(_x select 0) isEqualType []} &&
+    {(_x select 2) isEqualType ""} &&
+    {(_x select 2) == str (_x select 0)}
+};
 
 missionNamespace setVariable ["zen_filter_main_emptyFavorites_units", _emptyUnitFavorites];
 missionNamespace setVariable ["zen_filter_main_emptyFavorites_groups", _emptyGroupFavorites];
+
+if ((count _emptyGroupFavorites) != (count _rawEmptyGroupFavorites)) then {
+    profileNamespace setVariable ["zen_filter_main_emptyFavorites_groups", _emptyGroupFavorites];
+    saveProfileNamespace;
+
+    [ZEN_FILTER_LOG_LEVEL_INFO, format [
+        "normalized Empty Groups favorites removedLegacy=%1 kept=%2",
+        (count _rawEmptyGroupFavorites) - (count _emptyGroupFavorites),
+        count _emptyGroupFavorites
+    ]] call zen_filter_main_fnc_log;
+};
 
 [ZEN_FILTER_LOG_LEVEL_INFO, format [
     "loaded Empty favorites from profile units=%1 groups=%2",

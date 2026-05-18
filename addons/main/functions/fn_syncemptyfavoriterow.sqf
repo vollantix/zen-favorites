@@ -86,7 +86,7 @@ if (_favoritesIndex == -1) then {
     private _favoritesRootPath = +_favoritesParentPath;
     _favoritesRootPath pushBack _favoritesIndex;
 
-    _tree tvSetValue [_favoritesRootPath, [999999, -1000] select (_mode != "groups")];
+    _tree tvSetValue [_favoritesRootPath, -1000];
 
     if (_favoritesParentPath isEqualTo []) then {
         _tree tvSortByValue [[], true];
@@ -100,7 +100,7 @@ if (_favoritesIndex == -1) then {
 private _favoritesRootPath = +_favoritesParentPath;
 _favoritesRootPath pushBack _favoritesIndex;
 
-_tree tvSetValue [_favoritesRootPath, [999999, -1000] select (_mode != "groups")];
+_tree tvSetValue [_favoritesRootPath, -1000];
 
 private _parentPath = +_favoritesRootPath;
 private _pathToFavorite = [];

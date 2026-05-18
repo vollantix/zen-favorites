@@ -188,6 +188,9 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
         params ["_tree", "_path"];
 
         if ((ctrlIDC _tree) != 279) exitWith {};
+
+        [_tree, _path] call zen_filter_main_fnc_inspectemptygrouprow;
+
         if ((count _path) < 2) exitWith {};
 
         private _displayPath = [];
@@ -199,8 +202,8 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
         } forEach _path;
 
         if !("Favorites" in _displayPath) exitWith {};
+        if ((_tree tvCount _path) > 0) exitWith {};
 
-        private _className = _tree tvData _path;
         private _sourceDisplayPath = +_displayPath;
         private _favoritesIndex = _sourceDisplayPath find "Favorites";
 
@@ -208,40 +211,61 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
             _sourceDisplayPath deleteAt _favoritesIndex;
         };
 
-        private _isComposition = _className == "zen_compositions_composition";
-        private _composition = [];
+        private _findPathByDisplayPath = {
+            params ["_displayPath"];
 
-        if (_isComposition) then {
-            private _categoryPath = _path select [0, count _path - 1];
-            private _category = _tree tvText _categoryPath;
-            private _name = _tree tvText _path;
-            private _compositions = profileNamespace getVariable ["zen_compositions_data", createHashMap];
-            private _categoryHash = _compositions getOrDefault [_category, createHashMap];
+            private _parentPath = [];
+            private _result = [];
 
-            _composition = _categoryHash getOrDefault [_name, []];
+            {
+                private _segment = _x;
+                private _foundIndex = -1;
 
-            if (_composition isEqualTo [] && {"Favorites" in _displayPath}) then {
-                private _favoritesIndex = _displayPath find "Favorites";
-                private _sourceDisplayPath = +_displayPath;
+                for "_index" from 0 to ((_tree tvCount _parentPath) - 1) do {
+                    private _candidatePath = +_parentPath;
+                    _candidatePath pushBack _index;
 
-                _sourceDisplayPath deleteAt _favoritesIndex;
+                    if ((_tree tvText _candidatePath) == "Favorites") then {
+                        continue;
+                    };
 
-                if ((count _sourceDisplayPath) >= 3) then {
-                    _category = _sourceDisplayPath select -2;
-                    _name = _sourceDisplayPath select -1;
-                    _categoryHash = _compositions getOrDefault [_category, createHashMap];
-                    _composition = _categoryHash getOrDefault [_name, []];
+                    if ((_tree tvText _candidatePath) == _segment) exitWith {
+                        _foundIndex = _index;
+                    };
                 };
-            };
+
+                if (_foundIndex == -1) exitWith {
+                    _result = [];
+                };
+
+                _parentPath pushBack _foundIndex;
+                _result = +_parentPath;
+            } forEach _displayPath;
+
+            _result
         };
 
-        zen_compositions_selected = _composition;
+        private _originalPath = [_sourceDisplayPath] call _findPathByDisplayPath;
+
+        if (_originalPath isEqualTo []) exitWith {
+            [ZEN_FILTER_LOG_LEVEL_WARN, format [
+                "could not resolve Empty Groups favorite shortcut favoritePath=%1 sourceDisplayPath=%2",
+                _path,
+                _sourceDisplayPath
+            ]] call zen_filter_main_fnc_log;
+        };
+
+        for "_depth" from 1 to (count _originalPath) do {
+            _tree tvExpand (_originalPath select [0, _depth]);
+        };
+
+        _tree tvSetCurSel _originalPath;
 
         [ZEN_FILTER_LOG_LEVEL_INFO, format [
-            "updated ZEN composition selection from Empty favorite path=%1 isComposition=%2 dataCount=%3",
+            "selected original Empty Groups row from favorite shortcut favoritePath=%1 originalPath=%2 sourceDisplayPath=%3",
             _path,
-            _isComposition,
-            count _composition
+            _originalPath,
+            _sourceDisplayPath
         ]] call zen_filter_main_fnc_log;
     }];
 
@@ -253,14 +277,72 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
 
 if (_side == "empty") exitWith {
     if (_mode == "groups") exitWith {
-        for "_index" from ((_tree tvCount []) - 1) to 0 step -1 do {
-            if ((_tree tvText [_index]) == "Favorites") then {
-                _tree tvDelete [_index];
+        private _emptyStoreKey = format ["zen_filter_main_emptyFavorites_%1", _mode];
+        private _emptyFavorites = (missionNamespace getVariable [_emptyStoreKey, []]) select {
+            (_x isEqualType []) &&
+            {count _x >= 3} &&
+            {(_x select 2) isEqualType ""}
+        };
+        private _rootCount = _tree tvCount [];
+        private _renderSignature = str [
+            _idc,
+            _mode,
+            _searchText,
+            _rootCount,
+            _emptyFavorites
+        ];
+
+        if ((_tree getVariable ["zen_filter_main_lastEmptyGroupsRenderSignature", ""]) == _renderSignature) exitWith {};
+
+        _tree setVariable ["zen_filter_main_lastEmptyGroupsRenderSignature", _renderSignature];
+
+        if (_searchText == "") then {
+            [_tree, _mode] call zen_filter_main_fnc_renderemptyfavoritescategory;
+        } else {
+            for "_index" from ((_tree tvCount []) - 1) to 0 step -1 do {
+                if ((_tree tvText [_index]) == "Favorites") then {
+                    _tree tvDelete [_index];
+                };
+            };
+
+            _tree setVariable ["zen_filter_main_emptyFavoritesSignature", ""];
+        };
+
+        private _emptyFavoriteIds = _emptyFavorites apply {_x select 2};
+        private _renderEmptyGroupPath = {
+            params ["_path"];
+
+            private _childCount = _tree tvCount _path;
+
+            if (_childCount == 0) then {
+                private _displayPath = [];
+                private _ancestorPath = [];
+
+                {
+                    _ancestorPath pushBack _x;
+                    _displayPath pushBack (_tree tvText _ancestorPath);
+                } forEach _path;
+
+                private _favoriteId = str _displayPath;
+                private _color = [_normalColor, _favoriteColor] select (_favoriteId in _emptyFavoriteIds);
+
+                _tree tvSetPictureRight [_path, ZEN_FILTER_STAR_TEXTURE];
+                _tree tvSetPictureRightColor [_path, _color];
+                _tree tvSetPictureRightColorSelected [_path, _color];
+            } else {
+                for "_index" from 0 to (_childCount - 1) do {
+                    private _childPath = +_path;
+                    _childPath pushBack _index;
+                    [_childPath] call _renderEmptyGroupPath;
+                };
             };
         };
 
-        _tree setVariable ["zen_filter_main_emptyFavoritesSignature", ""];
-        _tree setVariable ["zen_filter_main_lastEmptyRenderSignature", ""];
+        for "_index" from 0 to (_rootCount - 1) do {
+            if ((_tree tvText [_index]) != "Favorites") then {
+                [[_index]] call _renderEmptyGroupPath;
+            };
+        };
     };
 
     private _emptyStoreKey = format ["zen_filter_main_emptyFavorites_%1", _mode];
