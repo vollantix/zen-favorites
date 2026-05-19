@@ -76,6 +76,14 @@ While the addon is in early development, important behavior should be visible in
 
 Debug logging should be useful but not noisy. Temporary inspection logs are acceptable during development, but stable feature code should keep logs focused on meaningful lifecycle and data events.
 
+## Stability Backlog
+
+Before treating Empty favorites as stable release behavior:
+
+- Empty Units favorite preview state should track the expected placed class, not just a global active boolean.
+- Right-click camera dragging should not cancel an active Empty Units favorite preview. Preview cancel behavior needs to distinguish an intentional cancel from normal Zeus camera movement.
+- Shared tree helpers should be extracted for display path building, path lookup, and Favorites branch rendering before adding more Empty Groups behavior.
+
 ## Non-Goals For The First Feature Pass
 
 The first feature pass will not implement:

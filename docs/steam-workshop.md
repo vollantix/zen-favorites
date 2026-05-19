@@ -68,7 +68,7 @@ Options > Addon Options > ZEN Filter
 
 - Very fast double-clicks on faction stars may toggle the same faction twice instead of toggling two different factions.
 - Empty Groups and composition favorites are still experimental and may use temporary shortcut behavior while placement behavior is investigated.
-- Empty Units favorite previews can be rotated with Shift, but placed objects may lose that preview rotation when placed.
+- Right-click camera dragging while an Empty Units favorite preview is active may cancel the preview.
 - Favorites are client-side. They are not synced between players or stored on the server.
 - Faction favorites only last for the current mission/session.
 

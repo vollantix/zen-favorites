@@ -46,43 +46,24 @@ zen_filter_main_clearEmptyFavorites = false;
 
         if !(missionNamespace getVariable ["zen_filter_main_emptyFavoritePreviewActive", false]) exitWith {};
 
-        private _previewType = "<nil>";
-        private _typeMatches = false;
-        private _helperNull = true;
-        private _helperDir = -1;
-        private _helperVectorDir = [];
-        private _helperVectorUp = [];
+        private _expectedType = missionNamespace getVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
 
-        if !(isNil "zen_placement_object") then {
-            if !(isNull zen_placement_object) then {
-                _previewType = typeOf zen_placement_object;
-                _typeMatches = typeOf _object == _previewType;
-            };
+        if (_expectedType == "" || {typeOf _object != _expectedType}) exitWith {
+            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+
+            [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+                "ignored non-favorite placement while favorite preview state was active placedType=%1 expectedType=%2",
+                typeOf _object,
+                _expectedType
+            ]] call zen_filter_main_fnc_log;
         };
+
+        private _helperNull = true;
 
         if !(isNil "zen_placement_helper") then {
             _helperNull = isNull zen_placement_helper;
-
-            if (!_helperNull) then {
-                _helperDir = getDir zen_placement_helper;
-                _helperVectorDir = vectorDir zen_placement_helper;
-                _helperVectorUp = vectorUp zen_placement_helper;
-            };
         };
-
-        [ZEN_FILTER_LOG_LEVEL_INFO, format [
-            "Empty favorite object placed pre-cleanup placedType=%1 placedDir=%2 previewType=%3 typeMatches=%4 helperNull=%5 helperDir=%6 helperVectorDir=%7 helperVectorUp=%8 objectVectorDir=%9 objectVectorUp=%10",
-            typeOf _object,
-            getDir _object,
-            _previewType,
-            _typeMatches,
-            _helperNull,
-            _helperDir,
-            _helperVectorDir,
-            _helperVectorUp,
-            vectorDir _object,
-            vectorUp _object
-        ]] call zen_filter_main_fnc_log;
 
         private _helperPosition = if (!_helperNull) then {getPosASL zen_placement_helper} else {getPosASL _object};
         private _helperDirAndUp = if (!_helperNull) then {
@@ -100,32 +81,16 @@ zen_filter_main_clearEmptyFavorites = false;
                 _object setVelocity [0, 0, 0];
             };
 
-            private _previewType = "<nil>";
-            private _helperNull = true;
-
-            if !(isNil "zen_placement_object") then {
-                if !(isNull zen_placement_object) then {
-                    _previewType = typeOf zen_placement_object;
-                };
-            };
-
-            if !(isNil "zen_placement_helper") then {
-                _helperNull = isNull zen_placement_helper;
-            };
-
-            [ZEN_FILTER_LOG_LEVEL_INFO, format [
-                "Empty favorite object placed next-frame applied transform placedType=%1 placedDir=%2 placedVectorDir=%3 placedVectorUp=%4 previewType=%5 helperNull=%6",
+            [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+                "applied Empty favorite placement transform placedType=%1 placedDir=%2",
                 typeOf _object,
-                getDir _object,
-                vectorDir _object,
-                vectorUp _object,
-                _previewType,
-                _helperNull
+                getDir _object
             ]] call zen_filter_main_fnc_log;
 
             [{
                 [] call zen_placement_fnc_setupPreview;
                 missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+                missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
 
                 [ZEN_FILTER_LOG_LEVEL_INFO, "cleared Empty favorite placement preview after object placement"] call zen_filter_main_fnc_log;
             }, []] call CBA_fnc_execNextFrame;

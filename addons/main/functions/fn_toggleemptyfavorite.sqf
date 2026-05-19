@@ -113,6 +113,7 @@ if (_existingIndex == -1) then {
     if (_mode == "units") then {
         [] call zen_placement_fnc_setupPreview;
         missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+        missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
     };
 
     [ZEN_FILTER_LOG_LEVEL_INFO, format [

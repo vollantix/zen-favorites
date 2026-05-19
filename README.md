@@ -106,4 +106,5 @@ Turn it on to clear saved favorites. It resets itself after clearing.
 
 - Favorite star clicks use a short delayed selection read to keep faction row paths reliable. Very fast double-clicks may toggle the same faction twice instead of toggling two different factions.
 - Empty Groups favorites currently use a temporary shortcut behavior while placement behavior is investigated.
-- Empty Units favorite previews can be rotated with Shift, but placed objects may lose that preview rotation when placed.
+- Right-click camera dragging while an Empty Units favorite preview is active currently cancels the preview. Normal ZEN placement bubbles do not behave this way, so this interaction needs a safer cancel gesture or drag detection.
+- Empty Units favorite preview state should be narrowed to the expected placed class so it cannot accidentally affect a later normal tree placement.

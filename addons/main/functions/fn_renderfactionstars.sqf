@@ -8,6 +8,11 @@ _activeTree params ["_tree", "_idc", "_mode", "_side"];
 if (isNull _tree) exitWith {};
 if !(_mode in ["units", "groups"]) exitWith {};
 
+if !(_mode == "units" && {_side == "empty"}) then {
+    missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+    missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+};
+
 private _favoriteColor = [1, 0.82, 0.25, 1];
 private _normalColor = [1, 1, 1, 0.35];
 private _searchText = ctrlText (_display displayCtrl 283);
@@ -32,6 +37,7 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
                 _tree setVariable ["zen_filter_main_previewSuppressedPath", _hoverPath];
                 [] call zen_placement_fnc_setupPreview;
                 missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+                missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
 
                 [ZEN_FILTER_LOG_LEVEL_INFO, "cleared Empty favorite placement preview from right click"] call zen_filter_main_fnc_log;
             };
@@ -137,16 +143,21 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
 
         if ((ctrlIDC _tree) != 274) exitWith {};
         if ((count _path) < 2) exitWith {};
-        if ((_tree tvText [_path select 0]) != "Favorites") exitWith {};
+        if ((_tree tvText [_path select 0]) != "Favorites") exitWith {
+            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+        };
 
         if ((_tree getVariable ["zen_filter_main_previewSuppressedPath", []]) isEqualTo _path) exitWith {
             [] call zen_placement_fnc_setupPreview;
             missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
         };
 
         if ((_tree tvCount _path) > 0) exitWith {
             [] call zen_placement_fnc_setupPreview;
             missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
 
             [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
                 "ignored Empty favorite folder selection path=%1 text=%2",
@@ -165,6 +176,7 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
         if (_objectType == "") exitWith {
             [] call zen_placement_fnc_setupPreview;
             missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
 
             [ZEN_FILTER_LOG_LEVEL_WARN, format [
                 "ignored Empty favorite leaf with invalid CfgVehicles class path=%1 class=%2",
@@ -175,39 +187,13 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
 
         [_objectType] call zen_placement_fnc_setupPreview;
         missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", _objectType != ""];
+        missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", _objectType];
 
-        private _previewType = "<nil>";
-        private _helperNull = true;
-        private _helperDir = -1;
-        private _helperVectorDir = [];
-        private _helperVectorUp = [];
-
-        if !(isNil "zen_placement_object") then {
-            if !(isNull zen_placement_object) then {
-                _previewType = typeOf zen_placement_object;
-            };
-        };
-
-        if !(isNil "zen_placement_helper") then {
-            _helperNull = isNull zen_placement_helper;
-
-            if (!_helperNull) then {
-                _helperDir = getDir zen_placement_helper;
-                _helperVectorDir = vectorDir zen_placement_helper;
-                _helperVectorUp = vectorUp zen_placement_helper;
-            };
-        };
-
-        [ZEN_FILTER_LOG_LEVEL_INFO, format [
-            "updated ZEN placement preview from Empty favorite path=%1 class=%2 objectType=%3 previewType=%4 helperNull=%5 helperDir=%6 helperVectorDir=%7 helperVectorUp=%8",
+        [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+            "updated ZEN placement preview from Empty favorite path=%1 class=%2 objectType=%3",
             _path,
             _className,
-            _objectType,
-            _previewType,
-            _helperNull,
-            _helperDir,
-            _helperVectorDir,
-            _helperVectorUp
+            _objectType
         ]] call zen_filter_main_fnc_log;
     }];
 
