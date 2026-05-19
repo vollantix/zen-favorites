@@ -1,6 +1,6 @@
-# ZEN Filter Feature Description
+# ZEN Favorites Feature Description
 
-ZEN Filter is a lightweight Zeus Enhanced addon focused on making the Zeus Create window faster to navigate during live missions.
+ZEN Favorites is a lightweight Zeus Enhanced addon focused on making the Zeus Create window faster to navigate during live missions.
 
 The addon will provide two favorite systems:
 
@@ -43,7 +43,7 @@ The first version will not support favoriting units, subgroups, vehicles, or ind
 
 The Empty side has different behavior from the normal faction sides.
 
-When Empty Units is selected in the Zeus Create window, ZEN Filter should add a new top-level category named `Favorites` at the very top of the Empty tree.
+When Empty Units is selected in the Zeus Create window, ZEN Favorites should add a new top-level category named `Favorites` at the very top of the Empty tree.
 
 The user should be able to favorite Empty-side Units placeable content, including:
 
@@ -64,7 +64,7 @@ Example:
 
 Empty favorites should persist on the client side. The intent is that whenever a user launches Arma, loads Zeus, and has this mod enabled, their Empty favorites are available again.
 
-If a saved favorite no longer exists because a required mod is missing or the class was removed, ZEN Filter should silently skip that favorite and write a debug log line. Missing favorites should not show an error popup to the Zeus user.
+If a saved favorite no longer exists because a required mod is missing or the class was removed, ZEN Favorites should silently skip that favorite and write a debug log line. Missing favorites should not show an error popup to the Zeus user.
 
 Empty Groups and compositions currently use a cautious shortcut implementation. ZEN/ZEN composition placement uses different runtime state than single Empty objects, so generated favorite rows select the matching original ZEN row while the final placement approach is investigated.
 
@@ -72,7 +72,7 @@ See `docs/empty-groups-plan.md` for the planned Empty Groups implementation appr
 
 ## Debugging Expectations
 
-While the addon is in early development, important behavior should be visible in the Arma RPT through `[ZEN Filter]` log lines.
+While the addon is in early development, important behavior should be visible in the Arma RPT through `[ZEN Favorites]` log lines.
 
 Debug logging should be useful but not noisy. Temporary inspection logs are acceptable during development, but stable feature code should keep logs focused on meaningful lifecycle and data events.
 

@@ -78,7 +78,7 @@ _tree tvSetValue [_favoritesRootPath, -1000];
 
 private _parentPath = +_favoritesRootPath;
 private _pathToFavorite = [];
-private _originalPath = [_tree, [], _className] call zen_filter_main_fnc_findtreepathbydata;
+private _originalPath = [_tree, [], _className] call zen_favorites_main_fnc_findtreepathbydata;
 private _originalSortValue = if (_originalPath isEqualTo []) then {0} else {[_originalPath] call _getOriginalSortValue};
 
 {
@@ -129,7 +129,7 @@ if (_originalPath isNotEqualTo []) then {
     _tree tvSetPicture [_pathToFavorite, _tree tvPicture _originalPath];
 };
 
-_tree tvSetPictureRight [_pathToFavorite, ZEN_FILTER_STAR_TEXTURE];
+_tree tvSetPictureRight [_pathToFavorite, ZEN_FAVORITES_STAR_TEXTURE];
 _tree tvSetPictureRightColor [_pathToFavorite, [1, 0.82, 0.25, 1]];
 _tree tvSetPictureRightColorSelected [_pathToFavorite, [1, 0.82, 0.25, 1]];
 

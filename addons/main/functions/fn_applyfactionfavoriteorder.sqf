@@ -2,7 +2,7 @@
 
 params ["_display", ["_force", false]];
 
-private _activeTree = [_display] call zen_filter_main_fnc_getactivecreatetree;
+private _activeTree = [_display] call zen_favorites_main_fnc_getactivecreatetree;
 _activeTree params ["_tree", "_idc", "_mode", "_side"];
 
 if (isNull _tree) exitWith {};
@@ -10,13 +10,13 @@ if !(_mode in ["units", "groups"]) exitWith {};
 if (_side == "empty") exitWith {};
 
 private _favoriteKey = format ["%1:%2", _mode, _side];
-private _favoriteStore = missionNamespace getVariable ["zen_filter_main_factionFavorites", createHashMap];
+private _favoriteStore = missionNamespace getVariable ["zen_favorites_main_factionFavorites", createHashMap];
 private _favorites = _favoriteStore getOrDefault [_favoriteKey, []];
-private _originalOrderStore = missionNamespace getVariable ["zen_filter_main_factionOriginalOrders", createHashMap];
+private _originalOrderStore = missionNamespace getVariable ["zen_favorites_main_factionOriginalOrders", createHashMap];
 private _originalOrder = _originalOrderStore getOrDefault [_favoriteKey, []];
 private _signature = str [_favoriteKey, _favorites];
 
-if (!_force && {_tree getVariable ["zen_filter_main_lastFavoriteOrderSignature", ""] == _signature}) exitWith {};
+if (!_force && {_tree getVariable ["zen_favorites_main_lastFavoriteOrderSignature", ""] == _signature}) exitWith {};
 
 private _orderAfterSort = [];
 
@@ -29,7 +29,7 @@ if (_mode == "units") then {
         };
 
         _originalOrderStore set [_favoriteKey, _originalOrder];
-        missionNamespace setVariable ["zen_filter_main_factionOriginalOrders", _originalOrderStore];
+        missionNamespace setVariable ["zen_favorites_main_factionOriginalOrders", _originalOrderStore];
     };
 
     for "_index" from 0 to (_rootCount - 1) do {
@@ -65,7 +65,7 @@ if (_mode == "groups") then {
         };
 
         _originalOrderStore set [_favoriteKey, _originalOrder];
-        missionNamespace setVariable ["zen_filter_main_factionOriginalOrders", _originalOrderStore];
+        missionNamespace setVariable ["zen_favorites_main_factionOriginalOrders", _originalOrderStore];
     };
 
     for "_index" from 0 to (_factionCount - 1) do {
@@ -92,12 +92,12 @@ if (_mode == "groups") then {
     };
 };
 
-[ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+[ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
     "applied favorite order key=%1 favorites=%2 originalOrder=%3 orderAfterSort=%4",
     _favoriteKey,
     _favorites,
     _originalOrder,
     _orderAfterSort
-]] call zen_filter_main_fnc_log;
+]] call zen_favorites_main_fnc_log;
 
-_tree setVariable ["zen_filter_main_lastFavoriteOrderSignature", _signature];
+_tree setVariable ["zen_favorites_main_lastFavoriteOrderSignature", _signature];

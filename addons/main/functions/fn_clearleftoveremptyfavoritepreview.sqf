@@ -12,10 +12,10 @@ if (typeOf zen_placement_object != _expectedType) exitWith {false};
 
 [] call zen_placement_fnc_setupPreview;
 
-[ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+[ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
     "cleared leftover Empty favorite preview expectedType=%1 reason=%2",
     _expectedType,
     _reason
-]] call zen_filter_main_fnc_log;
+]] call zen_favorites_main_fnc_log;
 
 true

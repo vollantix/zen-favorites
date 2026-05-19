@@ -2,8 +2,8 @@
 
 params ["_tree", "_path"];
 
-if ((missionNamespace getVariable ["zen_filter_main_logLevel", ZEN_FILTER_LOG_LEVEL_INFO]) < ZEN_FILTER_LOG_LEVEL_DEBUG) exitWith {};
-if ((ctrlIDC _tree) != ZEN_FILTER_IDC_CREATE_GROUPS_EMPTY) exitWith {};
+if ((missionNamespace getVariable ["zen_favorites_main_logLevel", ZEN_FAVORITES_LOG_LEVEL_INFO]) < ZEN_FAVORITES_LOG_LEVEL_DEBUG) exitWith {};
+if ((ctrlIDC _tree) != ZEN_FAVORITES_IDC_CREATE_GROUPS_EMPTY) exitWith {};
 if (_path isEqualTo []) exitWith {};
 
 private _displayPath = [];
@@ -32,7 +32,7 @@ if !(isNil "zen_compositions_selected") then {
     };
 };
 
-[ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+[ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
     "Empty Groups row selected path=%1 displayPath=%2 text=%3 data=%4 value=%5 children=%6 picture=%7 pictureRight=%8 tooltip=%9 selectedCompositionType=%10 selectedCompositionCount=%11",
     _path,
     _displayPath,
@@ -45,7 +45,7 @@ if !(isNil "zen_compositions_selected") then {
     _tooltip,
     _selectedCompositionType,
     _selectedCompositionCount
-]] call zen_filter_main_fnc_log;
+]] call zen_favorites_main_fnc_log;
 
 [
     {
@@ -62,7 +62,7 @@ if !(isNil "zen_compositions_selected") then {
             };
         };
 
-        [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+        [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
             "Empty Groups row next-frame composition state path=%1 displayPath=%2 text=%3 data=%4 selectedCompositionType=%5 selectedCompositionCount=%6",
             _path,
             _displayPath,
@@ -70,7 +70,7 @@ if !(isNil "zen_compositions_selected") then {
             _data,
             _selectedCompositionType,
             _selectedCompositionCount
-        ]] call zen_filter_main_fnc_log;
+        ]] call zen_favorites_main_fnc_log;
     },
     [_path, _displayPath, _text, _data]
 ] call CBA_fnc_execNextFrame;
@@ -91,9 +91,9 @@ if (_childCount > 0) then {
         ];
     };
 
-    [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+    [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
         "Empty Groups row child sample path=%1 children=%2",
         _path,
         _sampleChildren
-    ]] call zen_filter_main_fnc_log;
+    ]] call zen_favorites_main_fnc_log;
 };

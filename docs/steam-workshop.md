@@ -1,6 +1,6 @@
-# ZEN Filter Steam Workshop Description
+# ZEN Favorites Steam Workshop Description
 
-ZEN Filter is a lightweight Zeus Enhanced addon that makes the Zeus Create menu faster to use during live missions.
+ZEN Favorites is a lightweight Zeus Enhanced addon that makes the Zeus Create menu faster to use during live missions.
 
 The addon adds favorite controls directly into the ZEN Create tree so Zeus users can keep commonly used factions and Empty objects close at hand without removing them from their normal categories.
 
@@ -15,7 +15,7 @@ This mod is built with help from AI-assisted development.
 
 ### Faction Favorites
 
-ZEN Filter adds a star button to top-level faction rows in the Create menu.
+ZEN Favorites adds a star button to top-level faction rows in the Create menu.
 
 Supported sides:
 
@@ -32,7 +32,7 @@ Faction favorites are mission-local and are not saved after restarting Arma.
 
 ### Empty Units Favorites
 
-ZEN Filter adds a `Favorites` category at the top of the Empty Units tree.
+ZEN Favorites adds a `Favorites` category at the top of the Empty Units tree.
 
 Supported favorite types:
 
@@ -43,11 +43,11 @@ Supported favorite types:
 
 Favorited Empty Units entries stay in their original category and are also shown under `Favorites`. The Favorites category preserves a compact version of the original tree path so favorites remain easy to recognize.
 
-When selecting Empty Units favorites from the generated Favorites category, ZEN Filter uses the ZEN Placement component (`zen_placement`) to show the advanced object placement preview.
+When selecting Empty Units favorites from the generated Favorites category, ZEN Favorites uses the ZEN Placement component (`zen_placement`) to show the advanced object placement preview.
 
 Empty Units favorites are saved client-side in the Arma profile and are available the next time the same player uses Zeus with the mod loaded.
 
-If a saved favorite is missing because a mod was removed or a class no longer exists, ZEN Filter skips it silently and writes a debug log line.
+If a saved favorite is missing because a mod was removed or a class no longer exists, ZEN Favorites skips it silently and writes a debug log line.
 
 ## Controls
 
@@ -59,10 +59,10 @@ If a saved favorite is missing because a mod was removed or a class no longer ex
 
 ## Settings
 
-ZEN Filter settings are available in:
+ZEN Favorites settings are available in:
 
 ```text
-Options > Addon Options > ZEN Filter
+Options > Addon Options > ZEN Favorites
 ```
 
 - `Debugging > Log level`: controls RPT logging verbosity.
@@ -77,10 +77,10 @@ Options > Addon Options > ZEN Filter
 
 ## Debugging And Maintenance
 
-ZEN Filter writes diagnostic lines to the normal Arma RPT with this prefix:
+ZEN Favorites writes diagnostic lines to the normal Arma RPT with this prefix:
 
 ```text
-[ZEN Filter]
+[ZEN Favorites]
 ```
 
 On Windows, Arma normally writes RPT files under:
@@ -94,33 +94,33 @@ The exact filename changes per launch, for example `Arma3_x64_YYYY-MM-DD_HH-MM-S
 Empty Unit favorites are stored in the Arma profile. You can view or export them from the Arma debug console:
 
 ```sqf
-copyToClipboard str (profileNamespace getVariable ["zen_filter_main_emptyFavorites_units", []]);
+copyToClipboard str (profileNamespace getVariable ["zen_favorites_main_emptyFavorites_units", []]);
 ```
 
 Restore saved Empty Unit favorites from a copied value:
 
 ```sqf
-profileNamespace setVariable ["zen_filter_main_emptyFavorites_units", PASTE_ARRAY_HERE];
+profileNamespace setVariable ["zen_favorites_main_emptyFavorites_units", PASTE_ARRAY_HERE];
 saveProfileNamespace;
 ```
 
-Saved favorites may reference classes from mods that are not currently loaded. ZEN Filter skips unavailable favorites and keeps the rest working.
+Saved favorites may reference classes from mods that are not currently loaded. ZEN Favorites skips unavailable favorites and keeps the rest working.
 
 Runtime log levels can be changed from the Arma debug console:
 
 ```sqf
-zen_filter_main_logLevel = 0; // ERROR
-zen_filter_main_logLevel = 1; // WARN
-zen_filter_main_logLevel = 2; // INFO, default
-zen_filter_main_logLevel = 3; // DEBUG
-zen_filter_main_logLevel = 4; // TRACE
+zen_favorites_main_logLevel = 0; // ERROR
+zen_favorites_main_logLevel = 1; // WARN
+zen_favorites_main_logLevel = 2; // INFO, default
+zen_favorites_main_logLevel = 3; // DEBUG
+zen_favorites_main_logLevel = 4; // TRACE
 ```
 
 Clear saved Empty favorites from the Arma debug console:
 
 ```sqf
-profileNamespace setVariable ["zen_filter_main_emptyFavorites_units", []];
-profileNamespace setVariable ["zen_filter_main_emptyFavorites_groups", []];
+profileNamespace setVariable ["zen_favorites_main_emptyFavorites_units", []];
+profileNamespace setVariable ["zen_favorites_main_emptyFavorites_groups", []];
 saveProfileNamespace;
 ```
 

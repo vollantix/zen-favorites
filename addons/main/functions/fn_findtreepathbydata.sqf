@@ -21,7 +21,7 @@ for "_index" from 0 to ((_tree tvCount _parentPath) - 1) do {
         _result = _childPath;
     };
 
-    private _nestedResult = [_tree, _childPath, _data, _skipText] call zen_filter_main_fnc_findtreepathbydata;
+    private _nestedResult = [_tree, _childPath, _data, _skipText] call zen_favorites_main_fnc_findtreepathbydata;
 
     if (_nestedResult isNotEqualTo []) exitWith {
         _result = _nestedResult;

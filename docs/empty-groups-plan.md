@@ -111,9 +111,9 @@ setupPreview
 
 ### Milestone 1: Inspect Original Rows
 
-Implemented as debug-only logging through `zen_filter_main_fnc_inspectemptygrouprow`.
+Implemented as debug-only logging through `zen_favorites_main_fnc_inspectemptygrouprow`.
 
-Set the ZEN Filter log level to `Debug`, select rows in Empty Groups, then export the filtered log.
+Set the ZEN Favorites log level to `Debug`, select rows in Empty Groups, then export the filtered log.
 
 The inspector logs:
 

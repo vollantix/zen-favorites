@@ -10,11 +10,11 @@ if ($null -eq $latestRpt) {
 }
 
 $outputDirectory = Join-Path (Get-Location) "logs"
-$outputPath = Join-Path $outputDirectory "zen_filter_latest.log"
+$outputPath = Join-Path $outputDirectory "zen_favorites_latest.log"
 
 New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
 
-Select-String -Path $latestRpt.FullName -Pattern "\[ZEN Filter\]" |
+Select-String -Path $latestRpt.FullName -Pattern "\[ZEN Favorites\]" |
     ForEach-Object { $_.Line } |
     Set-Content -Path $outputPath
 

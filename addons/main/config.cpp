@@ -1,6 +1,6 @@
 class CfgPatches {
-    class zen_filter_main {
-        name = "ZEN Filter";
+    class zen_favorites_main {
+        name = "ZEN Favorites";
         author = "vollantix";
         requiredVersion = 2.18;
         requiredAddons[] = {
@@ -17,21 +17,21 @@ class CfgPatches {
 };
 
 class Extended_PreInit_EventHandlers {
-    class zen_filter_main {
-        init = "call compile preprocessFileLineNumbers 'z\zen_filter\addons\main\XEH_preInit.sqf'";
+    class zen_favorites_main {
+        init = "call compile preprocessFileLineNumbers 'z\zen_favorites\addons\main\XEH_preInit.sqf'";
     };
 };
 
 class Extended_PostInit_EventHandlers {
-    class zen_filter_main {
-        init = "call compile preprocessFileLineNumbers 'z\zen_filter\addons\main\XEH_postInit.sqf'";
+    class zen_favorites_main {
+        init = "call compile preprocessFileLineNumbers 'z\zen_favorites\addons\main\XEH_postInit.sqf'";
     };
 };
 
 class CfgFunctions {
-    class zen_filter_main {
+    class zen_favorites_main {
         class main {
-            file = "z\zen_filter\addons\main\functions";
+            file = "z\zen_favorites\addons\main\functions";
 
             class applyfactionfavoriteorder {};
             class clearemptyfavoritepreview {};

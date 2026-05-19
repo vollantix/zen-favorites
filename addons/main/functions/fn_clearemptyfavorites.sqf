@@ -1,14 +1,14 @@
 #include "..\script_component.hpp"
 
-profileNamespace setVariable ["zen_filter_main_emptyFavorites_units", []];
+profileNamespace setVariable ["zen_favorites_main_emptyFavorites_units", []];
 saveProfileNamespace;
 
-missionNamespace setVariable ["zen_filter_main_emptyFavorites_units", []];
+missionNamespace setVariable ["zen_favorites_main_emptyFavorites_units", []];
 
 private _display = findDisplay 312;
 
 if (!isNull _display) then {
-    private _activeTree = [_display] call zen_filter_main_fnc_getactivecreatetree;
+    private _activeTree = [_display] call zen_favorites_main_fnc_getactivecreatetree;
     _activeTree params ["_tree", "_idc", "_mode", "_side"];
 
     if (!isNull _tree && {_side == "empty"} && {_mode == "units"}) then {
@@ -18,11 +18,11 @@ if (!isNull _display) then {
             };
         };
 
-        _tree setVariable ["zen_filter_main_lastEmptyRenderSignature", ""];
-        _tree setVariable ["zen_filter_main_emptyFavoritesSignature", ""];
+        _tree setVariable ["zen_favorites_main_lastEmptyRenderSignature", ""];
+        _tree setVariable ["zen_favorites_main_emptyFavoritesSignature", ""];
     };
 };
 
-hint "ZEN Filter: Empty Unit favorites cleared";
+hint "ZEN Favorites: Empty Unit favorites cleared";
 
-[ZEN_FILTER_LOG_LEVEL_INFO, "cleared Empty Unit favorites from profile"] call zen_filter_main_fnc_log;
+[ZEN_FAVORITES_LOG_LEVEL_INFO, "cleared Empty Unit favorites from profile"] call zen_favorites_main_fnc_log;
