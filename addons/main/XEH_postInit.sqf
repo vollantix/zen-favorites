@@ -48,6 +48,13 @@ zen_filter_main_clearEmptyFavorites = false;
 
         private _expectedType = missionNamespace getVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
 
+        [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+            "favorite preview placement event placedType=%1 expectedType=%2 active=%3",
+            typeOf _object,
+            _expectedType,
+            missionNamespace getVariable ["zen_filter_main_emptyFavoritePreviewActive", false]
+        ]] call zen_filter_main_fnc_log;
+
         if (_expectedType == "" || {typeOf _object != _expectedType}) exitWith {
             missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
             missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
@@ -92,7 +99,7 @@ zen_filter_main_clearEmptyFavorites = false;
                 missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
                 missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
 
-                [ZEN_FILTER_LOG_LEVEL_INFO, "cleared Empty favorite placement preview after object placement"] call zen_filter_main_fnc_log;
+                [ZEN_FILTER_LOG_LEVEL_DEBUG, "cleared Empty favorite placement preview after object placement"] call zen_filter_main_fnc_log;
             }, []] call CBA_fnc_execNextFrame;
         }, [_object, _helperPosition, _helperDirAndUp]] call CBA_fnc_execNextFrame;
     }];

@@ -16,7 +16,7 @@ if !(_display getVariable ["zen_filter_main_displayMouseHandlerAdded", false]) t
 
         if (_button != 1) exitWith {};
 
-        _display setVariable ["zen_filter_main_rightMouseDown", [_xPos, _yPos, diag_tickTime]];
+        _display setVariable ["zen_filter_main_rightMouseDown", [_xPos, _yPos]];
     }];
 
     _display displayAddEventHandler ["MouseButtonUp", {
@@ -29,16 +29,14 @@ if !(_display getVariable ["zen_filter_main_displayMouseHandlerAdded", false]) t
 
         if (_mouseDown isEqualTo []) exitWith {};
 
-        _mouseDown params ["_downX", "_downY", "_downTime"];
+        _mouseDown params ["_downX", "_downY"];
 
         private _dragDistance = sqrt (((_xPos - _downX) ^ 2) + ((_yPos - _downY) ^ 2));
-        private _heldTime = diag_tickTime - _downTime;
 
-        if (_dragDistance > 0.01 || {_heldTime > 0.35}) exitWith {
+        if (_dragDistance > 0.01) exitWith {
             [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
-                "ignored right-click preview cancel because it looked like camera drag distance=%1 held=%2",
-                _dragDistance,
-                _heldTime
+                "ignored right-click preview cancel because it looked like camera drag distance=%1",
+                _dragDistance
             ]] call zen_filter_main_fnc_log;
         };
 
@@ -46,7 +44,10 @@ if !(_display getVariable ["zen_filter_main_displayMouseHandlerAdded", false]) t
         missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
         missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
 
-        [ZEN_FILTER_LOG_LEVEL_INFO, "cleared Empty favorite placement preview from display right click"] call zen_filter_main_fnc_log;
+        [ZEN_FILTER_LOG_LEVEL_INFO, format [
+            "cleared Empty favorite placement preview from display right click distance=%1",
+            _dragDistance
+        ]] call zen_filter_main_fnc_log;
     }];
 };
 

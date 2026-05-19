@@ -143,9 +143,39 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
 
         if ((ctrlIDC _tree) != 274) exitWith {};
         if ((count _path) < 2) exitWith {};
+
         if ((_tree tvText [_path select 0]) != "Favorites") exitWith {
+            private _activeBefore = missionNamespace getVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
+            private _expectedType = missionNamespace getVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+
+            [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+                "leaving Empty favorite selection path=%1 text=%2 data=%3 activeBefore=%4 expectedType=%5",
+                _path,
+                _tree tvText _path,
+                _tree tvData _path,
+                _activeBefore,
+                _expectedType
+            ]] call zen_filter_main_fnc_log;
+
             missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
             missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+
+            if (_activeBefore && {_expectedType != ""}) then {
+                [{
+                    params ["_expectedType"];
+
+                    if (isNil "zen_placement_object") exitWith {};
+                    if (isNull zen_placement_object) exitWith {};
+                    if (typeOf zen_placement_object != _expectedType) exitWith {};
+
+                    [] call zen_placement_fnc_setupPreview;
+
+                    [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+                        "cleared leftover Empty favorite preview after normal tree selection expectedType=%1",
+                        _expectedType
+                    ]] call zen_filter_main_fnc_log;
+                }, _expectedType] call CBA_fnc_execNextFrame;
+            };
         };
 
         if ((_tree getVariable ["zen_filter_main_previewSuppressedPath", []]) isEqualTo _path) exitWith {
