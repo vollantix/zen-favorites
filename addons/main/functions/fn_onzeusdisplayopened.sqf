@@ -40,9 +40,7 @@ if !(_display getVariable ["zen_filter_main_displayMouseHandlerAdded", false]) t
             ]] call zen_filter_main_fnc_log;
         };
 
-        [] call zen_placement_fnc_setupPreview;
-        missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
-        missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+        [true, "display right click"] call zen_filter_main_fnc_clearemptyfavoritepreview;
 
         [ZEN_FILTER_LOG_LEVEL_INFO, format [
             "cleared Empty favorite placement preview from display right click distance=%1",

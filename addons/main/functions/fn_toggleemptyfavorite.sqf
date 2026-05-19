@@ -111,9 +111,7 @@ if (_existingIndex == -1) then {
     hint format ["Removed Empty favorite: %1", (_removed select 0) select -1];
 
     if (_mode == "units") then {
-        [] call zen_placement_fnc_setupPreview;
-        missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
-        missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+        [true, "removed Empty unit favorite"] call zen_filter_main_fnc_clearemptyfavoritepreview;
     };
 
     [ZEN_FILTER_LOG_LEVEL_INFO, format [

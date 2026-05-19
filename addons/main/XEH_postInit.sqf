@@ -56,8 +56,7 @@ zen_filter_main_clearEmptyFavorites = false;
         ]] call zen_filter_main_fnc_log;
 
         if (_expectedType == "" || {typeOf _object != _expectedType}) exitWith {
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+            [false, "ignored non-favorite placement"] call zen_filter_main_fnc_clearemptyfavoritepreview;
 
             [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
                 "ignored non-favorite placement while favorite preview state was active placedType=%1 expectedType=%2",
@@ -95,9 +94,7 @@ zen_filter_main_clearEmptyFavorites = false;
             ]] call zen_filter_main_fnc_log;
 
             [{
-                [] call zen_placement_fnc_setupPreview;
-                missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
-                missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+                [true, "object placed"] call zen_filter_main_fnc_clearemptyfavoritepreview;
 
                 [ZEN_FILTER_LOG_LEVEL_DEBUG, "cleared Empty favorite placement preview after object placement"] call zen_filter_main_fnc_log;
             }, []] call CBA_fnc_execNextFrame;

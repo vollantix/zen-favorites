@@ -34,6 +34,8 @@ class CfgFunctions {
             file = "z\zen_filter\addons\main\functions";
 
             class applyfactionfavoriteorder {};
+            class clearemptyfavoritepreview {};
+            class clearleftoveremptyfavoritepreview {};
             class getactivecreatetree {};
             class inspectemptygrouprow {};
             class inspectcreatetree {};
@@ -43,6 +45,7 @@ class CfgFunctions {
             class registersettings {};
             class renderemptyfavoritescategory {};
             class renderfactionstars {};
+            class setemptyfavoritepreview {};
             class syncemptyfavoriterow {};
             class toggleemptyfavorite {};
             class toggleselectedrootfavorite {};

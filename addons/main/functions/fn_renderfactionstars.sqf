@@ -9,8 +9,7 @@ if (isNull _tree) exitWith {};
 if !(_mode in ["units", "groups"]) exitWith {};
 
 if !(_mode == "units" && {_side == "empty"}) then {
-    missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
-    missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+    [false, "left Empty units tree"] call zen_filter_main_fnc_clearemptyfavoritepreview;
 };
 
 private _favoriteColor = [1, 0.82, 0.25, 1];
@@ -35,9 +34,7 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
         if (_button == 1) then {
             if (missionNamespace getVariable ["zen_filter_main_emptyFavoritePreviewActive", false]) then {
                 _tree setVariable ["zen_filter_main_previewSuppressedPath", _hoverPath];
-                [] call zen_placement_fnc_setupPreview;
-                missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
-                missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+                [true, "tree right click"] call zen_filter_main_fnc_clearemptyfavoritepreview;
 
                 [ZEN_FILTER_LOG_LEVEL_INFO, "cleared Empty favorite placement preview from right click"] call zen_filter_main_fnc_log;
             };
@@ -157,37 +154,30 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
                 _expectedType
             ]] call zen_filter_main_fnc_log;
 
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+            [false, "selected normal Empty unit row"] call zen_filter_main_fnc_clearemptyfavoritepreview;
 
             if (_activeBefore && {_expectedType != ""}) then {
                 [{
                     params ["_expectedType"];
 
-                    if (isNil "zen_placement_object") exitWith {};
-                    if (isNull zen_placement_object) exitWith {};
-                    if (typeOf zen_placement_object != _expectedType) exitWith {};
+                    private _cleared = [_expectedType, "normal tree selection"] call zen_filter_main_fnc_clearleftoveremptyfavoritepreview;
 
-                    [] call zen_placement_fnc_setupPreview;
-
-                    [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
-                        "cleared leftover Empty favorite preview after normal tree selection expectedType=%1",
-                        _expectedType
-                    ]] call zen_filter_main_fnc_log;
+                    if (_cleared) then {
+                        [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
+                            "cleared leftover Empty favorite preview after normal tree selection expectedType=%1",
+                            _expectedType
+                        ]] call zen_filter_main_fnc_log;
+                    };
                 }, _expectedType] call CBA_fnc_execNextFrame;
             };
         };
 
         if ((_tree getVariable ["zen_filter_main_previewSuppressedPath", []]) isEqualTo _path) exitWith {
-            [] call zen_placement_fnc_setupPreview;
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+            [true, "suppressed preview path selected"] call zen_filter_main_fnc_clearemptyfavoritepreview;
         };
 
         if ((_tree tvCount _path) > 0) exitWith {
-            [] call zen_placement_fnc_setupPreview;
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+            [true, "Empty favorite folder selected"] call zen_filter_main_fnc_clearemptyfavoritepreview;
 
             [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
                 "ignored Empty favorite folder selection path=%1 text=%2",
@@ -204,9 +194,7 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
         );
 
         if (_objectType == "") exitWith {
-            [] call zen_placement_fnc_setupPreview;
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", false];
-            missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", ""];
+            [true, "invalid Empty favorite leaf"] call zen_filter_main_fnc_clearemptyfavoritepreview;
 
             [ZEN_FILTER_LOG_LEVEL_WARN, format [
                 "ignored Empty favorite leaf with invalid CfgVehicles class path=%1 class=%2",
@@ -215,9 +203,7 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
             ]] call zen_filter_main_fnc_log;
         };
 
-        [_objectType] call zen_placement_fnc_setupPreview;
-        missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewActive", _objectType != ""];
-        missionNamespace setVariable ["zen_filter_main_emptyFavoritePreviewType", _objectType];
+        [_objectType, true] call zen_filter_main_fnc_setemptyfavoritepreview;
 
         [ZEN_FILTER_LOG_LEVEL_DEBUG, format [
             "updated ZEN placement preview from Empty favorite path=%1 class=%2 objectType=%3",
