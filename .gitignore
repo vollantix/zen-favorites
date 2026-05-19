@@ -7,4 +7,4 @@ releases/
 .hemttprivatekey
 logs/
 .tmp/
-.hemtt/missions/~*/
+.hemtt/missions/

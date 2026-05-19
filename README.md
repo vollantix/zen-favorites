@@ -47,6 +47,15 @@ The filtered log is written to:
 logs\zen_favorites_latest.log
 ```
 
+Prepare a signed release package:
+
+```powershell
+hemtt check
+hemtt release
+```
+
+HEMTT writes release output to `.hemttout\release` and zip archives to `releases\`.
+
 ## Documentation
 
 - [Feature description](docs/features.md)
@@ -152,6 +161,7 @@ Turn it on to clear saved favorites. It resets itself after clearing.
 ## Known Quirks
 
 - Favorite star clicks use a short delayed selection read to keep faction row paths reliable. Very fast double-clicks may toggle the same faction twice instead of toggling two different factions.
+- Favorite action hint text, such as `Added Favorite: NATO`, may linger instead of disappearing. This is cosmetic and should be fixed after release.
 - Empty Groups favorites currently use a temporary shortcut behavior while placement behavior is investigated.
 - Favorites are client-side. They are not synced between players or stored on the server.
 - Faction favorites only last for the current mission/session.
@@ -159,6 +169,11 @@ Turn it on to clear saved favorites. It resets itself after clearing.
 ## Planned Features
 
 - Better Empty Groups/composition support if it can be implemented without breaking normal ZEN placement behavior.
+- Module favorites for the Zeus Create Modules tree.
 - Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite. Single objects are likely feasible; compositions need more investigation.
 - Adjustable Zeus Create panel width, if the owning panel controls can be identified reliably.
 - Additional filtering tools for the Zeus Create menu.
+
+## License
+
+ZEN Favorites is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE).

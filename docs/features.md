@@ -97,4 +97,5 @@ The first feature pass will not implement:
 
 ## Possible Future Features
 
+- Module favorites for the Zeus Create Modules tree.
 - Optional no-simulation placement modifier: allow Zeus to place Empty favorites with simulation disabled, for example while holding Ctrl. This should be straightforward for single Empty Unit favorite objects through the existing placement event, but compositions need separate ZEN-specific investigation because they may spawn multiple objects through a different placement path.

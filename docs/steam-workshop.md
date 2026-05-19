@@ -1,10 +1,37 @@
 # ZEN Favorites Steam Workshop Description
 
+## Workshop Metadata
+
+- Title: ZEN Favorites
+- Version: 1.0.0
+- Required items:
+  - Community Base Addons (`450814997`)
+  - Zeus Enhanced (`1779063631`)
+- Source: https://github.com/vollantix/zen-favorites
+- Suggested tags: Mod, Zeus, Utility
+
+## Release Checklist
+
+1. Run `hemtt check`.
+2. Run `hemtt release`.
+3. Launch Arma with `.hemttout\release` in `-mod` and confirm the RPT lists `zen_favorites_main.pbo - 1.0.0` from `.hemttout\release`.
+4. Upload the contents of `.hemttout\release` with the Arma 3 Publisher tool.
+5. Add the required Workshop items for Community Base Addons and Zeus Enhanced.
+6. Add a Workshop preview image and paste the description draft below.
+7. Subscribe to the uploaded item and run a clean smoke test with only CBA, ZEN, and ZEN Favorites enabled.
+8. Commit the release prep changes and tag that commit as `v1.0.0`.
+
+## Publisher Tooling
+
+HEMTT 1.19.1 builds the signed release package but does not expose a Workshop publish command.
+
+Use Arma 3 Publisher from Arma 3 Tools for the Workshop upload. Install Arma 3 Tools through Steam and run it once before publishing, then point the publisher at `.hemttout\release`.
+
+## Description Draft
+
 ZEN Favorites is a lightweight Zeus Enhanced addon that makes the Zeus Create menu faster to use during live missions.
 
 The addon adds favorite controls directly into the ZEN Create tree so Zeus users can keep commonly used factions and Empty objects close at hand without removing them from their normal categories.
-
-This mod is built with help from AI-assisted development.
 
 ## Requirements
 
@@ -71,6 +98,7 @@ Options > Addon Options > ZEN Favorites
 ## Known Quirks
 
 - Very fast double-clicks on faction stars may toggle the same faction twice instead of toggling two different factions.
+- Favorite action hint text, such as `Added Favorite: NATO`, may linger instead of disappearing. This is cosmetic and should be fixed after release.
 - Empty Groups and composition favorites are still experimental and may use temporary shortcut behavior while placement behavior is investigated.
 - Favorites are client-side. They are not synced between players or stored on the server.
 - Faction favorites only last for the current mission/session.
@@ -129,6 +157,7 @@ The same clear toggle is available under the `Maintenance` section in CBA Addon 
 ## Planned Features
 
 - Better Empty Groups/composition support if it can be implemented without breaking normal ZEN placement behavior.
+- Module favorites for the Zeus Create Modules tree.
 - Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite. Single objects are likely feasible; compositions need more investigation.
 - Adjustable Zeus Create panel width, if the owning panel controls can be identified reliably.
 - Additional filtering tools for the Zeus Create menu.

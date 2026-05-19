@@ -1,8 +1,15 @@
 * text=auto
 
+.gitattributes text eol=lf
+.gitignore text eol=lf
+LICENSE text eol=lf
+
 *.cpp text eol=lf
 *.hpp text eol=lf
 *.sqf text eol=lf
+*.sqm text eol=lf
+*.ps1 text eol=lf
+*.cmd text eol=lf
 *.ext text eol=lf
 *.toml text eol=lf
 *.md text eol=lf

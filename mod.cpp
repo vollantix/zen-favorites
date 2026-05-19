@@ -1,0 +1,9 @@
+name = "ZEN Favorites";
+author = "vollantix";
+tooltip = "ZEN Favorites";
+tooltipOwned = "ZEN Favorites";
+overview = "Adds favorite controls to the Zeus Enhanced Create menu so Zeus users can keep common factions and Empty objects close at hand during live missions.";
+actionName = "GitHub";
+action = "https://github.com/vollantix/zen-favorites";
+hideName = 0;
+hidePicture = 0;
