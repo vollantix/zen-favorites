@@ -40,46 +40,13 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
             };
 
             if ((ctrlIDC _tree) == 274 && {_hoverPath isNotEqualTo []}) then {
-                private _displayPath = [];
-                private _ancestorPath = [];
-
-                {
-                    _ancestorPath pushBack _x;
-                    _displayPath pushBack (_tree tvText _ancestorPath);
-                } forEach _hoverPath;
+                private _displayPath = [_tree, _hoverPath] call zen_filter_main_fnc_gettreepathtexts;
 
                 if ("Favorites" in _displayPath) then {
                     private _className = _tree tvData _hoverPath;
 
                     if (_className != "") then {
-                        private _findOriginalPath = {
-                            params ["_parentPath", "_className"];
-
-                            private _result = [];
-
-                            for "_index" from 0 to ((_tree tvCount _parentPath) - 1) do {
-                                private _childPath = +_parentPath;
-                                _childPath pushBack _index;
-
-                                if ((_tree tvText _childPath) == "Favorites") then {
-                                    continue;
-                                };
-
-                                if ((_tree tvData _childPath) == _className) exitWith {
-                                    _result = _childPath;
-                                };
-
-                                private _nestedResult = [_childPath, _className] call _findOriginalPath;
-
-                                if (_nestedResult isNotEqualTo []) exitWith {
-                                    _result = _nestedResult;
-                                };
-                            };
-
-                            _result
-                        };
-
-                        private _originalPath = [[], _className] call _findOriginalPath;
+                        private _originalPath = [_tree, [], _className] call zen_filter_main_fnc_findtreepathbydata;
 
                         if (_originalPath isNotEqualTo []) then {
                             for "_depth" from 1 to (count _originalPath) do {
@@ -222,59 +189,13 @@ if !(_tree getVariable ["zen_filter_main_treeHandlersAdded", false]) then {
 
         if ((count _path) < 2) exitWith {};
 
-        private _displayPath = [];
-        private _ancestorPath = [];
-
-        {
-            _ancestorPath pushBack _x;
-            _displayPath pushBack (_tree tvText _ancestorPath);
-        } forEach _path;
+        private _displayPath = [_tree, _path] call zen_filter_main_fnc_gettreepathtexts;
 
         if !("Favorites" in _displayPath) exitWith {};
         if ((_tree tvCount _path) > 0) exitWith {};
 
-        private _sourceDisplayPath = +_displayPath;
-        private _favoritesIndex = _sourceDisplayPath find "Favorites";
-
-        if (_favoritesIndex >= 0) then {
-            _sourceDisplayPath deleteAt _favoritesIndex;
-        };
-
-        private _findPathByDisplayPath = {
-            params ["_displayPath"];
-
-            private _parentPath = [];
-            private _result = [];
-
-            {
-                private _segment = _x;
-                private _foundIndex = -1;
-
-                for "_index" from 0 to ((_tree tvCount _parentPath) - 1) do {
-                    private _candidatePath = +_parentPath;
-                    _candidatePath pushBack _index;
-
-                    if ((_tree tvText _candidatePath) == "Favorites") then {
-                        continue;
-                    };
-
-                    if ((_tree tvText _candidatePath) == _segment) exitWith {
-                        _foundIndex = _index;
-                    };
-                };
-
-                if (_foundIndex == -1) exitWith {
-                    _result = [];
-                };
-
-                _parentPath pushBack _foundIndex;
-                _result = +_parentPath;
-            } forEach _displayPath;
-
-            _result
-        };
-
-        private _originalPath = [_sourceDisplayPath] call _findPathByDisplayPath;
+        private _sourceDisplayPath = [_displayPath] call zen_filter_main_fnc_removefavoritepathmarker;
+        private _originalPath = [_tree, _sourceDisplayPath] call zen_filter_main_fnc_findtreepathbytexts;
 
         if (_originalPath isEqualTo []) exitWith {
             [ZEN_FILTER_LOG_LEVEL_WARN, format [
@@ -344,13 +265,7 @@ if (_side == "empty") exitWith {
             private _childCount = _tree tvCount _path;
 
             if (_childCount == 0) then {
-                private _displayPath = [];
-                private _ancestorPath = [];
-
-                {
-                    _ancestorPath pushBack _x;
-                    _displayPath pushBack (_tree tvText _ancestorPath);
-                } forEach _path;
+                private _displayPath = [_tree, _path] call zen_filter_main_fnc_gettreepathtexts;
 
                 private _favoriteId = str _displayPath;
                 private _color = [_normalColor, _favoriteColor] select (_favoriteId in _emptyFavoriteIds);
@@ -418,20 +333,8 @@ if (_side == "empty") exitWith {
             private _className = _tree tvData _path;
 
             if (_className != "") then {
-                private _displayPath = [];
-                private _ancestorPath = [];
-
-                {
-                    _ancestorPath pushBack _x;
-                    _displayPath pushBack (_tree tvText _ancestorPath);
-                } forEach _path;
-
-                private _sourceDisplayPath = +_displayPath;
-                private _favoritesIndex = _sourceDisplayPath find "Favorites";
-
-                if (_favoritesIndex >= 0) then {
-                    _sourceDisplayPath deleteAt _favoritesIndex;
-                };
+                private _displayPath = [_tree, _path] call zen_filter_main_fnc_gettreepathtexts;
+                private _sourceDisplayPath = [_displayPath] call zen_filter_main_fnc_removefavoritepathmarker;
 
                 private _favoriteId = [_className, str _sourceDisplayPath] select (_mode == "groups" && {_className == "zen_compositions_composition"});
                 private _color = [_normalColor, _favoriteColor] select (_favoriteId in _emptyFavoriteIds);

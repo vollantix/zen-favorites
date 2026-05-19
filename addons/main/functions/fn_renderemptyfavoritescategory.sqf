@@ -50,59 +50,6 @@ if (_favorites isEqualTo []) exitWith {
     _tree setVariable ["zen_filter_main_emptyFavoritesSignature", _signature];
 };
 
-private _findPathByData = {
-    params ["_parentPath", "_className"];
-
-    private _result = [];
-    private _childCount = _tree tvCount _parentPath;
-
-    for "_index" from 0 to (_childCount - 1) do {
-        private _childPath = +_parentPath;
-        _childPath pushBack _index;
-
-        if ((_tree tvData _childPath) == _className) exitWith {
-            _result = _childPath;
-        };
-
-        private _nestedResult = [_childPath, _className] call _findPathByData;
-
-        if (_nestedResult isNotEqualTo []) exitWith {
-            _result = _nestedResult;
-        };
-    };
-
-    _result
-};
-
-private _findPathByDisplayPath = {
-    params ["_displayPath"];
-
-    private _parentPath = [];
-    private _result = [];
-
-    {
-        private _segment = _x;
-        private _foundIndex = -1;
-
-        for "_index" from 0 to ((_tree tvCount _parentPath) - 1) do {
-            private _candidatePath = +_parentPath;
-            _candidatePath pushBack _index;
-
-            if ((_tree tvText _candidatePath) == _segment) exitWith {
-                _foundIndex = _index;
-            };
-        };
-
-        if (_foundIndex == -1) exitWith {
-            _result = [];
-        };
-
-        _parentPath pushBack _foundIndex;
-        _result = +_parentPath;
-    } forEach _displayPath;
-
-    _result
-};
 private _getOriginalSortValue = {
     params ["_path"];
 
@@ -128,9 +75,9 @@ _tree tvSetValue [_favoritesRootPath, -1000];
     private _displayPath = _x select 0;
     private _className = _x select 1;
     private _originalPath = if (_mode == "groups") then {
-        [_displayPath] call _findPathByDisplayPath
+        [_tree, _displayPath] call zen_filter_main_fnc_findtreepathbytexts
     } else {
-        [[], _className] call _findPathByData
+        [_tree, [], _className] call zen_filter_main_fnc_findtreepathbydata
     };
     private _relativeDisplayPath = +_displayPath;
 

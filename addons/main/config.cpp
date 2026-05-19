@@ -36,11 +36,15 @@ class CfgFunctions {
             class applyfactionfavoriteorder {};
             class clearemptyfavoritepreview {};
             class clearleftoveremptyfavoritepreview {};
+            class findtreepathbydata {};
+            class findtreepathbytexts {};
             class getactivecreatetree {};
+            class gettreepathtexts {};
             class inspectemptygrouprow {};
             class inspectcreatetree {};
             class log {};
             class onzeusdisplayopened {};
+            class removefavoritepathmarker {};
             class clearemptyfavorites {};
             class registersettings {};
             class renderemptyfavoritescategory {};

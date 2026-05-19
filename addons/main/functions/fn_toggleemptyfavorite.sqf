@@ -24,24 +24,9 @@ if (_className == "" && {_mode != "groups"}) exitWith {
     ]] call zen_filter_main_fnc_log;
 };
 
-private _displayPath = [];
-private _ancestorPath = [];
-
-{
-    _ancestorPath pushBack _x;
-    _displayPath pushBack (_tree tvText _ancestorPath);
-} forEach _path;
-
+private _displayPath = [_tree, _path] call zen_filter_main_fnc_gettreepathtexts;
 private _isGeneratedFavoritePath = ("Favorites" in _displayPath);
-private _sourceDisplayPath = +_displayPath;
-
-if (_isGeneratedFavoritePath) then {
-    private _favoritesIndex = _sourceDisplayPath find "Favorites";
-
-    if (_favoritesIndex >= 0) then {
-        _sourceDisplayPath deleteAt _favoritesIndex;
-    };
-};
+private _sourceDisplayPath = [_displayPath] call zen_filter_main_fnc_removefavoritepathmarker;
 
 private _storeKey = format ["zen_filter_main_emptyFavorites_%1", _mode];
 private _favorites = +(missionNamespace getVariable [_storeKey, []]);

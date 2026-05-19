@@ -7,32 +7,6 @@ _favorite params ["_displayPath", "_className"];
 private _rootCount = _tree tvCount [];
 private _favoritesParentPath = [];
 private _relativeDisplayPath = +_displayPath;
-private _findOriginalPathByData = {
-    params ["_parentPath", "_className"];
-
-    private _result = [];
-
-    for "_index" from 0 to ((_tree tvCount _parentPath) - 1) do {
-        private _childPath = +_parentPath;
-        _childPath pushBack _index;
-
-        if ((_tree tvText _childPath) == "Favorites") then {
-            continue;
-        };
-
-        if ((_tree tvData _childPath) == _className) exitWith {
-            _result = _childPath;
-        };
-
-        private _nestedResult = [_childPath, _className] call _findOriginalPathByData;
-
-        if (_nestedResult isNotEqualTo []) exitWith {
-            _result = _nestedResult;
-        };
-    };
-
-    _result
-};
 private _getOriginalSortValue = {
     params ["_path"];
 
@@ -104,7 +78,7 @@ _tree tvSetValue [_favoritesRootPath, -1000];
 
 private _parentPath = +_favoritesRootPath;
 private _pathToFavorite = [];
-private _originalPath = [[], _className] call _findOriginalPathByData;
+private _originalPath = [_tree, [], _className] call zen_filter_main_fnc_findtreepathbydata;
 private _originalSortValue = if (_originalPath isEqualTo []) then {0} else {[_originalPath] call _getOriginalSortValue};
 
 {

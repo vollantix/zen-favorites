@@ -66,7 +66,7 @@ Empty favorites should persist on the client side. The intent is that whenever a
 
 If a saved favorite no longer exists because a required mod is missing or the class was removed, ZEN Filter should silently skip that favorite and write a debug log line. Missing favorites should not show an error popup to the Zeus user.
 
-Empty Groups and compositions are intentionally paused for now. ZEN/ZEN composition placement uses different runtime state than single Empty objects, and the first stable pass should keep the normal tree functional instead of forcing generated Favorites rows into a path that places incorrectly.
+Empty Groups and compositions currently use a cautious shortcut implementation. ZEN/ZEN composition placement uses different runtime state than single Empty objects, so generated favorite rows select the matching original ZEN row while the final placement approach is investigated.
 
 See `docs/empty-groups-plan.md` for the planned Empty Groups implementation approach.
 
@@ -80,9 +80,8 @@ Debug logging should be useful but not noisy. Temporary inspection logs are acce
 
 Before treating Empty favorites as stable release behavior:
 
-- Empty Units favorite preview state should track the expected placed class, not just a global active boolean.
-- Right-click camera dragging should not cancel an active Empty Units favorite preview. Preview cancel behavior needs to distinguish an intentional cancel from normal Zeus camera movement.
-- Shared tree helpers should be extracted for display path building, path lookup, and Favorites branch rendering before adding more Empty Groups behavior.
+- Test Empty Units and Empty Groups favorites with larger modsets that add scrollbars, many factions, and missing saved favorite classes.
+- Continue reducing duplicated Favorites branch rendering before replacing the Empty Groups shortcut behavior with direct placement behavior.
 
 ## Non-Goals For The First Feature Pass
 
@@ -91,7 +90,11 @@ The first feature pass will not implement:
 - favorite units inside BLUFOR, OPFOR, Independent, or Civilian factions
 - synced multiplayer favorite state
 - server-side favorite persistence
-- custom settings UI
+- settings beyond the current CBA Addon Options
 - import/export of favorite lists
 - advanced search or filtering beyond favorites
 - adjustable Zeus Create panel width
+
+## Possible Future Features
+
+- Optional no-simulation placement modifier: allow Zeus to place Empty favorites with simulation disabled, for example while holding Ctrl. This should be straightforward for single Empty Unit favorite objects through the existing placement event, but compositions need separate ZEN-specific investigation because they may spawn multiple objects through a different placement path.

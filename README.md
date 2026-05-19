@@ -1,8 +1,30 @@
 # ZEN Filter
 
-First learning milestone: a minimal HEMTT project for a future Arma 3 / ZEN addon.
+ZEN Filter is a lightweight Zeus Enhanced addon that makes the Zeus Create menu faster to use during live missions.
 
-This repo intentionally starts small. The first goal is to make HEMTT recognize the project before adding addon runtime code.
+The addon adds favorite controls directly into the ZEN Create tree so Zeus users can keep commonly used factions and Empty objects close at hand without removing them from their normal categories.
+
+This mod is built with help from AI-assisted development.
+
+## Requirements
+
+- Community Base Addons
+- Zeus Enhanced
+
+## Current Features
+
+- Faction favorites for BLUFOR, OPFOR, Independent, and Civilian Units/Groups.
+- Persistent client-side Empty Units favorites.
+- Empty Units favorites use ZEN Placement (`zen_placement`) for the advanced object placement preview when selecting favorites from the generated Favorites category.
+- CBA Addon Options for log level and clearing saved Empty Unit favorites.
+
+## Controls
+
+- Left-click a star: add or remove a favorite.
+- Left-click an Empty Units favorite: select it for placement using ZEN Placement advanced preview behavior.
+- Hold Shift while placing an Empty Units favorite: rotate the placement preview.
+- Right-click an Empty Units favorite: jump to the original item in the normal tree.
+- Right-click in Zeus while an Empty Units favorite preview is active: cancel the preview.
 
 ## Development
 
@@ -31,9 +53,34 @@ logs\zen_filter_latest.log
 - [Empty Groups favorites plan](docs/empty-groups-plan.md)
 - [Steam Workshop description draft](docs/steam-workshop.md)
 
+## Settings
+
+ZEN Filter settings are available in:
+
+```text
+Options > Addon Options > ZEN Filter
+```
+
+- `Debugging > Log level`: controls RPT logging verbosity.
+- `Maintenance > Clear Empty Unit favorites`: clears saved Empty Unit favorites from the current Arma profile.
+
 ## Runtime Log Level
 
-ZEN Filter logs use this mission namespace variable:
+ZEN Filter writes diagnostic lines to the normal Arma RPT with this prefix:
+
+```text
+[ZEN Filter]
+```
+
+On Windows, Arma normally writes RPT files under:
+
+```text
+%LOCALAPPDATA%\Arma 3\
+```
+
+The exact filename changes per launch, for example `Arma3_x64_YYYY-MM-DD_HH-MM-SS.rpt`.
+
+The current log level uses this mission namespace variable:
 
 ```sqf
 zen_filter_main_logLevel
@@ -102,9 +149,16 @@ Options > Addon Options > ZEN Filter > Maintenance
 
 Turn it on to clear saved favorites. It resets itself after clearing.
 
-## Known Issues
+## Known Quirks
 
 - Favorite star clicks use a short delayed selection read to keep faction row paths reliable. Very fast double-clicks may toggle the same faction twice instead of toggling two different factions.
 - Empty Groups favorites currently use a temporary shortcut behavior while placement behavior is investigated.
-- Right-click camera dragging while an Empty Units favorite preview is active currently cancels the preview. Normal ZEN placement bubbles do not behave this way, so this interaction needs a safer cancel gesture or drag detection.
-- Empty Units favorite preview state should be narrowed to the expected placed class so it cannot accidentally affect a later normal tree placement.
+- Favorites are client-side. They are not synced between players or stored on the server.
+- Faction favorites only last for the current mission/session.
+
+## Planned Features
+
+- Better Empty Groups/composition support if it can be implemented without breaking normal ZEN placement behavior.
+- Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite. Single objects are likely feasible; compositions need more investigation.
+- Adjustable Zeus Create panel width, if the owning panel controls can be identified reliably.
+- Additional filtering tools for the Zeus Create menu.
