@@ -6,8 +6,6 @@ The addon adds favorite controls directly into the ZEN Create tree so Zeus users
 
 ZEN Favorites is client-side. Favorites are stored per player and are not synced between players or stored on the server.
 
-This mod is built with help from AI-assisted development.
-
 ## Requirements
 
 - Community Base Addons
