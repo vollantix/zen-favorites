@@ -50,6 +50,7 @@ class CfgFunctions {
             class renderemptyfavoritescategory {};
             class renderfactionstars {};
             class setemptyfavoritepreview {};
+            class setfactionrowexpanded {};
             class syncemptyfavoriterow {};
             class toggleemptyfavorite {};
             class toggleselectedrootfavorite {};

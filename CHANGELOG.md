@@ -8,7 +8,11 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 
 ### Changed
 
+- Faction favorite reordering now tracks faction tree expansion state and restores open rows after sorting, instead of forcing favorited factions open during every Zeus Create tree render.
+
 ### Fixed
+
+- Removed a leftover visible debug chat message when the Zeus display opens.
 
 ### Known Issues
 

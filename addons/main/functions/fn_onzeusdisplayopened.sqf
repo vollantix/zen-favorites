@@ -4,10 +4,6 @@ params ["_display"];
 
 [ZEN_FAVORITES_LOG_LEVEL_INFO, "Zeus display 312 opened"] call zen_favorites_main_fnc_log;
 
-if ((missionNamespace getVariable ["zen_favorites_main_logLevel", ZEN_FAVORITES_LOG_LEVEL_INFO]) >= ZEN_FAVORITES_LOG_LEVEL_DEBUG) then {
-    systemChat "ZEN Favorites detected Zeus display 312";
-};
-
 if !(_display getVariable ["zen_favorites_main_displayMouseHandlerAdded", false]) then {
     _display setVariable ["zen_favorites_main_displayMouseHandlerAdded", true];
 

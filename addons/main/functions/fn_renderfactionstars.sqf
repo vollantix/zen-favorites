@@ -19,6 +19,21 @@ private _searchText = ctrlText (_display displayCtrl 283);
 if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
     _tree setVariable ["zen_favorites_main_treeHandlersAdded", true];
 
+    _tree ctrlAddEventHandler ["MouseButtonDown", {
+        params ["_tree", "_button", ["_xPos", -1]];
+
+        if (_button == 0) then {
+            private _treePosition = ctrlPosition _tree;
+            private _treeRight = (_treePosition select 0) + (_treePosition select 2);
+            private _starClickX = _treeRight - 0.041;
+
+            if (_xPos < _starClickX) then {
+                _tree setVariable ["zen_favorites_main_lastUserTreeClick", diag_tickTime];
+                _tree setVariable ["zen_favorites_main_lastUserTreeClickPath", _tree getVariable ["zen_favorites_main_mousePath", []]];
+            };
+        };
+    }];
+
     _tree ctrlAddEventHandler ["MouseButtonUp", {
         params ["_tree", "_button", "_xPos", "_yPos"];
 
@@ -100,6 +115,18 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
         params ["_tree", ["_path", []]];
 
         _tree setVariable ["zen_favorites_main_mousePath", _path];
+    }];
+
+    _tree ctrlAddEventHandler ["TreeExpanded", {
+        params ["_tree", ["_path", []]];
+
+        [_tree, _path, true] call zen_favorites_main_fnc_setfactionrowexpanded;
+    }];
+
+    _tree ctrlAddEventHandler ["TreeCollapsed", {
+        params ["_tree", ["_path", []]];
+
+        [_tree, _path, false] call zen_favorites_main_fnc_setfactionrowexpanded;
     }];
 
     _tree ctrlAddEventHandler ["TreeSelChanged", {

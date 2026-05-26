@@ -14,11 +14,48 @@ private _favoriteStore = missionNamespace getVariable ["zen_favorites_main_facti
 private _favorites = _favoriteStore getOrDefault [_favoriteKey, []];
 private _originalOrderStore = missionNamespace getVariable ["zen_favorites_main_factionOriginalOrders", createHashMap];
 private _originalOrder = _originalOrderStore getOrDefault [_favoriteKey, []];
+private _expandedStore = missionNamespace getVariable ["zen_favorites_main_factionExpandedRows", createHashMap];
+private _expandedRows = +(_expandedStore getOrDefault [_favoriteKey, []]);
 private _signature = str [_favoriteKey, _favorites];
 
 if (!_force && {_tree getVariable ["zen_favorites_main_lastFavoriteOrderSignature", ""] == _signature}) exitWith {};
 
 private _orderAfterSort = [];
+private _restoreExpandedRows = {
+    params ["_tree", "_mode", "_expandedRows"];
+
+    if (isNull _tree) exitWith {};
+
+    _tree setVariable ["zen_favorites_main_ignoreFactionExpandEvents", true];
+
+    if (_mode == "units") then {
+        for "_index" from 0 to ((_tree tvCount []) - 1) do {
+            private _path = [_index];
+
+            if ((_tree tvText _path) in _expandedRows) then {
+                _tree tvExpand _path;
+            };
+        };
+    };
+
+    if (_mode == "groups") then {
+        if (("__root__" in _expandedRows) || {(_expandedRows - ["__root__"]) isNotEqualTo []}) then {
+            _tree tvExpand [0];
+        };
+
+        for "_index" from 0 to ((_tree tvCount [0]) - 1) do {
+            private _path = [0, _index];
+
+            if ((_tree tvText _path) in _expandedRows) then {
+                _tree tvExpand _path;
+            };
+        };
+    };
+
+    _tree setVariable ["zen_favorites_main_ignoreFactionExpandEvents", false];
+};
+
+_tree setVariable ["zen_favorites_main_ignoreFactionExpandEvents", true];
 
 if (_mode == "units") then {
     private _rootCount = _tree tvCount [];
@@ -49,10 +86,6 @@ if (_mode == "units") then {
         private _factionName = _tree tvText _path;
 
         _orderAfterSort pushBack _factionName;
-
-        if (_factionName in _favorites) then {
-            _tree tvExpand _path;
-        };
     };
 };
 
@@ -85,19 +118,26 @@ if (_mode == "groups") then {
         private _factionName = _tree tvText _path;
 
         _orderAfterSort pushBack _factionName;
-
-        if (_factionName in _favorites) then {
-            _tree tvExpand _path;
-        };
     };
 };
 
+_tree setVariable ["zen_favorites_main_ignoreFactionExpandEvents", false];
+
+[_tree, _mode, _expandedRows] call _restoreExpandedRows;
+
+[{
+    params ["_tree", "_mode", "_expandedRows", "_restoreExpandedRows"];
+
+    [_tree, _mode, _expandedRows] call _restoreExpandedRows;
+}, [_tree, _mode, _expandedRows, _restoreExpandedRows], 0.1] call CBA_fnc_waitAndExecute;
+
 [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
-    "applied favorite order key=%1 favorites=%2 originalOrder=%3 orderAfterSort=%4",
+    "applied favorite order key=%1 favorites=%2 originalOrder=%3 orderAfterSort=%4 expandedRows=%5",
     _favoriteKey,
     _favorites,
     _originalOrder,
-    _orderAfterSort
+    _orderAfterSort,
+    _expandedRows
 ]] call zen_favorites_main_fnc_log;
 
 _tree setVariable ["zen_favorites_main_lastFavoriteOrderSignature", _signature];

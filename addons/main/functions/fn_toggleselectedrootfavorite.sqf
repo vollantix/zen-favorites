@@ -71,10 +71,12 @@ private _favoriteKey = format ["%1:%2", _mode, _side];
 private _favoriteStore = missionNamespace getVariable ["zen_favorites_main_factionFavorites", createHashMap];
 private _favorites = +(_favoriteStore getOrDefault [_favoriteKey, []]);
 private _factionName = _tree tvText _favoritePath;
+private _addedFavorite = false;
 
 if (_factionName in _favorites) then {
     _favorites deleteAt (_favorites find _factionName);
     _tree tvCollapse _favoritePath;
+    [_tree, _favoritePath, false, true] call zen_favorites_main_fnc_setfactionrowexpanded;
     hint format ["Removed favorite: %1", _factionName];
 
     [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
@@ -86,6 +88,7 @@ if (_factionName in _favorites) then {
 } else {
     _favorites pushBack _factionName;
     _favorites sort true;
+    _addedFavorite = true;
     hint format ["Added favorite: %1", _factionName];
 
     [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
@@ -101,6 +104,31 @@ missionNamespace setVariable ["zen_favorites_main_factionFavorites", _favoriteSt
 
 if (!_isSearching) then {
     [_display, true] call zen_favorites_main_fnc_applyfactionfavoriteorder;
+
+    if (_addedFavorite) then {
+        private _favoriteRootPath = [];
+
+        if (_mode == "units") then {
+            for "_index" from 0 to ((_tree tvCount []) - 1) do {
+                if ((_tree tvText [_index]) == _factionName) exitWith {
+                    _favoriteRootPath = [_index];
+                };
+            };
+        };
+
+        if (_mode == "groups") then {
+            for "_index" from 0 to ((_tree tvCount [0]) - 1) do {
+                if ((_tree tvText [0, _index]) == _factionName) exitWith {
+                    _favoriteRootPath = [0, _index];
+                };
+            };
+        };
+
+        if (_favoriteRootPath isNotEqualTo []) then {
+            _tree tvExpand _favoriteRootPath;
+            [_tree, _favoriteRootPath, true, true] call zen_favorites_main_fnc_setfactionrowexpanded;
+        };
+    };
 } else {
     _tree setVariable ["zen_favorites_main_lastFavoriteOrderSignature", ""];
 };
