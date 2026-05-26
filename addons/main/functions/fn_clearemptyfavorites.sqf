@@ -23,6 +23,6 @@ if (!isNull _display) then {
     };
 };
 
-hint "ZEN Favorites: Empty Unit favorites cleared";
+["ZEN Favorites: Empty Unit favorites cleared"] call zen_favorites_main_fnc_showactionhint;
 
 [ZEN_FAVORITES_LOG_LEVEL_INFO, "cleared Empty Unit favorites from profile"] call zen_favorites_main_fnc_log;

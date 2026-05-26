@@ -189,8 +189,6 @@ Turn it on to clear saved favorites. It resets itself after clearing.
 ## Known Quirks
 
 - Favorite star clicks use a short delayed selection read to keep faction row paths reliable. Very fast double-clicks may toggle the same faction twice instead of toggling two different factions.
-- BLUFOR Units favorite collapse behavior can be inconsistent after reopening Zeus if a favorited row was already selected. OPFOR collapse behavior appears more consistent.
-- Favorite action hint text, such as `Added Favorite: NATO`, may linger instead of disappearing. This is cosmetic and should be fixed after release.
 - Empty Groups favorites currently use a temporary shortcut behavior while placement behavior is investigated.
 - Favorites are client-side. They are not synced between players or stored on the server.
 - Faction favorites only last for the current mission/session.

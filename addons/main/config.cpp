@@ -51,6 +51,7 @@ class CfgFunctions {
             class renderfactionstars {};
             class setemptyfavoritepreview {};
             class setfactionrowexpanded {};
+            class showactionhint {};
             class syncemptyfavoriterow {};
             class toggleemptyfavorite {};
             class toggleselectedrootfavorite {};

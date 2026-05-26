@@ -4,8 +4,6 @@ This document tracks planned work, known quirks, and investigation notes. Shippe
 
 ## Known Issues
 
-- `ZF-001` BLUFOR Units favorite collapse behavior can be inconsistent after reopening Zeus if a favorited row was already selected. OPFOR collapse behavior appears more consistent.
-- `ZF-002` Favorite action hint text, such as `Added Favorite: NATO`, may linger instead of disappearing.
 - `ZF-003` Empty Groups favorites currently use temporary shortcut behavior while direct placement behavior is investigated.
 
 ## Planned Features

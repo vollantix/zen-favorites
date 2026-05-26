@@ -13,11 +13,7 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 ### Fixed
 
 - Removed a leftover visible debug chat message when the Zeus display opens.
-
-### Known Issues
-
-- BLUFOR Units favorite collapse behavior can be inconsistent after reopening Zeus if a favorited row was already selected.
-- Favorite action hint text, such as `Added Favorite: NATO`, may linger instead of disappearing.
+- Favorite action messages now show as short Zeus UI toasts in the top-right of the Zeus display instead of using the default engine hint position.
 
 ## [1.0.0] - 2026-05-20
 

@@ -77,7 +77,7 @@ if (_factionName in _favorites) then {
     _favorites deleteAt (_favorites find _factionName);
     _tree tvCollapse _favoritePath;
     [_tree, _favoritePath, false, true] call zen_favorites_main_fnc_setfactionrowexpanded;
-    hint format ["Removed favorite: %1", _factionName];
+    [format ["Removed favorite: %1", _factionName]] call zen_favorites_main_fnc_showactionhint;
 
     [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
         "removed favorite faction=%1 key=%2 path=%3",
@@ -89,7 +89,7 @@ if (_factionName in _favorites) then {
     _favorites pushBack _factionName;
     _favorites sort true;
     _addedFavorite = true;
-    hint format ["Added favorite: %1", _factionName];
+    [format ["Added favorite: %1", _factionName]] call zen_favorites_main_fnc_showactionhint;
 
     [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
         "added favorite faction=%1 key=%2 path=%3",

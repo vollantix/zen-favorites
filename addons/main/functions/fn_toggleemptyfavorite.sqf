@@ -76,7 +76,7 @@ if (_existingIndex == -1) then {
         [_tree, _mode, _favoriteEntry, false] call zen_favorites_main_fnc_syncemptyfavoriterow;
     };
 
-    hint format ["Added Empty favorite: %1", _sourceDisplayPath select -1];
+    [format ["Added Empty favorite: %1", _sourceDisplayPath select -1]] call zen_favorites_main_fnc_showactionhint;
 
     [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
         "added Empty favorite mode=%1 data=%2 id=%3 displayPath=%4 entry=%5",
@@ -93,7 +93,7 @@ if (_existingIndex == -1) then {
         [_tree, _mode, _removed, true] call zen_favorites_main_fnc_syncemptyfavoriterow;
     };
 
-    hint format ["Removed Empty favorite: %1", (_removed select 0) select -1];
+    [format ["Removed Empty favorite: %1", (_removed select 0) select -1]] call zen_favorites_main_fnc_showactionhint;
 
     if (_mode == "units") then {
         [true, "removed Empty unit favorite"] call zen_favorites_main_fnc_clearemptyfavoritepreview;
