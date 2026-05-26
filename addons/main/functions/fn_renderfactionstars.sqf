@@ -83,6 +83,21 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
         };
 
         if (_isStarClick && {_hoverPath isNotEqualTo []}) then {
+            private _clickKey = str [ctrlIDC _tree, _hoverPath];
+            private _lastClick = _tree getVariable ["zen_favorites_main_lastStarClick", ["", -1000]];
+            _lastClick params ["_lastClickKey", "_lastClickTime"];
+
+            if (_clickKey == _lastClickKey && {(diag_tickTime - _lastClickTime) < 0.35}) exitWith {
+                [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
+                    "star click ignored as duplicate idc=%1 hoverPath=%2 age=%3",
+                    ctrlIDC _tree,
+                    _hoverPath,
+                    diag_tickTime - _lastClickTime
+                ]] call zen_favorites_main_fnc_log;
+            };
+
+            _tree setVariable ["zen_favorites_main_lastStarClick", [_clickKey, diag_tickTime]];
+
             [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
                 "star click detected idc=%1 hoverPath=%2 hoverText=%3 selectedPath=%4 search=%5",
                 ctrlIDC _tree,

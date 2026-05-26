@@ -10,6 +10,8 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 
 ### Fixed
 
+- Very fast repeated clicks on the same faction favorite star are now ignored briefly to avoid accidental add/remove toggles.
+
 ## [1.0.1] - 2026-05-26
 
 ### Changed

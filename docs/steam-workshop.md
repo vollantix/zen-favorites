@@ -58,7 +58,6 @@ The current release process uses versioned keys. When updating the Workshop item
 
 [h1]Known Quirks[/h1]
 [list]
-[*]Very fast double-clicks on faction stars may toggle the same faction twice instead of toggling two different factions.
 [*]Empty Groups and composition favorites currently use temporary shortcut behavior while placement behavior is investigated.
 [*]Favorites are client-side. They are not synced between players or stored on the server.
 [*]Faction favorites only last for the current mission/session.
