@@ -14,6 +14,7 @@ This mod is built with help from AI-assisted development.
 ## Current Features
 
 - Faction favorites for BLUFOR, OPFOR, Independent, and Civilian Units/Groups.
+- Faction favorites move to the top and preserve the open or collapsed state you choose.
 - Persistent client-side Empty Units favorites.
 - Empty Units favorites use ZEN Placement (`zen_placement`) for the advanced object placement preview when selecting favorites from the generated Favorites category.
 - CBA Addon Options for log level and clearing saved Empty Unit favorites.

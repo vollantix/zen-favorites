@@ -10,7 +10,8 @@ The mod is client-side. Favorites are stored per player and are not synced betwe
 [list]
 [*]Adds a star button to top-level faction rows in the Create menu.
 [*]Supports BLUFOR, OPFOR, Independent, and Civilian.
-[*]Favorited factions move to the top of the list and are expanded by default.
+[*]Favorited factions move to the top of the list.
+[*]New favorites expand once, then keep the open or collapsed state you choose.
 [*]Favorites are separate per side and per Create mode.
 [*]Faction favorites are mission-local and reset when Arma is restarted.
 [/list]
