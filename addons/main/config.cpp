@@ -34,14 +34,13 @@ class CfgFunctions {
             file = "z\zen_favorites\addons\main\functions";
 
             class applyfactionfavoriteorder {};
-            class clearemptyfavoritepreview {};
-            class clearleftoveremptyfavoritepreview {};
+            class clearactivefavoriteproxy {};
+            class clearemptygroupfavorites {};
+            class clearmodulefavorites {};
             class findtreepathbydata {};
             class findtreepathbytexts {};
             class getactivecreatetree {};
             class gettreepathtexts {};
-            class inspectemptygrouprow {};
-            class inspectcreatetree {};
             class log {};
             class onzeusdisplayopened {};
             class removefavoritepathmarker {};
@@ -49,11 +48,14 @@ class CfgFunctions {
             class registersettings {};
             class renderemptyfavoritescategory {};
             class renderfactionstars {};
-            class setemptyfavoritepreview {};
+            class rendermodulefavoritescategory {};
+            class restorefavoritetreeexpanded {};
             class setfactionrowexpanded {};
+            class setfavoritetreeexpanded {};
+            class selectfavoriteproxy {};
             class showactionhint {};
-            class syncemptyfavoriterow {};
             class toggleemptyfavorite {};
+            class togglemodulefavorite {};
             class toggleselectedrootfavorite {};
         };
     };

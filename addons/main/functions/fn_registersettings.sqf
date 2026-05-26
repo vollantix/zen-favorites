@@ -26,6 +26,24 @@
 ] call CBA_fnc_addSetting;
 
 [
+    "zen_favorites_main_clearEmptyGroupFavorites",
+    "CHECKBOX",
+    ["Clear Empty Group favorites", "Turn this on to clear the Empty Groups favorites saved in this Arma profile. The checkbox resets itself after clearing."],
+    ["ZEN Favorites", "Maintenance"],
+    false,
+    0
+] call CBA_fnc_addSetting;
+
+[
+    "zen_favorites_main_clearModuleFavorites",
+    "CHECKBOX",
+    ["Clear Module favorites", "Turn this on to clear the Module favorites saved in this Arma profile. The checkbox resets itself after clearing."],
+    ["ZEN Favorites", "Maintenance"],
+    false,
+    0
+] call CBA_fnc_addSetting;
+
+[
     "zen_favorites_main_clearEmptyFavorites",
     "CHECKBOX",
     ["Clear Empty Unit favorites", "Turn this on to clear the Empty Units favorites saved in this Arma profile. The checkbox resets itself after clearing."],

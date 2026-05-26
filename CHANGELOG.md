@@ -6,11 +6,24 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 
 ### Added
 
+- Empty Groups favorites for the Zeus Create Empty Groups tree.
+- Module favorites for the Zeus Create Modules tree.
+- CBA maintenance toggles for clearing Empty Group favorites and Module favorites separately.
+
 ### Changed
+
+- Empty Units, Empty Groups, and Module favorites now share the same proxy-selection helper so generated Favorites rows use the matching original ZEN row behavior.
+- Empty Groups favorites now keep a compact Favorites tree while preserving ZEN's normal group and composition placement behavior.
+- Removed obsolete direct Empty Unit preview and debug inspection helpers from the runtime path.
 
 ### Fixed
 
 - Very fast repeated clicks on the same faction favorite star are now ignored briefly to avoid accidental add/remove toggles.
+- Empty Groups and Module Favorites sections are removed when their last favorite is cleared.
+
+### Known Quirks
+
+- Favorite leaves that proxy-select original ZEN rows use gold active styling instead of Arma's native white tree selection box.
 
 ## [1.0.1] - 2026-05-26
 

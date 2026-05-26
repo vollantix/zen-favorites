@@ -4,6 +4,7 @@ profileNamespace setVariable ["zen_favorites_main_emptyFavorites_units", []];
 saveProfileNamespace;
 
 missionNamespace setVariable ["zen_favorites_main_emptyFavorites_units", []];
+missionNamespace setVariable ["zen_favorites_main_emptyUnitsExpandedTextPaths", []];
 
 private _display = findDisplay 312;
 
@@ -20,6 +21,9 @@ if (!isNull _display) then {
 
         _tree setVariable ["zen_favorites_main_lastEmptyRenderSignature", ""];
         _tree setVariable ["zen_favorites_main_emptyFavoritesSignature", ""];
+        _tree setVariable ["zen_favorites_main_emptyUnitsFavoriteBranchTextPaths", []];
+        _tree setVariable ["zen_favorites_main_emptyUnitsExpandedTextPaths", []];
+        _tree setVariable ["zen_favorites_main_emptyUnitsPendingExpandTextPaths", []];
     };
 };
 

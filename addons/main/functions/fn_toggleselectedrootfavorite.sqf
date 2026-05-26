@@ -9,7 +9,7 @@ if (isNull _tree) exitWith {
     [ZEN_FAVORITES_LOG_LEVEL_WARN, "cannot toggle favorite: no active Create tree"] call zen_favorites_main_fnc_log;
 };
 
-if !(_mode in ["units", "groups"]) exitWith {
+if !(_mode in ["units", "groups", "modules"]) exitWith {
     [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
         "favorite toggle skipped for unsupported mode=%1 side=%2",
         _mode,
@@ -23,6 +23,10 @@ private _isSearching = _searchText != "";
 
 if ((count _path) == 0) exitWith {
     [ZEN_FAVORITES_LOG_LEVEL_WARN, "cannot toggle favorite: no selected tree row"] call zen_favorites_main_fnc_log;
+};
+
+if (_mode == "modules") exitWith {
+    [_tree, _path] call zen_favorites_main_fnc_togglemodulefavorite;
 };
 
 if (_side == "empty") exitWith {

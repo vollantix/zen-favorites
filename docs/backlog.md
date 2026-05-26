@@ -2,24 +2,17 @@
 
 This document tracks planned work, known quirks, and investigation notes. Shipped user-facing changes belong in `CHANGELOG.md`.
 
-## Known Issues
+## Known Quirks
 
-- `ZF-003` Empty Groups favorites currently use temporary shortcut behavior while direct placement behavior is investigated.
+- `ZF-007` Favorite leaves that proxy-select a matching original ZEN row cannot also keep Arma's native white tree selection box on the generated favorite row. The favorite row uses gold active text instead. This is accepted behavior, not a planned fix.
 
 ## Planned Features
 
-- `ZF-101` Module favorites for the Zeus Create Modules tree.
-- `ZF-102` Respect existing ZEN Placement settings for Empty Unit favorite previews where possible, and add ZEN Favorites CBA settings only for preview behavior ZEN does not expose.
 - `ZF-103` Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite.
 - `ZF-104` Adjustable Zeus Create panel width, if the owning panel controls can be identified reliably.
 - `ZF-105` Additional filtering tools for the Zeus Create menu.
 - `ZF-106` Faction Units and Groups leaf favorites for individual unit/group rows under BLUFOR, OPFOR, Independent, and Civilian. These should use a generated Favorites branch similar to Empty Units favorites, stay session-based by default, and include a CBA option to persist them in the player's profile.
-
-## Empty Groups Investigation
-
-`ZF-201` Empty Groups and compositions need a separate design from Empty Units favorites. ZEN composition placement uses different runtime state than single Empty objects, so generated favorite rows currently select the matching original ZEN row while direct placement behavior is investigated.
-
-See `docs/empty-groups-plan.md` for the detailed investigation notes.
+- `ZF-107` Separate CBA persistence settings for top-level faction favorites and faction leaf favorites.
 
 ## Release Process
 

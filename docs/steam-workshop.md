@@ -22,24 +22,32 @@ The mod is client-side. Favorites are stored per player and are not synced betwe
 [*]Supports empty units, vehicles, objects, props, and entities.
 [*]Favorited entries stay in their original category and also appear under Favorites.
 [*]Favorites preserve a compact version of the original tree path so entries remain easy to recognize.
-[*]Selecting an Empty Units favorite uses ZEN Placement for the advanced placement preview.
+[*]Selecting an Empty Units favorite uses the matching original ZEN row, so ZEN Placement keeps its normal preview behavior and settings.
 [*]Empty Units favorites are saved client-side in the Arma profile.
 [/list]
 
 [b]Empty Groups Favorites[/b]
 [list]
-[*]Empty Groups favorites are currently available as shortcut-style favorites.
-[*]Selecting an Empty Groups favorite jumps to the matching original ZEN tree row.
-[*]This keeps ZEN's normal group and composition placement behavior intact while direct placement support is investigated.
+[*]Adds a Favorites category at the top of the Empty Groups tree.
+[*]Favorited groups and compositions stay in their original category and also appear under Favorites.
+[*]Selecting an Empty Groups favorite uses the matching original ZEN row, keeping normal group and composition placement behavior intact.
+[*]Empty Groups favorites are saved client-side in the Arma profile.
+[/list]
+
+[b]Module Favorites[/b]
+[list]
+[*]Adds a Favorites category at the top of the Zeus Create Modules tree.
+[*]Favorited modules stay in their original category and also appear under Favorites.
+[*]Selecting a Module favorite uses the matching original ZEN row, keeping normal module selection behavior intact.
+[*]Module favorites are saved client-side in the Arma profile.
 [/list]
 
 [h1]Controls[/h1]
 [list]
 [*]Left-click a star: add or remove a favorite.
-[*]Left-click an Empty Units favorite: select it for placement using ZEN Placement advanced preview behavior.
-[*]Hold Shift while placing an Empty Units favorite: rotate the placement preview.
-[*]Right-click an Empty Units favorite: jump to the original item in the normal tree.
-[*]Right-click in Zeus while an Empty Units favorite preview is active: cancel the preview.
+[*]Left-click an Empty Units, Empty Groups, or Module favorite: select it using the matching original ZEN row behavior.
+[*]Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
+[*]Right-click an Empty Units, Empty Groups, or Module favorite: jump to the original item in the normal tree.
 [/list]
 
 [h1]Settings[/h1]
@@ -49,6 +57,8 @@ ZEN Favorites settings are available in:
 [list]
 [*]Debugging > Log level: controls RPT logging verbosity.
 [*]Maintenance > Clear Empty Unit favorites: clears saved Empty Unit favorites from the current Arma profile.
+[*]Maintenance > Clear Empty Group favorites: clears saved Empty Group favorites from the current Arma profile.
+[*]Maintenance > Clear Module favorites: clears saved Module favorites from the current Arma profile.
 [/list]
 
 [h1]Server Admins[/h1]
@@ -58,17 +68,14 @@ The current release process uses versioned keys. When updating the Workshop item
 
 [h1]Known Quirks[/h1]
 [list]
-[*]Empty Groups and composition favorites currently use temporary shortcut behavior while placement behavior is investigated.
-[*]Favorites are client-side. They are not synced between players or stored on the server.
-[*]Faction favorites only last for the current mission/session.
+[*]Favorite leaves that internally select a matching original ZEN row use gold active text instead of Arma's native white tree selection box. The native selection box stays tied to the original row.
+[*]Faction root favorites only last for the current mission/session.
 [/list]
 
 [h1]Planned Features[/h1]
 [list]
-[*]Better Empty Groups and composition support if it can be implemented without breaking normal ZEN placement behavior.
-[*]Module favorites for the Zeus Create Modules tree.
 [*]Individual faction unit and group favorites, session-based by default, with a CBA option to save them persistently.
-[*]Placement preview options that respect existing ZEN Placement settings where possible, with ZEN Favorites CBA settings for behavior ZEN does not expose.
+[*]Separate CBA persistence settings for top-level faction favorites and faction leaf favorites.
 [*]Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite.
 [*]Adjustable Zeus Create panel width, if the owning panel controls can be identified reliably.
 [*]Additional filtering tools for the Zeus Create menu.

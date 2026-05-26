@@ -6,11 +6,7 @@ private _activeTree = [_display] call zen_favorites_main_fnc_getactivecreatetree
 _activeTree params ["_tree", "_idc", "_mode", "_side"];
 
 if (isNull _tree) exitWith {};
-if !(_mode in ["units", "groups"]) exitWith {};
-
-if !(_mode == "units" && {_side == "empty"}) then {
-    [false, "left Empty units tree"] call zen_favorites_main_fnc_clearemptyfavoritepreview;
-};
+if !(_mode in ["units", "groups", "modules"]) exitWith {};
 
 private _favoriteColor = [1, 0.82, 0.25, 1];
 private _normalColor = [1, 1, 1, 0.35];
@@ -26,12 +22,15 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
             private _treePosition = ctrlPosition _tree;
             private _treeRight = (_treePosition select 0) + (_treePosition select 2);
             private _starClickX = _treeRight - 0.041;
+            private _hoverPath = _tree getVariable ["zen_favorites_main_mousePath", []];
 
             if (_xPos < _starClickX) then {
                 _tree setVariable ["zen_favorites_main_lastUserTreeClick", diag_tickTime];
-                _tree setVariable ["zen_favorites_main_lastUserTreeClickPath", _tree getVariable ["zen_favorites_main_mousePath", []]];
+                _tree setVariable ["zen_favorites_main_lastUserTreeClickPath", _hoverPath];
             };
         };
+
+        false
     }];
 
     _tree ctrlAddEventHandler ["MouseButtonUp", {
@@ -47,17 +46,10 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
         private _selectedPath = tvCurSel _tree;
 
         if (_button == 1) then {
-            if (missionNamespace getVariable ["zen_favorites_main_emptyFavoritePreviewActive", false]) then {
-                _tree setVariable ["zen_favorites_main_previewSuppressedPath", _hoverPath];
-                [true, "tree right click"] call zen_favorites_main_fnc_clearemptyfavoritepreview;
-
-                [ZEN_FAVORITES_LOG_LEVEL_INFO, "cleared Empty favorite placement preview from right click"] call zen_favorites_main_fnc_log;
-            };
-
-            if ((ctrlIDC _tree) == 274 && {_hoverPath isNotEqualTo []}) then {
+            if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_UNITS_EMPTY && {_hoverPath isNotEqualTo []}) then {
                 private _displayPath = [_tree, _hoverPath] call zen_favorites_main_fnc_gettreepathtexts;
 
-                if ("Favorites" in _displayPath) then {
+                if ("Favorites" in _displayPath && {(_tree tvCount _hoverPath) == 0}) then {
                     private _className = _tree tvData _hoverPath;
 
                     if (_className != "") then {
@@ -77,6 +69,83 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
                                 _className
                             ]] call zen_favorites_main_fnc_log;
                         };
+                    };
+                };
+            };
+
+            if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_GROUPS_EMPTY && {_hoverPath isNotEqualTo []}) then {
+                private _displayPath = [_tree, _hoverPath] call zen_favorites_main_fnc_gettreepathtexts;
+
+                if ("Favorites" in _displayPath && {(_tree tvCount _hoverPath) == 0}) then {
+                    private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_emptyGroupsFavoriteSourcePaths", createHashMap];
+                    private _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [
+                        str _displayPath,
+                        [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker
+                    ];
+                    private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
+
+                    if (_originalPath isNotEqualTo []) then {
+                        _tree setVariable ["zen_favorites_main_ignoreEmptyGroupsExpandEvents", true];
+
+                        for "_depth" from 1 to (count _originalPath) do {
+                            _tree tvExpand (_originalPath select [0, _depth]);
+                        };
+
+                        _tree tvSetCurSel _originalPath;
+                        _tree setVariable ["zen_favorites_main_ignoreEmptyGroupsExpandEvents", false];
+
+                        [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
+                            "right-click jumped Empty Groups favorite to original path favoritePath=%1 originalPath=%2 sourceDisplayPath=%3",
+                            _hoverPath,
+                            _originalPath,
+                            _sourceDisplayPath
+                        ]] call zen_favorites_main_fnc_log;
+                    } else {
+                        [ZEN_FAVORITES_LOG_LEVEL_WARN, format [
+                            "could not resolve Empty Groups favorite right-click jump favoritePath=%1 sourceDisplayPath=%2",
+                            _hoverPath,
+                            _sourceDisplayPath
+                        ]] call zen_favorites_main_fnc_log;
+                    };
+                };
+            };
+
+            if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_MODULES && {_hoverPath isNotEqualTo []}) then {
+                private _displayPath = [_tree, _hoverPath] call zen_favorites_main_fnc_gettreepathtexts;
+
+                if ("Favorites" in _displayPath && {(_tree tvCount _hoverPath) == 0}) then {
+                    private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
+                    private _className = _tree tvData _hoverPath;
+                    private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
+
+                    if (_originalPath isEqualTo [] && {_className != ""}) then {
+                        _originalPath = [_tree, [], _className] call zen_favorites_main_fnc_findtreepathbydata;
+                    };
+
+                    if (_originalPath isNotEqualTo []) then {
+                        _tree setVariable ["zen_favorites_main_ignoreModuleExpandEvents", true];
+
+                        for "_depth" from 1 to (count _originalPath) do {
+                            _tree tvExpand (_originalPath select [0, _depth]);
+                        };
+
+                        _tree tvSetCurSel _originalPath;
+                        _tree setVariable ["zen_favorites_main_ignoreModuleExpandEvents", false];
+
+                        [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
+                            "right-click jumped Module favorite to original path favoritePath=%1 originalPath=%2 sourceDisplayPath=%3 class=%4",
+                            _hoverPath,
+                            _originalPath,
+                            _sourceDisplayPath,
+                            _className
+                        ]] call zen_favorites_main_fnc_log;
+                    } else {
+                        [ZEN_FAVORITES_LOG_LEVEL_WARN, format [
+                            "could not resolve Module favorite right-click jump favoritePath=%1 sourceDisplayPath=%2 class=%3",
+                            _hoverPath,
+                            _sourceDisplayPath,
+                            _className
+                        ]] call zen_favorites_main_fnc_log;
                     };
                 };
             };
@@ -135,11 +204,47 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
     _tree ctrlAddEventHandler ["TreeExpanded", {
         params ["_tree", ["_path", []]];
 
+        if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_MODULES && {!(_tree getVariable ["zen_favorites_main_ignoreModuleExpandEvents", false])}) then {
+            if (_path isNotEqualTo [] && {(_tree tvText [_path select 0]) == "Favorites"}) then {
+                [_tree, _path, true, "zen_favorites_main_moduleExpandedTextPaths"] call zen_favorites_main_fnc_setfavoritetreeexpanded;
+            };
+        };
+
+        if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_UNITS_EMPTY && {!(_tree getVariable ["zen_favorites_main_ignoreEmptyUnitsExpandEvents", false])}) then {
+            if (_path isNotEqualTo [] && {(_tree tvText [_path select 0]) == "Favorites"}) then {
+                [_tree, _path, true, "zen_favorites_main_emptyUnitsExpandedTextPaths"] call zen_favorites_main_fnc_setfavoritetreeexpanded;
+            };
+        };
+
+        if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_GROUPS_EMPTY && {!(_tree getVariable ["zen_favorites_main_ignoreEmptyGroupsExpandEvents", false])}) then {
+            if (_path isNotEqualTo [] && {(_tree tvText [_path select 0]) == "Favorites"}) then {
+                [_tree, _path, true, "zen_favorites_main_emptyGroupsExpandedTextPaths"] call zen_favorites_main_fnc_setfavoritetreeexpanded;
+            };
+        };
+
         [_tree, _path, true] call zen_favorites_main_fnc_setfactionrowexpanded;
     }];
 
     _tree ctrlAddEventHandler ["TreeCollapsed", {
         params ["_tree", ["_path", []]];
+
+        if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_MODULES && {!(_tree getVariable ["zen_favorites_main_ignoreModuleExpandEvents", false])}) then {
+            if (_path isNotEqualTo [] && {(_tree tvText [_path select 0]) == "Favorites"}) then {
+                [_tree, _path, false, "zen_favorites_main_moduleExpandedTextPaths"] call zen_favorites_main_fnc_setfavoritetreeexpanded;
+            };
+        };
+
+        if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_UNITS_EMPTY && {!(_tree getVariable ["zen_favorites_main_ignoreEmptyUnitsExpandEvents", false])}) then {
+            if (_path isNotEqualTo [] && {(_tree tvText [_path select 0]) == "Favorites"}) then {
+                [_tree, _path, false, "zen_favorites_main_emptyUnitsExpandedTextPaths"] call zen_favorites_main_fnc_setfavoritetreeexpanded;
+            };
+        };
+
+        if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_GROUPS_EMPTY && {!(_tree getVariable ["zen_favorites_main_ignoreEmptyGroupsExpandEvents", false])}) then {
+            if (_path isNotEqualTo [] && {(_tree tvText [_path select 0]) == "Favorites"}) then {
+                [_tree, _path, false, "zen_favorites_main_emptyGroupsExpandedTextPaths"] call zen_favorites_main_fnc_setfavoritetreeexpanded;
+            };
+        };
 
         [_tree, _path, false] call zen_favorites_main_fnc_setfactionrowexpanded;
     }];
@@ -147,46 +252,30 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
     _tree ctrlAddEventHandler ["TreeSelChanged", {
         params ["_tree", "_path"];
 
-        if ((ctrlIDC _tree) != 274) exitWith {};
-        if ((count _path) < 2) exitWith {};
+        if ((ctrlIDC _tree) != ZEN_FAVORITES_IDC_CREATE_UNITS_EMPTY) exitWith {};
+        if (_tree getVariable ["zen_favorites_main_ignoreEmptyUnitsProxySelection", false]) exitWith {};
 
-        if ((_tree tvText [_path select 0]) != "Favorites") exitWith {
-            private _activeBefore = missionNamespace getVariable ["zen_favorites_main_emptyFavoritePreviewActive", false];
-            private _expectedType = missionNamespace getVariable ["zen_favorites_main_emptyFavoritePreviewType", ""];
-
-            [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
-                "leaving Empty favorite selection path=%1 text=%2 data=%3 activeBefore=%4 expectedType=%5",
-                _path,
-                _tree tvText _path,
-                _tree tvData _path,
-                _activeBefore,
-                _expectedType
-            ]] call zen_favorites_main_fnc_log;
-
-            [false, "selected normal Empty unit row"] call zen_favorites_main_fnc_clearemptyfavoritepreview;
-
-            if (_activeBefore && {_expectedType != ""}) then {
-                [{
-                    params ["_expectedType"];
-
-                    private _cleared = [_expectedType, "normal tree selection"] call zen_favorites_main_fnc_clearleftoveremptyfavoritepreview;
-
-                    if (_cleared) then {
-                        [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
-                            "cleared leftover Empty favorite preview after normal tree selection expectedType=%1",
-                            _expectedType
-                        ]] call zen_favorites_main_fnc_log;
-                    };
-                }, _expectedType] call CBA_fnc_execNextFrame;
-            };
+        private _clearActiveFavorite = {
+            [_tree, "zen_favorites_main_activeEmptyUnitsFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
         };
 
-        if ((_tree getVariable ["zen_favorites_main_previewSuppressedPath", []]) isEqualTo _path) exitWith {
-            [true, "suppressed preview path selected"] call zen_favorites_main_fnc_clearemptyfavoritepreview;
+        if ((count _path) < 2) exitWith {
+            call _clearActiveFavorite;
+        };
+
+        if ((_tree tvText [_path select 0]) != "Favorites") exitWith {
+            [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
+                "leaving Empty favorite selection path=%1 text=%2 data=%3",
+                _path,
+                _tree tvText _path,
+                _tree tvData _path
+            ]] call zen_favorites_main_fnc_log;
+
+            call _clearActiveFavorite;
         };
 
         if ((_tree tvCount _path) > 0) exitWith {
-            [true, "Empty favorite folder selected"] call zen_favorites_main_fnc_clearemptyfavoritepreview;
+            call _clearActiveFavorite;
 
             [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
                 "ignored Empty favorite folder selection path=%1 text=%2",
@@ -196,27 +285,40 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
         };
 
         private _className = _tree tvData _path;
+        private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
+        private _originalPath = [_tree, [], _className] call zen_favorites_main_fnc_findtreepathbydata;
 
         private _objectType = ["", _className] select (
             isClass (configFile >> "CfgVehicles" >> _className) &&
             {!(_className isKindOf "Logic")}
         );
 
-        if (_objectType == "") exitWith {
-            [true, "invalid Empty favorite leaf"] call zen_favorites_main_fnc_clearemptyfavoritepreview;
+        if (_objectType == "" || {_originalPath isEqualTo []}) exitWith {
+            call _clearActiveFavorite;
 
             [ZEN_FAVORITES_LOG_LEVEL_WARN, format [
-                "ignored Empty favorite leaf with invalid CfgVehicles class path=%1 class=%2",
+                "ignored Empty favorite leaf with invalid CfgVehicles class or missing original path=%1 class=%2 originalPath=%3",
                 _path,
-                _className
+                _className,
+                _originalPath
             ]] call zen_favorites_main_fnc_log;
         };
 
-        [_objectType, true] call zen_favorites_main_fnc_setemptyfavoritepreview;
-
-        [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
-            "updated ZEN placement preview from Empty favorite path=%1 class=%2 objectType=%3",
+        [
+            _tree,
             _path,
+            _originalPath,
+            "zen_favorites_main_emptyUnitsExpandedTextPaths",
+            "zen_favorites_main_ignoreEmptyUnitsExpandEvents",
+            "zen_favorites_main_ignoreEmptyUnitsProxySelection",
+            "zen_favorites_main_activeEmptyUnitsFavoritePath"
+        ] call zen_favorites_main_fnc_selectfavoriteproxy;
+
+        [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
+            "selected original Empty Unit row from favorite proxy favoritePath=%1 originalPath=%2 displayPath=%3 class=%4 objectType=%5",
+            _path,
+            _originalPath,
+            _displayPath,
             _className,
             _objectType
         ]] call zen_favorites_main_fnc_log;
@@ -225,18 +327,30 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
     _tree ctrlAddEventHandler ["TreeSelChanged", {
         params ["_tree", "_path"];
 
-        if ((ctrlIDC _tree) != 279) exitWith {};
+        if ((ctrlIDC _tree) != ZEN_FAVORITES_IDC_CREATE_GROUPS_EMPTY) exitWith {};
 
-        [_tree, _path] call zen_favorites_main_fnc_inspectemptygrouprow;
+        if (_tree getVariable ["zen_favorites_main_ignoreEmptyGroupsProxySelection", false]) exitWith {};
 
-        if ((count _path) < 2) exitWith {};
+        private _clearActiveFavorite = {
+            [_tree, "zen_favorites_main_activeEmptyGroupsFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
+        };
+
+        if ((count _path) < 2) exitWith {
+            call _clearActiveFavorite;
+        };
 
         private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
 
-        if !("Favorites" in _displayPath) exitWith {};
+        if !("Favorites" in _displayPath) exitWith {
+            call _clearActiveFavorite;
+        };
         if ((_tree tvCount _path) > 0) exitWith {};
 
-        private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
+        private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_emptyGroupsFavoriteSourcePaths", createHashMap];
+        private _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [
+            str _displayPath,
+            [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker
+        ];
         private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
 
         if (_originalPath isEqualTo []) exitWith {
@@ -247,17 +361,79 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
             ]] call zen_favorites_main_fnc_log;
         };
 
-        for "_depth" from 1 to (count _originalPath) do {
-            _tree tvExpand (_originalPath select [0, _depth]);
-        };
-
-        _tree tvSetCurSel _originalPath;
+        [
+            _tree,
+            _path,
+            _originalPath,
+            "zen_favorites_main_emptyGroupsExpandedTextPaths",
+            "zen_favorites_main_ignoreEmptyGroupsExpandEvents",
+            "zen_favorites_main_ignoreEmptyGroupsProxySelection",
+            "zen_favorites_main_activeEmptyGroupsFavoritePath"
+        ] call zen_favorites_main_fnc_selectfavoriteproxy;
 
         [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
-            "selected original Empty Groups row from favorite shortcut favoritePath=%1 originalPath=%2 sourceDisplayPath=%3",
+            "selected original Empty Groups row from favorite proxy favoritePath=%1 originalPath=%2 sourceDisplayPath=%3",
             _path,
             _originalPath,
             _sourceDisplayPath
+        ]] call zen_favorites_main_fnc_log;
+    }];
+
+    _tree ctrlAddEventHandler ["TreeSelChanged", {
+        params ["_tree", "_path"];
+
+        if ((ctrlIDC _tree) != ZEN_FAVORITES_IDC_CREATE_MODULES) exitWith {};
+        if (_tree getVariable ["zen_favorites_main_ignoreModuleProxySelection", false]) exitWith {};
+
+        private _clearActiveFavorite = {
+            [_tree, "zen_favorites_main_activeModuleFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
+        };
+
+        if ((count _path) < 2) exitWith {
+            call _clearActiveFavorite;
+        };
+
+        private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
+
+        if !("Favorites" in _displayPath) exitWith {
+            call _clearActiveFavorite;
+        };
+
+        if ((_tree tvCount _path) > 0) exitWith {};
+
+        private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
+        private _className = _tree tvData _path;
+        private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
+
+        if (_originalPath isEqualTo [] && {_className != ""}) then {
+            _originalPath = [_tree, [], _className] call zen_favorites_main_fnc_findtreepathbydata;
+        };
+
+        if (_originalPath isEqualTo []) exitWith {
+            [ZEN_FAVORITES_LOG_LEVEL_WARN, format [
+                "could not resolve Module favorite proxy selection favoritePath=%1 sourceDisplayPath=%2 class=%3",
+                _path,
+                _sourceDisplayPath,
+                _className
+            ]] call zen_favorites_main_fnc_log;
+        };
+
+        [
+            _tree,
+            _path,
+            _originalPath,
+            "zen_favorites_main_moduleExpandedTextPaths",
+            "zen_favorites_main_ignoreModuleExpandEvents",
+            "zen_favorites_main_ignoreModuleProxySelection",
+            "zen_favorites_main_activeModuleFavoritePath"
+        ] call zen_favorites_main_fnc_selectfavoriteproxy;
+
+        [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
+            "selected original Module row from favorite proxy favoritePath=%1 originalPath=%2 sourceDisplayPath=%3 class=%4",
+            _path,
+            _originalPath,
+            _sourceDisplayPath,
+            _className
         ]] call zen_favorites_main_fnc_log;
     }];
 
@@ -265,6 +441,68 @@ if !(_tree getVariable ["zen_favorites_main_treeHandlersAdded", false]) then {
         "tree handlers added idc=%1",
         ctrlIDC _tree
     ]] call zen_favorites_main_fnc_log;
+};
+
+if (_mode == "modules") exitWith {
+    private _moduleFavorites = (missionNamespace getVariable ["zen_favorites_main_moduleFavorites", []]) select {
+        (_x isEqualType []) &&
+        {count _x >= 6} &&
+        {(_x select 0) isEqualType []} &&
+        {(_x select 2) isEqualType ""}
+    };
+    private _rootCount = _tree tvCount [];
+    private _renderSignature = str [
+        _idc,
+        _searchText,
+        _rootCount,
+        _moduleFavorites
+    ];
+
+    if ((_tree getVariable ["zen_favorites_main_lastModuleRenderSignature", ""]) == _renderSignature) exitWith {};
+
+    _tree setVariable ["zen_favorites_main_lastModuleRenderSignature", _renderSignature];
+
+    if (_searchText == "") then {
+        [_tree] call zen_favorites_main_fnc_rendermodulefavoritescategory;
+    } else {
+        for "_index" from ((_tree tvCount []) - 1) to 0 step -1 do {
+            if ((_tree tvText [_index]) == "Favorites") then {
+                _tree tvDelete [_index];
+            };
+        };
+
+        _tree setVariable ["zen_favorites_main_moduleFavoritesSignature", ""];
+    };
+
+    private _moduleFavoriteIds = _moduleFavorites apply {_x select 2};
+    private _renderModulePath = {
+        params ["_path"];
+
+        private _childCount = _tree tvCount _path;
+
+        if (_childCount == 0) then {
+            private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
+            private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
+            private _favoriteId = str _sourceDisplayPath;
+            private _color = [_normalColor, _favoriteColor] select (_favoriteId in _moduleFavoriteIds);
+
+            _tree tvSetPictureRight [_path, ZEN_FAVORITES_STAR_TEXTURE];
+            _tree tvSetPictureRightColor [_path, _color];
+            _tree tvSetPictureRightColorSelected [_path, _color];
+        } else {
+            for "_index" from 0 to (_childCount - 1) do {
+                private _childPath = +_path;
+                _childPath pushBack _index;
+                [_childPath] call _renderModulePath;
+            };
+        };
+    };
+
+    for "_index" from 0 to ((_tree tvCount []) - 1) do {
+        if ((_tree tvText [_index]) != "Favorites") then {
+            [[_index]] call _renderModulePath;
+        };
+    };
 };
 
 if (_side == "empty") exitWith {
