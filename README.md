@@ -212,7 +212,6 @@ Turn one on to clear that saved favorite type. Each toggle resets itself after c
 - Individual faction unit and group favorites, session-based by default, with a CBA option to save them persistently.
 - Separate CBA persistence settings for top-level faction favorites and faction leaf favorites.
 - Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite. Single objects are likely feasible; compositions need more investigation.
-- Adjustable Zeus Create panel width, if the owning panel controls can be identified reliably.
 - Additional filtering tools for the Zeus Create menu.
 
 ## License
