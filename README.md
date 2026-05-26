@@ -56,11 +56,39 @@ hemtt release
 
 HEMTT writes release output to `.hemttout\release` and zip archives to `releases\`.
 
+## Release Signing
+
+ZEN Favorites release builds are signed by HEMTT because `.hemtt/project.toml` enables release signing:
+
+```toml
+[hemtt.release]
+sign = true
+```
+
+The current signing policy uses HEMTT's default versioned signing authority, which is based on the addon prefix and release version:
+
+```text
+zen_favorites_1.0.0
+zen_favorites_1.0.1
+```
+
+For each public release, HEMTT writes a matching public server key and PBO signature:
+
+```text
+.hemttout\release\keys\zen_favorites_1.0.0.bikey
+.hemttout\release\addons\zen_favorites_main.pbo.zen_favorites_1.0.0.bisign
+```
+
+Server admins using `verifySignatures = 2` should allow the `.bikey` shipped with the current Workshop release. When the Workshop item is updated to a new version, the server key should be updated with it.
+
+Do not commit or publish private signing keys. The repository ignores `.hemttprivatekey`, `*.biprivatekey`, `*.bikey`, and `*.bisign`.
+
 ## Documentation
 
-- [Feature description](docs/features.md)
+- [Changelog](CHANGELOG.md)
+- [Backlog](docs/backlog.md)
 - [Empty Groups favorites plan](docs/empty-groups-plan.md)
-- [Steam Workshop description draft](docs/steam-workshop.md)
+- [Steam Workshop page text](docs/steam-workshop.md)
 
 ## Settings
 
@@ -161,6 +189,7 @@ Turn it on to clear saved favorites. It resets itself after clearing.
 ## Known Quirks
 
 - Favorite star clicks use a short delayed selection read to keep faction row paths reliable. Very fast double-clicks may toggle the same faction twice instead of toggling two different factions.
+- BLUFOR Units favorite collapse behavior can be inconsistent after reopening Zeus if a favorited row was already selected. OPFOR collapse behavior appears more consistent.
 - Favorite action hint text, such as `Added Favorite: NATO`, may linger instead of disappearing. This is cosmetic and should be fixed after release.
 - Empty Groups favorites currently use a temporary shortcut behavior while placement behavior is investigated.
 - Favorites are client-side. They are not synced between players or stored on the server.
@@ -170,6 +199,8 @@ Turn it on to clear saved favorites. It resets itself after clearing.
 
 - Better Empty Groups/composition support if it can be implemented without breaking normal ZEN placement behavior.
 - Module favorites for the Zeus Create Modules tree.
+- Individual faction unit and group favorites, session-based by default, with a CBA option to save them persistently.
+- Placement preview options that respect existing ZEN Placement settings where possible, with ZEN Favorites CBA settings for behavior ZEN does not expose.
 - Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite. Single objects are likely feasible; compositions need more investigation.
 - Adjustable Zeus Create panel width, if the owning panel controls can be identified reliably.
 - Additional filtering tools for the Zeus Create menu.

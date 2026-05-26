@@ -13,6 +13,7 @@ sign = true
 archive = true
 
 [hemtt.launch.default]
+mission = "ZEN_Favorites_Test.VR"
 workshop = [
     "450814997", # CBA_A3
     "1779063631", # Zeus Enhanced
