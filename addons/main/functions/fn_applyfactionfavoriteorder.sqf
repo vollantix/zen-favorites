@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Move favorited top-level factions above normal factions while preserving expansion state.
 params ["_display", ["_force", false]];
 
 private _activeTree = [_display] call zen_favorites_main_fnc_getactivecreatetree;
@@ -18,6 +19,7 @@ private _expandedStore = missionNamespace getVariable ["zen_favorites_main_facti
 private _expandedRows = +(_expandedStore getOrDefault [_favoriteKey, []]);
 private _signature = str [_favoriteKey, _favorites];
 
+// Reordering is frequent in Zeus; skip when favorites have not changed.
 if (!_force && {_tree getVariable ["zen_favorites_main_lastFavoriteOrderSignature", ""] == _signature}) exitWith {};
 
 private _orderAfterSort = [];
@@ -55,6 +57,7 @@ private _restoreExpandedRows = {
     _tree setVariable ["zen_favorites_main_ignoreFactionExpandEvents", false];
 };
 
+// Sorting emits expansion events, so suppress them while values are rewritten.
 _tree setVariable ["zen_favorites_main_ignoreFactionExpandEvents", true];
 
 if (_mode == "units") then {
@@ -125,6 +128,7 @@ _tree setVariable ["zen_favorites_main_ignoreFactionExpandEvents", false];
 
 [_tree, _mode, _expandedRows] call _restoreExpandedRows;
 
+// ZEN may adjust tree state shortly after sorting; restore once more after that settles.
 [{
     params ["_tree", "_mode", "_expandedRows", "_restoreExpandedRows"];
 

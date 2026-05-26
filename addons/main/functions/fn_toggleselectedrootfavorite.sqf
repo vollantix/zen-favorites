@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Route star clicks to Module, Empty, or top-level faction favorite toggles.
 params ["_display", ["_pathOverride", []]];
 
 private _activeTree = [_display] call zen_favorites_main_fnc_getactivecreatetree;
@@ -36,6 +37,7 @@ if (_side == "empty") exitWith {
 private _favoritePath = _path;
 
 if (_isSearching && {_side != "empty"}) then {
+    // Search results can select leaves; faction root favorites still target the faction row.
     if (_mode == "units" && {(count _path) > 1}) then {
         _favoritePath = [_path select 0];
     };

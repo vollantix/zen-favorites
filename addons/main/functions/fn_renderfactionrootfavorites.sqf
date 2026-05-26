@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Refresh top-level faction favorite order and star colors for Units or Groups.
 params ["_display", "_tree", "_idc", "_mode", "_side", "_searchText", "_favoriteColor", "_normalColor"];
 
 private _favoriteKey = format ["%1:%2", _mode, _side];
@@ -7,6 +8,7 @@ private _favoriteStore = missionNamespace getVariable ["zen_favorites_main_facti
 private _favorites = _favoriteStore getOrDefault [_favoriteKey, []];
 private _lastSearchText = _tree getVariable ["zen_favorites_main_lastSearchText", ""];
 private _justClearedSearch = _searchText == "" && {_lastSearchText != ""};
+// Include search text so stars are refreshed after ZEN swaps normal and search rows.
 private _renderSignature = str [
     _idc,
     _mode,

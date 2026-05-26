@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Build the generated Favorites branch for the Modules tree.
 params ["_tree"];
 
 private _favorites = (missionNamespace getVariable ["zen_favorites_main_moduleFavorites", []]) select {
@@ -12,6 +13,7 @@ private _signature = str _favorites;
 private _rootCount = _tree tvCount [];
 private _hasFavoritesRoot = false;
 
+// If an old empty Favorites root is still visible, force one cleanup pass.
 for "_index" from 0 to (_rootCount - 1) do {
     if ((_tree tvText [_index]) == "Favorites") exitWith {
         _hasFavoritesRoot = true;
@@ -40,6 +42,7 @@ if (_originalRootOrder isEqualTo []) then {
     _tree setVariable ["zen_favorites_main_moduleOriginalRootOrder", _originalRootOrder];
 };
 
+// Rendering deletes and rebuilds rows; ignore those synthetic expand/collapse events.
 _tree setVariable ["zen_favorites_main_ignoreModuleExpandEvents", true];
 
 for "_index" from (_rootCount - 1) to 0 step -1 do {
@@ -75,6 +78,7 @@ private _favoritesRootIndex = _tree tvAdd [[], "Favorites"];
 private _favoritesRootPath = [_favoritesRootIndex];
 private _favoriteBranchTextPaths = [];
 
+// Folder rows need harmless CfgVehicles data so selecting them does not show config popups.
 _tree tvSetData [_favoritesRootPath, "Logic"];
 _tree tvSetValue [_favoritesRootPath, -1000];
 
@@ -122,6 +126,7 @@ _tree tvSetValue [_favoritesRootPath, -1000];
         _parentPath pushBack _existingIndex;
         _relativeBranchPath pushBack _segment;
 
+        // Generated folder rows are not favorites themselves; the leaf carries the source data.
         _tree tvSetData [_parentPath, "Logic"];
         _tree tvSetValue [_parentPath, _tree tvValue _originalSegmentPath];
         _tree tvSetTooltip [_parentPath, _tree tvTooltip _originalSegmentPath];
@@ -144,6 +149,7 @@ _tree tvSetValue [_favoritesRootPath, -1000];
 } forEach _favorites;
 
 if ((_tree tvCount _favoritesRootPath) == 0) exitWith {
+    // Stored favorites can become unavailable when a module-providing mod is missing.
     _tree tvDelete _favoritesRootPath;
     _tree setVariable ["zen_favorites_main_moduleFavoritesSignature", _signature];
     _tree setVariable ["zen_favorites_main_moduleFavoriteBranchTextPaths", []];

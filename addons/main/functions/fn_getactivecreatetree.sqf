@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Return the active Zeus Create tree plus its mode and side.
 params ["_display"];
 
 private _candidates = [

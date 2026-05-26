@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Clear saved Empty Units favorites and remove the live Favorites branch if it is visible.
 profileNamespace setVariable ["zen_favorites_main_emptyFavorites_units", []];
 saveProfileNamespace;
 

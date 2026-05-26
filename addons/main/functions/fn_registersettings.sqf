@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Register user-facing CBA settings for debugging and maintenance actions.
 [
     "zen_favorites_main_logLevel",
     "LIST",

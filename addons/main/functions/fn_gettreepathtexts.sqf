@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Convert a tree path such as [0, 2, 1] into its visible text segments.
 params ["_tree", ["_path", []]];
 
 private _displayPath = [];

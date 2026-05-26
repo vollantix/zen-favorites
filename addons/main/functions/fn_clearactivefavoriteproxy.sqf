@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Clear the gold active styling from a generated favorite proxy row.
 params [
     "_tree",
     "_activePathVariable",

@@ -1,5 +1,6 @@
 #include "script_component.hpp"
 
+// Load profile-backed favorites and start the lightweight Zeus display render loop.
 [ZEN_FAVORITES_LOG_LEVEL_INFO, "postInit ran"] call zen_favorites_main_fnc_log;
 
 private _emptyUnitFavorites = profileNamespace getVariable ["zen_favorites_main_emptyFavorites_units", []];

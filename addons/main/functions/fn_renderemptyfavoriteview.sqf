@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Refresh Empty tree favorite branches and star colors for Units or Groups.
 params ["_tree", "_idc", "_mode", "_searchText", "_favoriteColor", "_normalColor"];
 
 if (_mode == "groups") exitWith {
@@ -10,6 +11,7 @@ if (_mode == "groups") exitWith {
         {(_x select 2) isEqualType ""}
     };
     private _rootCount = _tree tvCount [];
+    // Include root count so delayed ZEN tree population triggers a fresh render.
     private _renderSignature = str [
         _idc,
         _mode,
@@ -25,6 +27,7 @@ if (_mode == "groups") exitWith {
     if (_searchText == "") then {
         [_tree, _mode] call zen_favorites_main_fnc_renderemptyfavoritescategory;
     } else {
+        // Search results are transient; hide generated Favorites branches while searching.
         for "_index" from ((_tree tvCount []) - 1) to 0 step -1 do {
             if ((_tree tvText [_index]) == "Favorites") then {
                 _tree tvDelete [_index];
@@ -73,6 +76,7 @@ private _emptyFavorites = (missionNamespace getVariable [_emptyStoreKey, []]) se
     {(_x select 1) != ""}
 };
 private _rootCount = _tree tvCount [];
+// Include root count so delayed ZEN tree population triggers a fresh render.
 private _renderSignature = str [
     _idc,
     _mode,
@@ -88,6 +92,7 @@ _tree setVariable ["zen_favorites_main_lastEmptyRenderSignature", _renderSignatu
 if (_searchText == "") then {
     [_tree, _mode] call zen_favorites_main_fnc_renderemptyfavoritescategory;
 } else {
+    // Search results are transient; hide generated Favorites branches while searching.
     for "_index" from ((_tree tvCount []) - 1) to 0 step -1 do {
         if ((_tree tvText [_index]) == "Favorites") then {
             _tree tvDelete [_index];

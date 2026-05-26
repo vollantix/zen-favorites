@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Restore generated Favorites branch expansion from visible text paths.
 params [
     "_tree",
     ["_expandedTextPaths", []],

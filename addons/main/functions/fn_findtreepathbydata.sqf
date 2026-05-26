@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Find the first tree row with matching tvData, optionally skipping a generated branch.
 params [
     "_tree",
     ["_parentPath", []],

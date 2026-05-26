@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Resolve a visible text path back to a tree path, optionally skipping a generated branch.
 params [
     "_tree",
     ["_displayPath", []],

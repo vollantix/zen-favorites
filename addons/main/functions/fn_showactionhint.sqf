@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Show a short Zeus-display toast for favorite add/remove and clear actions.
 params [["_message", ""], ["_duration", 1.6]];
 
 private _display = findDisplay 312;

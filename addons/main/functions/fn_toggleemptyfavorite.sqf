@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Add or remove a selected Empty Units/Groups leaf from its profile-backed favorites.
 params ["_tree", "_path", "_mode"];
 
 if ((count _path) == 0) exitWith {
@@ -31,6 +32,7 @@ private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefa
 if (_mode == "groups" && {_isGeneratedFavoritePath}) then {
     private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_emptyGroupsFavoriteSourcePaths", createHashMap];
 
+    // Empty Groups display paths are compacted under Favorites, so use the stored source path.
     _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [str _displayPath, _sourceDisplayPath];
 };
 
@@ -79,6 +81,7 @@ if (_existingIndex == -1) then {
     _favorites pushBack _favoriteEntry;
 
     if (_mode in ["units", "groups"]) then {
+        // New favorites expand their own generated branch once, then user state takes over.
         private _pendingBranchTextPaths = [];
         private _favoriteDisplayPath = +_sourceDisplayPath;
         private _pendingStateVariable = [

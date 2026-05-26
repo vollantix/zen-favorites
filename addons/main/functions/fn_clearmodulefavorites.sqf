@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Clear saved Module favorites and remove the live Favorites branch if it is visible.
 profileNamespace setVariable ["zen_favorites_main_moduleFavorites", []];
 saveProfileNamespace;
 

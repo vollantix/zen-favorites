@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Coordinate Create tree favorite rendering for modules, empty trees, and faction roots.
 params ["_display"];
 
 private _activeTree = [_display] call zen_favorites_main_fnc_getactivecreatetree;
@@ -14,6 +15,7 @@ private _searchText = ctrlText (_display displayCtrl 283);
 
 [_tree] call zen_favorites_main_fnc_registercreatetreehandlers;
 
+// The active Create tab decides which renderer owns this frame.
 if (_mode == "modules") exitWith {
     [_tree, _idc, _searchText, _favoriteColor, _normalColor] call zen_favorites_main_fnc_rendermodulefavoriteview;
 };

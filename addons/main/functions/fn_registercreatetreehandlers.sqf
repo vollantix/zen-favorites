@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Attach Create tree mouse, expansion, and proxy-selection handlers once per control.
 params ["_tree"];
 
 if (isNull _tree) exitWith {};
@@ -38,6 +39,7 @@ _tree ctrlAddEventHandler ["MouseButtonUp", {
     private _selectedPath = tvCurSel _tree;
 
     if (_button == 1) then {
+        // Right-click keeps the discoverability escape hatch: jump to the real ZEN row.
         if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_UNITS_EMPTY && {_hoverPath isNotEqualTo []}) then {
             private _displayPath = [_tree, _hoverPath] call zen_favorites_main_fnc_gettreepathtexts;
 
@@ -144,6 +146,7 @@ _tree ctrlAddEventHandler ["MouseButtonUp", {
     };
 
     if (_isStarClick && {_hoverPath isNotEqualTo []}) then {
+        // Arma can emit duplicate mouse-up events; debounce only identical star clicks.
         private _clickKey = str [ctrlIDC _tree, _hoverPath];
         private _lastClick = _tree getVariable ["zen_favorites_main_lastStarClick", ["", -1000]];
         _lastClick params ["_lastClickKey", "_lastClickTime"];
@@ -196,6 +199,7 @@ _tree ctrlAddEventHandler ["TreeMouseHold", {
 _tree ctrlAddEventHandler ["TreeExpanded", {
     params ["_tree", ["_path", []]];
 
+    // Generated Favorites branches track expansion by text path because row indices are rebuilt often.
     if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_MODULES && {!(_tree getVariable ["zen_favorites_main_ignoreModuleExpandEvents", false])}) then {
         if (_path isNotEqualTo [] && {(_tree tvText [_path select 0]) == "Favorites"}) then {
             [_tree, _path, true, "zen_favorites_main_moduleExpandedTextPaths"] call zen_favorites_main_fnc_setfavoritetreeexpanded;
@@ -220,6 +224,7 @@ _tree ctrlAddEventHandler ["TreeExpanded", {
 _tree ctrlAddEventHandler ["TreeCollapsed", {
     params ["_tree", ["_path", []]];
 
+    // Mirror TreeExpanded so manual collapse state survives rerenders and proxy selections.
     if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_MODULES && {!(_tree getVariable ["zen_favorites_main_ignoreModuleExpandEvents", false])}) then {
         if (_path isNotEqualTo [] && {(_tree tvText [_path select 0]) == "Favorites"}) then {
             [_tree, _path, false, "zen_favorites_main_moduleExpandedTextPaths"] call zen_favorites_main_fnc_setfavoritetreeexpanded;
@@ -244,6 +249,7 @@ _tree ctrlAddEventHandler ["TreeCollapsed", {
 _tree ctrlAddEventHandler ["TreeSelChanged", {
     params ["_tree", "_path"];
 
+    // Empty Unit favorites select the original row so ZEN Placement owns previews/settings.
     if ((ctrlIDC _tree) != ZEN_FAVORITES_IDC_CREATE_UNITS_EMPTY) exitWith {};
     if (_tree getVariable ["zen_favorites_main_ignoreEmptyUnitsProxySelection", false]) exitWith {};
 
@@ -319,6 +325,7 @@ _tree ctrlAddEventHandler ["TreeSelChanged", {
 _tree ctrlAddEventHandler ["TreeSelChanged", {
     params ["_tree", "_path"];
 
+    // Empty Groups use the stored source path because generated paths are intentionally compacted.
     if ((ctrlIDC _tree) != ZEN_FAVORITES_IDC_CREATE_GROUPS_EMPTY) exitWith {};
     if (_tree getVariable ["zen_favorites_main_ignoreEmptyGroupsProxySelection", false]) exitWith {};
 
@@ -373,6 +380,7 @@ _tree ctrlAddEventHandler ["TreeSelChanged", {
 _tree ctrlAddEventHandler ["TreeSelChanged", {
     params ["_tree", "_path"];
 
+    // Modules follow the same proxy-selection path as Empty favorites for consistent behavior.
     if ((ctrlIDC _tree) != ZEN_FAVORITES_IDC_CREATE_MODULES) exitWith {};
     if (_tree getVariable ["zen_favorites_main_ignoreModuleProxySelection", false]) exitWith {};
 

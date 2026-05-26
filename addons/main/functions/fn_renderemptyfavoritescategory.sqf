@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Build the generated Favorites branch for Empty Units or Empty Groups.
 params ["_tree", "_mode"];
 
 private _storeKey = format ["zen_favorites_main_emptyFavorites_%1", _mode];
@@ -13,6 +14,7 @@ private _signature = str _favorites;
 private _rootCount = _tree tvCount [];
 private _hasFavoritesRoot = false;
 
+// If an old empty Favorites root is still visible, force one cleanup pass.
 for "_index" from 0 to (_rootCount - 1) do {
     if ((_tree tvText [_index]) == "Favorites") exitWith {
         _hasFavoritesRoot = true;
@@ -65,6 +67,7 @@ if (_originalRootOrder isEqualTo []) then {
 };
 
 if (_usesSharedExpansion) then {
+    // Rendering deletes and rebuilds rows; ignore those synthetic expand/collapse events.
     _tree setVariable [_ignoreExpandVariable, true];
 };
 
@@ -123,6 +126,7 @@ _favoritesRootPath pushBack _favoritesRootIndex;
 private _favoriteBranchTextPaths = [];
 private _favoriteSourcePathMap = createHashMap;
 
+// Folder rows need harmless CfgVehicles data so selecting them does not show config popups.
 _tree tvSetData [_favoritesRootPath, "Logic"];
 _tree tvSetValue [_favoritesRootPath, -1000];
 
@@ -146,6 +150,7 @@ _tree tvSetValue [_favoritesRootPath, -1000];
     };
 
     if (_isEmptyUnits) then {
+        // Empty Units can have deep source paths, so present a compact two-level branch.
         private _leafText = _relativeDisplayPath param [(count _relativeDisplayPath) - 1, ""];
         private _categoryParts = _relativeDisplayPath select [0, ((count _relativeDisplayPath) - 1) max 0];
         private _categoryText = if (_categoryParts isEqualTo []) then {"Favorites"} else {_categoryParts joinString " / "};
@@ -154,6 +159,7 @@ _tree tvSetValue [_favoritesRootPath, -1000];
     };
 
     if (_isEmptyGroups && {count _relativeDisplayPath > 1}) then {
+        // Empty Groups keep one extra category level for readable composition grouping.
         private _leafText = _relativeDisplayPath param [(count _relativeDisplayPath) - 1, ""];
         private _categoryParts = _relativeDisplayPath select [0, ((count _relativeDisplayPath) - 1) max 0];
 
@@ -194,6 +200,7 @@ _tree tvSetValue [_favoritesRootPath, -1000];
         _parentPath pushBack _existingIndex;
         _relativeBranchPath pushBack _segment;
 
+        // Generated folder rows are not favorites themselves; the leaf carries the source data.
         _tree tvSetData [_parentPath, "Logic"];
         _tree tvSetValue [_parentPath, _originalSortValue + _forEachIndex];
         _tree tvSetTooltip [_parentPath, _tree tvTooltip _originalSegmentPath];
@@ -218,11 +225,13 @@ _tree tvSetValue [_favoritesRootPath, -1000];
     _tree tvSetPictureRightColorSelected [_parentPath, [1, 0.82, 0.25, 1]];
 
     if (_isEmptyGroups) then {
+        // Compacted display paths need a reverse map to find the original ZEN row again.
         _favoriteSourcePathMap set [str (["Favorites"] + _relativeDisplayPath), _displayPath];
     };
 } forEach _favorites;
 
 if ((_tree tvCount _favoritesRootPath) == 0) exitWith {
+    // Stored favorites can become unavailable when mods/compositions are missing.
     _tree tvDelete _favoritesRootPath;
     _tree setVariable ["zen_favorites_main_emptyFavoritesSignature", _signature];
 

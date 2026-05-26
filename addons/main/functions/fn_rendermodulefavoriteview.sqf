@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Refresh Module tree favorite branch and star colors.
 params ["_tree", "_idc", "_searchText", "_favoriteColor", "_normalColor"];
 
 private _moduleFavorites = (missionNamespace getVariable ["zen_favorites_main_moduleFavorites", []]) select {
@@ -9,6 +10,7 @@ private _moduleFavorites = (missionNamespace getVariable ["zen_favorites_main_mo
     {(_x select 2) isEqualType ""}
 };
 private _rootCount = _tree tvCount [];
+// Include root count so delayed ZEN tree population triggers a fresh render.
 private _renderSignature = str [
     _idc,
     _searchText,
@@ -23,6 +25,7 @@ _tree setVariable ["zen_favorites_main_lastModuleRenderSignature", _renderSignat
 if (_searchText == "") then {
     [_tree] call zen_favorites_main_fnc_rendermodulefavoritescategory;
 } else {
+    // Search results are transient; hide generated Favorites branches while searching.
     for "_index" from ((_tree tvCount []) - 1) to 0 step -1 do {
         if ((_tree tvText [_index]) == "Favorites") then {
             _tree tvDelete [_index];

@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Write addon-scoped diagnostic lines to the Arma RPT when the log level allows it.
 params [
     ["_level", ZEN_FAVORITES_LOG_LEVEL_INFO, [0]],
     ["_message", "", [""]]

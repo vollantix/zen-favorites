@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Track expansion state for top-level faction rows across reorder operations.
 params ["_tree", ["_path", []], ["_expanded", false], ["_force", false]];
 
 if (isNull _tree) exitWith {};

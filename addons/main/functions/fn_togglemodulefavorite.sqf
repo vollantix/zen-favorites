@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Add or remove a selected Module leaf from profile-backed module favorites.
 params ["_tree", "_path"];
 
 if ((count _path) == 0) exitWith {
@@ -46,6 +47,7 @@ if (_existingIndex == -1) then {
 
     _favorites pushBack _favoriteEntry;
 
+    // New favorites expand their own generated branch once, then user state takes over.
     private _pendingBranchTextPaths = [];
 
     if ((count _sourceDisplayPath) > 1) then {

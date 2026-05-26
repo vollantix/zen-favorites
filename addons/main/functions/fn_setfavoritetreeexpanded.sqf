@@ -1,5 +1,6 @@
 #include "..\script_component.hpp"
 
+// Track expansion state for generated Favorites branches by visible text path.
 params [
     "_tree",
     ["_path", []],
