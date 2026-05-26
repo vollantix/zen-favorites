@@ -102,5 +102,5 @@ zen_favorites_main_clearModuleFavorites = false;
         [_display] call zen_favorites_main_fnc_onzeusdisplayopened;
     };
 
-    [_display] call zen_favorites_main_fnc_renderfactionstars;
+    [_display] call zen_favorites_main_fnc_rendercreatetreefavorites;
 }, 0.2] call CBA_fnc_addPerFrameHandler;

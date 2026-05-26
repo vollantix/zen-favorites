@@ -46,8 +46,13 @@ class CfgFunctions {
             class removefavoritepathmarker {};
             class clearemptyfavorites {};
             class registersettings {};
+            class registercreatetreehandlers {};
+            class rendercreatetreefavorites {};
+            class renderemptyfavoriteview {};
             class renderemptyfavoritescategory {};
             class renderfactionstars {};
+            class renderfactionrootfavorites {};
+            class rendermodulefavoriteview {};
             class rendermodulefavoritescategory {};
             class restorefavoritetreeexpanded {};
             class setfactionrowexpanded {};
