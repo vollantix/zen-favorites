@@ -33,6 +33,12 @@ ZEN Favorites is client-side. Favorites are stored per player and are not synced
 - Generated Favorites section rows are not favoritable; only the final leaf rows carry favorite stars.
 - Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
 
+## Previews and ZEN Settings
+
+ZEN Favorites does not override Zeus Enhanced preview settings or call ZEN's placement preview logic directly. Generated favorite rows select the matching original ZEN row internally, so Zeus Enhanced remains responsible for placement previews, placement bubbles, and preview-related settings.
+
+The original Zeus Create entries are not replaced or rewritten. ZEN Favorites decorates them with star controls, may reorder favorited faction roots, and adds generated Favorites sections. Group favorites do not show placement previews because ZEN does not normally preview multiple group units or objects as one placement preview.
+
 ## Development
 
 Build and launch the development version:
@@ -77,13 +83,14 @@ The current signing policy uses HEMTT's default versioned signing authority, whi
 ```text
 zen_favorites_1.0.0
 zen_favorites_1.0.1
+zen_favorites_1.1.0
 ```
 
 For each public release, HEMTT writes a matching public server key and PBO signature:
 
 ```text
-.hemttout\release\keys\zen_favorites_1.0.0.bikey
-.hemttout\release\addons\zen_favorites_main.pbo.zen_favorites_1.0.0.bisign
+.hemttout\release\keys\zen_favorites_1.1.0.bikey
+.hemttout\release\addons\zen_favorites_main.pbo.zen_favorites_1.1.0.bisign
 ```
 
 Server admins using `verifySignatures = 2` should allow the `.bikey` shipped with the current Workshop release. When the Workshop item is updated to a new version, the server key should be updated with it.

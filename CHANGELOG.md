@@ -4,6 +4,10 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 
 ## [Unreleased]
 
+No user-facing changes yet.
+
+## [1.1.0] - 2026-05-27
+
 ### Added
 
 - Empty Groups favorites for the Zeus Create Empty Groups tree.
