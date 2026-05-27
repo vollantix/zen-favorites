@@ -10,8 +10,6 @@ This document tracks planned work, known quirks, and investigation notes. Shippe
 
 - `ZF-103` Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite.
 - `ZF-105` Additional filtering tools for the Zeus Create menu.
-- `ZF-106` Faction Units and Groups leaf favorites for individual unit/group rows under BLUFOR, OPFOR, Independent, and Civilian. These should use a generated Favorites branch similar to Empty Units favorites, stay session-based by default, and include a CBA option to persist them in the player's profile.
-- `ZF-107` Separate CBA persistence settings for top-level faction favorites and faction leaf favorites.
 
 ## Release Process
 

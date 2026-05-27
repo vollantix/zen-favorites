@@ -9,8 +9,12 @@ params [
 
 private _activeFavoritePath = _tree getVariable [_activePathVariable, []];
 
-if (_activeFavoritePath isNotEqualTo [] && {(_tree tvText [_activeFavoritePath select 0]) == "Favorites"}) then {
-    _tree tvSetColor [_activeFavoritePath, _normalColor];
+if (_activeFavoritePath isNotEqualTo []) then {
+    private _displayPath = [_tree, _activeFavoritePath] call zen_favorites_main_fnc_gettreepathtexts;
+
+    if ("Favorites" in _displayPath) then {
+        _tree tvSetColor [_activeFavoritePath, _normalColor];
+    };
 };
 
 _tree setVariable [_activePathVariable, []];

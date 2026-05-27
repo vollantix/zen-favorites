@@ -10,7 +10,8 @@ params [
     "_ignoreSelectionVariable",
     "_activePathVariable",
     ["_activeColor", [1, 0.93, 0.58, 1]],
-    ["_normalColor", [1, 1, 1, 1]]
+    ["_normalColor", [1, 1, 1, 1]],
+    ["_extraIgnoreExpandVariable", ""]
 ];
 
 if (isNull _tree) exitWith {false};
@@ -31,6 +32,10 @@ for "_depth" from ((count _originalPath) - 1) to 1 step -1 do {
 
 _tree setVariable [_ignoreExpandVariable, true];
 
+if (_extraIgnoreExpandVariable != "") then {
+    _tree setVariable [_extraIgnoreExpandVariable, true];
+};
+
 // Temporarily expose the original ZEN row so ZEN's own selection handlers run.
 for "_depth" from 1 to ((count _originalPath) - 1) do {
     _tree tvExpand (_originalPath select [0, _depth]);
@@ -48,7 +53,8 @@ _tree tvSetCurSel _originalPath;
         "_expandedStateVariable",
         "_ignoreExpandVariable",
         "_ignoreSelectionVariable",
-        "_activeColor"
+        "_activeColor",
+        "_extraIgnoreExpandVariable"
     ];
 
     if (isNull _tree) exitWith {};
@@ -74,6 +80,10 @@ _tree tvSetCurSel _originalPath;
     _tree tvSetColor [_favoritePath, _activeColor];
     _tree setVariable [_ignoreExpandVariable, false];
     _tree setVariable [_ignoreSelectionVariable, false];
+
+    if (_extraIgnoreExpandVariable != "") then {
+        _tree setVariable [_extraIgnoreExpandVariable, false];
+    };
 }, [
     _tree,
     _expandedTextPaths,
@@ -82,7 +92,8 @@ _tree tvSetCurSel _originalPath;
     _expandedStateVariable,
     _ignoreExpandVariable,
     _ignoreSelectionVariable,
-    _activeColor
+    _activeColor,
+    _extraIgnoreExpandVariable
 ]] call CBA_fnc_execNextFrame;
 
 true

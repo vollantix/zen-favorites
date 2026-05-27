@@ -6,6 +6,8 @@
 private _emptyUnitFavorites = profileNamespace getVariable ["zen_favorites_main_emptyFavorites_units", []];
 private _rawEmptyGroupFavorites = profileNamespace getVariable ["zen_favorites_main_emptyFavorites_groups", []];
 private _rawModuleFavorites = profileNamespace getVariable ["zen_favorites_main_moduleFavorites", []];
+private _factionFavorites = createHashMap;
+private _factionLeafFavorites = createHashMap;
 private _emptyGroupFavorites = _rawEmptyGroupFavorites select {
     (_x isEqualType []) &&
     {count _x >= 6} &&
@@ -20,9 +22,19 @@ private _moduleFavorites = _rawModuleFavorites select {
     {(_x select 2) isEqualType ""}
 };
 
+if (missionNamespace getVariable ["zen_favorites_main_persistFactionRootFavorites", false]) then {
+    _factionFavorites = [profileNamespace getVariable ["zen_favorites_main_factionFavorites", []]] call zen_favorites_main_fnc_favoritehashmapfromarray;
+};
+
+if (missionNamespace getVariable ["zen_favorites_main_persistFactionLeafFavorites", false]) then {
+    _factionLeafFavorites = [profileNamespace getVariable ["zen_favorites_main_factionLeafFavorites", []]] call zen_favorites_main_fnc_favoritehashmapfromarray;
+};
+
 missionNamespace setVariable ["zen_favorites_main_emptyFavorites_units", _emptyUnitFavorites];
 missionNamespace setVariable ["zen_favorites_main_emptyFavorites_groups", _emptyGroupFavorites];
 missionNamespace setVariable ["zen_favorites_main_moduleFavorites", _moduleFavorites];
+missionNamespace setVariable ["zen_favorites_main_factionFavorites", _factionFavorites];
+missionNamespace setVariable ["zen_favorites_main_factionLeafFavorites", _factionLeafFavorites];
 
 if ((count _emptyGroupFavorites) != (count _rawEmptyGroupFavorites)) then {
     profileNamespace setVariable ["zen_favorites_main_emptyFavorites_groups", _emptyGroupFavorites];
@@ -47,10 +59,12 @@ if ((count _moduleFavorites) != (count _rawModuleFavorites)) then {
 };
 
 [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
-    "loaded favorites from profile emptyUnits=%1 emptyGroups=%2 modules=%3",
+    "loaded favorites from profile emptyUnits=%1 emptyGroups=%2 modules=%3 factionRootsPersisted=%4 factionLeavesPersisted=%5",
     count _emptyUnitFavorites,
     count _emptyGroupFavorites,
-    count _moduleFavorites
+    count _moduleFavorites,
+    missionNamespace getVariable ["zen_favorites_main_persistFactionRootFavorites", false],
+    missionNamespace getVariable ["zen_favorites_main_persistFactionLeafFavorites", false]
 ]] call zen_favorites_main_fnc_log;
 
 zen_favorites_main_clearEmptyFavorites = false;

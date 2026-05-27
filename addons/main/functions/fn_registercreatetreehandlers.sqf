@@ -143,6 +143,54 @@ _tree ctrlAddEventHandler ["MouseButtonUp", {
                 };
             };
         };
+
+        private _treeContext = [ctrlIDC _tree] call zen_favorites_main_fnc_getcreatetreecontextbyidc;
+        _treeContext params ["_mode", "_side"];
+
+        if (_mode in ["units", "groups"] && {_side != "empty"} && {_hoverPath isNotEqualTo []}) then {
+            private _displayPath = [_tree, _hoverPath] call zen_favorites_main_fnc_gettreepathtexts;
+
+            if ("Favorites" in _displayPath && {(_tree tvCount _hoverPath) == 0}) then {
+                private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_factionLeafFavoriteSourcePaths", createHashMap];
+                private _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [
+                    str _displayPath,
+                    [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker
+                ];
+                private _data = _tree tvData _hoverPath;
+                private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
+
+                if (_originalPath isEqualTo [] && {_data != ""}) then {
+                    _originalPath = [_tree, [], _data] call zen_favorites_main_fnc_findtreepathbydata;
+                };
+
+                if (_originalPath isNotEqualTo []) then {
+                    _tree setVariable ["zen_favorites_main_ignoreFactionLeafExpandEvents", true];
+                    _tree setVariable ["zen_favorites_main_ignoreFactionExpandEvents", true];
+
+                    for "_depth" from 1 to (count _originalPath) do {
+                        _tree tvExpand (_originalPath select [0, _depth]);
+                    };
+
+                    _tree tvSetCurSel _originalPath;
+                    _tree setVariable ["zen_favorites_main_ignoreFactionLeafExpandEvents", false];
+                    _tree setVariable ["zen_favorites_main_ignoreFactionExpandEvents", false];
+
+                    [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
+                        "right-click jumped faction leaf favorite to original path favoritePath=%1 originalPath=%2 sourceDisplayPath=%3",
+                        _hoverPath,
+                        _originalPath,
+                        _sourceDisplayPath
+                    ]] call zen_favorites_main_fnc_log;
+                } else {
+                    [ZEN_FAVORITES_LOG_LEVEL_WARN, format [
+                        "could not resolve faction leaf favorite right-click jump favoritePath=%1 sourceDisplayPath=%2 data=%3",
+                        _hoverPath,
+                        _sourceDisplayPath,
+                        _data
+                    ]] call zen_favorites_main_fnc_log;
+                };
+            };
+        };
     };
 
     if (_isStarClick && {_hoverPath isNotEqualTo []}) then {
@@ -218,7 +266,25 @@ _tree ctrlAddEventHandler ["TreeExpanded", {
         };
     };
 
-    [_tree, _path, true] call zen_favorites_main_fnc_setfactionrowexpanded;
+    private _treeContext = [ctrlIDC _tree] call zen_favorites_main_fnc_getcreatetreecontextbyidc;
+    _treeContext params ["_mode", "_side"];
+    private _isFactionLeafFavoritePath = false;
+
+    if (_mode in ["units", "groups"] && {_side != "empty"}) then {
+        private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
+
+        if ("Favorites" in _displayPath) then {
+            _isFactionLeafFavoritePath = true;
+
+            if !(_tree getVariable ["zen_favorites_main_ignoreFactionLeafExpandEvents", false]) then {
+                [_tree, _path, true, format ["zen_favorites_main_factionLeafExpandedTextPaths_%1_%2", _mode, _side]] call zen_favorites_main_fnc_setfavoritetreeexpanded;
+            };
+        };
+    };
+
+    if (!_isFactionLeafFavoritePath) then {
+        [_tree, _path, true] call zen_favorites_main_fnc_setfactionrowexpanded;
+    };
 }];
 
 _tree ctrlAddEventHandler ["TreeCollapsed", {
@@ -243,7 +309,25 @@ _tree ctrlAddEventHandler ["TreeCollapsed", {
         };
     };
 
-    [_tree, _path, false] call zen_favorites_main_fnc_setfactionrowexpanded;
+    private _treeContext = [ctrlIDC _tree] call zen_favorites_main_fnc_getcreatetreecontextbyidc;
+    _treeContext params ["_mode", "_side"];
+    private _isFactionLeafFavoritePath = false;
+
+    if (_mode in ["units", "groups"] && {_side != "empty"}) then {
+        private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
+
+        if ("Favorites" in _displayPath) then {
+            _isFactionLeafFavoritePath = true;
+
+            if !(_tree getVariable ["zen_favorites_main_ignoreFactionLeafExpandEvents", false]) then {
+                [_tree, _path, false, format ["zen_favorites_main_factionLeafExpandedTextPaths_%1_%2", _mode, _side]] call zen_favorites_main_fnc_setfavoritetreeexpanded;
+            };
+        };
+    };
+
+    if (!_isFactionLeafFavoritePath) then {
+        [_tree, _path, false] call zen_favorites_main_fnc_setfactionrowexpanded;
+    };
 }];
 
 _tree ctrlAddEventHandler ["TreeSelChanged", {
@@ -433,6 +517,87 @@ _tree ctrlAddEventHandler ["TreeSelChanged", {
         _originalPath,
         _sourceDisplayPath,
         _className
+    ]] call zen_favorites_main_fnc_log;
+}];
+
+_tree ctrlAddEventHandler ["TreeSelChanged", {
+    params ["_tree", "_path"];
+
+    // Faction leaf favorites proxy-select the original ZEN row to preserve previews and placement behavior.
+    private _treeContext = [ctrlIDC _tree] call zen_favorites_main_fnc_getcreatetreecontextbyidc;
+    _treeContext params ["_mode", "_side"];
+
+    if !(_mode in ["units", "groups"] && {_side != "empty"}) exitWith {};
+    if (_tree getVariable ["zen_favorites_main_ignoreFactionLeafProxySelection", false]) exitWith {};
+
+    private _clearActiveFavorite = {
+        [_tree, "zen_favorites_main_activeFactionLeafFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
+    };
+
+    if ((count _path) < 2) exitWith {
+        call _clearActiveFavorite;
+    };
+
+    private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
+
+    if !("Favorites" in _displayPath) exitWith {
+        call _clearActiveFavorite;
+    };
+
+    if ((_tree tvCount _path) > 0) exitWith {
+        call _clearActiveFavorite;
+    };
+
+    private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_factionLeafFavoriteSourcePaths", createHashMap];
+    private _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [
+        str _displayPath,
+        [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker
+    ];
+    private _data = _tree tvData _path;
+    private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
+
+    if (_originalPath isEqualTo [] && {_data != ""}) then {
+        _originalPath = [_tree, [], _data] call zen_favorites_main_fnc_findtreepathbydata;
+    };
+
+    if (_originalPath isEqualTo []) exitWith {
+        call _clearActiveFavorite;
+
+        [ZEN_FAVORITES_LOG_LEVEL_WARN, format [
+            "could not resolve faction leaf favorite proxy selection favoritePath=%1 sourceDisplayPath=%2 data=%3",
+            _path,
+            _sourceDisplayPath,
+            _data
+        ]] call zen_favorites_main_fnc_log;
+    };
+
+    private _proxySelectionArgs = [
+        _tree,
+        +_path,
+        +_originalPath,
+        format ["zen_favorites_main_factionLeafExpandedTextPaths_%1_%2", _mode, _side],
+        "zen_favorites_main_ignoreFactionLeafExpandEvents",
+        "zen_favorites_main_ignoreFactionLeafProxySelection",
+        "zen_favorites_main_activeFactionLeafFavoritePath",
+        [1, 0.93, 0.58, 1],
+        [1, 1, 1, 1],
+        "zen_favorites_main_ignoreFactionExpandEvents"
+    ];
+
+    // ZEN placement clears previews for generated faction favorite paths because they are deeper than normal unit paths.
+    // Select the original row on the next frame so ZEN receives a clean selection event, similar to right-click jump.
+    [{
+        params ["_proxySelectionArgs"];
+
+        _proxySelectionArgs call zen_favorites_main_fnc_selectfavoriteproxy;
+    }, [_proxySelectionArgs]] call CBA_fnc_execNextFrame;
+
+    [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
+        "selected original faction leaf row from favorite proxy favoritePath=%1 originalPath=%2 sourceDisplayPath=%3 data=%4",
+        _path,
+        _originalPath,
+        _sourceDisplayPath,
+        _data
     ]] call zen_favorites_main_fnc_log;
 }];
 

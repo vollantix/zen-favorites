@@ -34,6 +34,12 @@ if (_mode == "units") then {
     for "_index" from 0 to ((_rootCount - 1) min 20) do {
         private _path = [_index];
         private _factionName = _tree tvText _path;
+
+        if (_factionName == "Favorites") then {
+            _tree tvSetPictureRight [_path, ""];
+            continue;
+        };
+
         private _color = [_normalColor, _favoriteColor] select (_factionName in _favorites);
 
         _tree tvSetPictureRight [_path, ZEN_FAVORITES_STAR_TEXTURE];
@@ -48,6 +54,12 @@ if (_mode == "groups") then {
     for "_index" from 0 to ((_factionCount - 1) min 20) do {
         private _path = [0, _index];
         private _factionName = _tree tvText _path;
+
+        if (_factionName == "Favorites") then {
+            _tree tvSetPictureRight [_path, ""];
+            continue;
+        };
+
         private _color = [_normalColor, _favoriteColor] select (_factionName in _favorites);
 
         _tree tvSetPictureRight [_path, ZEN_FAVORITES_STAR_TEXTURE];

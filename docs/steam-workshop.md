@@ -1,5 +1,5 @@
 [h1]ZEN Favorites[/h1]
-Built for Zeus players who keep reaching for the same factions, props, vehicles, and compositions every mission.
+Built for Zeus players who keep reaching for the same factions, units, groups, modules, props, and compositions every mission.
 
 ZEN Favorites adds favorite controls directly into the Zeus Enhanced Create tree, keeping your go-to entries close at hand while leaving the normal ZEN categories intact.
 
@@ -13,7 +13,16 @@ The mod is client-side. Favorites are stored per player and are not synced betwe
 [*]Favorited factions move to the top of the list.
 [*]New favorites expand once, then keep the open or collapsed state you choose.
 [*]Favorites are separate per side and per Create mode.
-[*]Faction favorites are mission-local and reset when Arma is restarted.
+[*]Faction favorites are session-based by default, with an optional CBA setting to save them in your Arma profile.
+[/list]
+
+[b]Faction Unit and Group Favorites[/b]
+[list]
+[*]Adds generated Favorites branches for individual units and groups inside the non-empty side trees.
+[*]Favorite sections are grouped by source faction and category so entries stay easy to recognize.
+[*]Generated section rows are not favoritable; the individual unit or group leaves carry the favorite star.
+[*]Selecting a favorite uses the matching original ZEN row, keeping normal previews, placement bubbles, and ZEN settings intact.
+[*]Faction unit and group favorites are session-based by default, with an optional CBA setting to save them in your Arma profile.
 [/list]
 
 [b]Empty Units Favorites[/b]
@@ -45,9 +54,9 @@ The mod is client-side. Favorites are stored per player and are not synced betwe
 [h1]Controls[/h1]
 [list]
 [*]Left-click a star: add or remove a favorite.
-[*]Left-click an Empty Units, Empty Groups, or Module favorite: select it using the matching original ZEN row behavior.
+[*]Left-click a generated favorite leaf: select it using the matching original ZEN row behavior.
 [*]Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
-[*]Right-click an Empty Units, Empty Groups, or Module favorite: jump to the original item in the normal tree.
+[*]Right-click a generated favorite leaf: jump to the original item in the normal tree.
 [/list]
 
 [h1]Settings[/h1]
@@ -56,6 +65,8 @@ ZEN Favorites settings are available in:
 
 [list]
 [*]Debugging > Log level: controls RPT logging verbosity.
+[*]Persistence > Save faction favorites: saves top-level faction favorites in your Arma profile. Off by default.
+[*]Persistence > Save faction unit/group favorites: saves individual faction unit and group favorites in your Arma profile. Off by default.
 [*]Maintenance > Clear Empty Unit favorites: clears saved Empty Unit favorites from the current Arma profile.
 [*]Maintenance > Clear Empty Group favorites: clears saved Empty Group favorites from the current Arma profile.
 [*]Maintenance > Clear Module favorites: clears saved Module favorites from the current Arma profile.
@@ -69,13 +80,10 @@ The current release process uses versioned keys. When updating the Workshop item
 [h1]Known Quirks[/h1]
 [list]
 [*]Favorite leaves that internally select a matching original ZEN row use gold active text instead of Arma's native white tree selection box. The native selection box stays tied to the original row.
-[*]Faction root favorites only last for the current mission/session.
 [/list]
 
 [h1]Planned Features[/h1]
 [list]
-[*]Individual faction unit and group favorites, session-based by default, with a CBA option to save them persistently.
-[*]Separate CBA persistence settings for top-level faction favorites and faction leaf favorites.
 [*]Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite.
 [*]Additional filtering tools for the Zeus Create menu.
 [/list]

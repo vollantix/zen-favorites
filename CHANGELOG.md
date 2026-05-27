@@ -9,10 +9,13 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 - Empty Groups favorites for the Zeus Create Empty Groups tree.
 - Module favorites for the Zeus Create Modules tree.
 - CBA maintenance toggles for clearing Empty Group favorites and Module favorites separately.
+- Individual faction unit and group leaf favorites for non-empty side trees.
+- Optional CBA persistence settings for top-level faction favorites and faction unit/group leaf favorites. Both are off by default.
 
 ### Changed
 
 - Empty Units, Empty Groups, and Module favorites now share the same proxy-selection helper so generated Favorites rows use the matching original ZEN row behavior.
+- Faction leaf favorites use the same proxy-selection helper so ZEN keeps its normal previews, placement bubbles, and settings.
 - Empty Groups favorites now keep a compact Favorites tree while preserving ZEN's normal group and composition placement behavior.
 - Removed obsolete direct Empty Unit preview and debug inspection helpers from the runtime path.
 
@@ -20,6 +23,8 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 
 - Very fast repeated clicks on the same faction favorite star are now ignored briefly to avoid accidental add/remove toggles.
 - Empty Groups and Module Favorites sections are removed when their last favorite is cleared.
+- Faction leaf Favorites rendering now preserves top-level faction favorite ordering instead of restoring the original faction order.
+- Faction leaf favorite selection now selects the matching original ZEN row on the next frame so ZEN placement previews receive a normal selection event.
 
 ### Known Quirks
 

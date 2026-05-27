@@ -65,7 +65,11 @@ if (_mode == "units") then {
 
     if (_originalOrder isEqualTo []) then {
         for "_index" from 0 to (_rootCount - 1) do {
-            _originalOrder pushBack (_tree tvText [_index]);
+            private _rowText = _tree tvText [_index];
+
+            if (_rowText != "Favorites") then {
+                _originalOrder pushBack _rowText;
+            };
         };
 
         _originalOrderStore set [_favoriteKey, _originalOrder];
@@ -77,7 +81,11 @@ if (_mode == "units") then {
         private _factionName = _tree tvText _path;
         private _favoriteIndex = _favorites find _factionName;
         private _originalIndex = _originalOrder find _factionName;
-        private _sortValue = if (_favoriteIndex == -1) then {1000 + _originalIndex} else {_favoriteIndex};
+        private _sortValue = if (_factionName == "Favorites") then {
+            -1000
+        } else {
+            if (_favoriteIndex == -1) then {1000 + _originalIndex} else {_favoriteIndex}
+        };
 
         _tree tvSetValue [_path, _sortValue];
     };
@@ -97,7 +105,11 @@ if (_mode == "groups") then {
 
     if (_originalOrder isEqualTo []) then {
         for "_index" from 0 to (_factionCount - 1) do {
-            _originalOrder pushBack (_tree tvText [0, _index]);
+            private _rowText = _tree tvText [0, _index];
+
+            if (_rowText != "Favorites") then {
+                _originalOrder pushBack _rowText;
+            };
         };
 
         _originalOrderStore set [_favoriteKey, _originalOrder];
@@ -109,7 +121,11 @@ if (_mode == "groups") then {
         private _factionName = _tree tvText _path;
         private _favoriteIndex = _favorites find _factionName;
         private _originalIndex = _originalOrder find _factionName;
-        private _sortValue = if (_favoriteIndex == -1) then {1000 + _originalIndex} else {_favoriteIndex};
+        private _sortValue = if (_factionName == "Favorites") then {
+            -1000
+        } else {
+            if (_favoriteIndex == -1) then {1000 + _originalIndex} else {_favoriteIndex}
+        };
 
         _tree tvSetValue [_path, _sortValue];
     };

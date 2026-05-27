@@ -34,10 +34,29 @@ if (_side == "empty") exitWith {
     [_tree, _path, _mode] call zen_favorites_main_fnc_toggleemptyfavorite;
 };
 
+private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
+private _isGeneratedFavoritePath = "Favorites" in _displayPath;
+
+if (_isGeneratedFavoritePath) exitWith {
+    if ((_tree tvCount _path) == 0) exitWith {
+        [_tree, _path, _mode, _side] call zen_favorites_main_fnc_togglefactionleaffavorite;
+    };
+
+    [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
+        "faction favorite toggle skipped for generated folder path=%1 text=%2",
+        _path,
+        _tree tvText _path
+    ]] call zen_favorites_main_fnc_log;
+};
+
+if ((_tree tvCount _path) == 0) exitWith {
+    [_tree, _path, _mode, _side] call zen_favorites_main_fnc_togglefactionleaffavorite;
+};
+
 private _favoritePath = _path;
 
 if (_isSearching && {_side != "empty"}) then {
-    // Search results can select leaves; faction root favorites still target the faction row.
+    // Search results can select category rows; faction root favorites still target the faction row.
     if (_mode == "units" && {(count _path) > 1}) then {
         _favoritePath = [_path select 0];
     };
@@ -107,6 +126,14 @@ if (_factionName in _favorites) then {
 
 _favoriteStore set [_favoriteKey, _favorites];
 missionNamespace setVariable ["zen_favorites_main_factionFavorites", _favoriteStore];
+
+if (missionNamespace getVariable ["zen_favorites_main_persistFactionRootFavorites", false]) then {
+    profileNamespace setVariable [
+        "zen_favorites_main_factionFavorites",
+        [_favoriteStore] call zen_favorites_main_fnc_favoritehashmaptoarray
+    ];
+    saveProfileNamespace;
+};
 
 if (!_isSearching) then {
     [_display, true] call zen_favorites_main_fnc_applyfactionfavoriteorder;

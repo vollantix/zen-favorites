@@ -37,9 +37,13 @@ class CfgFunctions {
             class clearactivefavoriteproxy {};
             class clearemptygroupfavorites {};
             class clearmodulefavorites {};
+            class favoritehashmapfromarray {};
+            class favoritehashmaptoarray {};
             class findtreepathbydata {};
             class findtreepathbytexts {};
             class getactivecreatetree {};
+            class getcreatetreecontextbyidc {};
+            class getfactionleaffavoritedisplaypath {};
             class gettreepathtexts {};
             class log {};
             class onzeusdisplayopened {};
@@ -51,6 +55,8 @@ class CfgFunctions {
             class renderemptyfavoriteview {};
             class renderemptyfavoritescategory {};
             class renderfactionstars {};
+            class renderfactionleaffavoriteview {};
+            class renderfactionleaffavoritescategory {};
             class renderfactionrootfavorites {};
             class rendermodulefavoriteview {};
             class rendermodulefavoritescategory {};
@@ -60,6 +66,7 @@ class CfgFunctions {
             class selectfavoriteproxy {};
             class showactionhint {};
             class toggleemptyfavorite {};
+            class togglefactionleaffavorite {};
             class togglemodulefavorite {};
             class toggleselectedrootfavorite {};
         };

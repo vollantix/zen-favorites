@@ -25,3 +25,4 @@ if (_side == "empty") exitWith {
 };
 
 [_display, _tree, _idc, _mode, _side, _searchText, _favoriteColor, _normalColor] call zen_favorites_main_fnc_renderfactionrootfavorites;
+[_tree, _idc, _mode, _side, _searchText, _favoriteColor, _normalColor] call zen_favorites_main_fnc_renderfactionleaffavoriteview;
