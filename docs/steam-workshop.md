@@ -65,8 +65,8 @@ ZEN Favorites settings are available in:
 
 [list]
 [*]Debugging > Log level: controls RPT logging verbosity.
-[*]Persistence > Save faction favorites: saves top-level faction favorites in your Arma profile. Off by default.
-[*]Persistence > Save faction unit/group favorites: saves individual faction unit and group favorites in your Arma profile. Off by default.
+[*]Persistence > Save faction favorites: saves current top-level faction favorites immediately, then loads and saves them through your Arma profile. Off by default.
+[*]Persistence > Save faction unit/group favorites: saves current faction unit and group favorites immediately, then loads and saves them through your Arma profile. Off by default.
 [*]Maintenance > Clear Empty Unit favorites: clears saved Empty Unit favorites from the current Arma profile.
 [*]Maintenance > Clear Empty Group favorites: clears saved Empty Group favorites from the current Arma profile.
 [*]Maintenance > Clear Module favorites: clears saved Module favorites from the current Arma profile.

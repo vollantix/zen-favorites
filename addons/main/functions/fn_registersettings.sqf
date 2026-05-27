@@ -29,19 +29,29 @@
 [
     "zen_favorites_main_persistFactionRootFavorites",
     "CHECKBOX",
-    ["Save faction favorites", "When enabled, top-level faction favorites are saved in your Arma profile and loaded when the addon starts. Default is off. Turning this off ignores saved faction favorites but does not delete them."],
+    ["Save faction favorites", "When enabled, current top-level faction favorites are saved immediately and then loaded from your Arma profile when the addon starts. Default is off. Turning this off keeps live and saved favorites, but stops loading and saving them."],
     ["ZEN Favorites", "Persistence"],
     false,
-    0
+    0,
+    {
+        params ["_value"];
+
+        ["zen_favorites_main_factionFavorites", _value, "top-level faction favorites"] call zen_favorites_main_fnc_syncfactionfavoritepersistence;
+    }
 ] call CBA_fnc_addSetting;
 
 [
     "zen_favorites_main_persistFactionLeafFavorites",
     "CHECKBOX",
-    ["Save faction unit/group favorites", "When enabled, individual faction unit and group favorites are saved in your Arma profile and loaded when the addon starts. Default is off. Turning this off ignores saved leaf favorites but does not delete them."],
+    ["Save faction unit/group favorites", "When enabled, current faction unit and group favorites are saved immediately and then loaded from your Arma profile when the addon starts. Default is off. Turning this off keeps live and saved favorites, but stops loading and saving them."],
     ["ZEN Favorites", "Persistence"],
     false,
-    0
+    0,
+    {
+        params ["_value"];
+
+        ["zen_favorites_main_factionLeafFavorites", _value, "faction unit/group favorites"] call zen_favorites_main_fnc_syncfactionfavoritepersistence;
+    }
 ] call CBA_fnc_addSetting;
 
 [

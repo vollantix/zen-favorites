@@ -25,6 +25,7 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 - Empty Groups and Module Favorites sections are removed when their last favorite is cleared.
 - Faction leaf Favorites rendering now preserves top-level faction favorite ordering instead of restoring the original faction order.
 - Faction leaf favorite selection now selects the matching original ZEN row on the next frame so ZEN placement previews receive a normal selection event.
+- Enabling faction persistence now immediately saves the current session favorites, and disabling it no longer clears live or saved faction favorites.
 
 ### Known Quirks
 

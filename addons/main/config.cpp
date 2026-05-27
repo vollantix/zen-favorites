@@ -65,6 +65,7 @@ class CfgFunctions {
             class setfavoritetreeexpanded {};
             class selectfavoriteproxy {};
             class showactionhint {};
+            class syncfactionfavoritepersistence {};
             class toggleemptyfavorite {};
             class togglefactionleaffavorite {};
             class togglemodulefavorite {};
