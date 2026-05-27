@@ -1,0 +1,22 @@
+## [1.1.0] - 2026-05-27
+
+### Added
+- Faction unit and group favorites for BLUFOR, OPFOR, Independent, and Civilian trees.
+- Module favorites in the Zeus Create Modules tree.
+- Empty Groups favorites for groups and compositions.
+- Optional CBA settings to save faction favorites and faction unit/group favorites persistently.
+- CBA maintenance settings to clear Empty Group, Module, faction, and faction unit/group favorites separately.
+
+### Improved
+- Generated favorite rows now select the matching original ZEN row internally, so ZEN keeps control over previews, placement bubbles, and placement settings.
+- Favorites sections now retain their open or collapsed state more consistently when reopening Zeus.
+- Empty Groups favorites now use a compact Favorites structure while preserving normal ZEN group and composition placement behavior.
+
+### Fixed
+- Fixed faction favorite ordering after selecting generated faction unit/group favorites.
+- Fixed faction unit favorites so ZEN placement previews receive a normal original-row selection event.
+- Fixed Empty Groups and Module Favorites sections staying visible after their last favorite was removed.
+- Fixed faction persistence so enabling the setting immediately saves current session favorites, and disabling it no longer clears existing favorites.
+
+### Server Admins
+- This release uses the versioned public key zen_favorites_1.1.0.bikey. Servers using signature verification should update their allowed key from this Workshop version.

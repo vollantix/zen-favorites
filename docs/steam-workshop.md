@@ -61,6 +61,13 @@ The mod is client-side. Favorites are stored per player and are not synced betwe
 [*]Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
 [/list]
 
+[h1]Previews and ZEN Settings[/h1]
+ZEN Favorites does not override Zeus Enhanced preview settings or call ZEN's placement preview logic directly. Generated favorite rows select the matching original ZEN row internally, so Zeus Enhanced remains responsible for placement previews, placement bubbles, and preview-related settings.
+
+The original Zeus Create entries are not replaced or rewritten. ZEN Favorites decorates them with star controls, may reorder favorited faction roots, and adds generated Favorites sections.
+
+Group favorites do not show placement previews because ZEN does not normally preview multiple group units or objects as one placement preview.
+
 [h1]Settings[/h1]
 ZEN Favorites settings are available in:
 [code]Options > Addon Options > ZEN Favorites[/code]
