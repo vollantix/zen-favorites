@@ -36,6 +36,8 @@ class CfgFunctions {
             class applyfactionfavoriteorder {};
             class clearactivefavoriteproxy {};
             class clearemptygroupfavorites {};
+            class clearfactionfavorites {};
+            class clearfactionleaffavorites {};
             class clearmodulefavorites {};
             class favoritehashmapfromarray {};
             class favoritehashmaptoarray {};

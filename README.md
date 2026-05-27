@@ -15,19 +15,23 @@ ZEN Favorites is client-side. Favorites are stored per player and are not synced
 
 - Faction root favorites for BLUFOR, OPFOR, Independent, and Civilian Units/Groups.
 - Faction root favorites move to the top and preserve the open or collapsed state you choose.
+- Faction root favorites are session-based by default, with an optional CBA setting to save them persistently.
 - Individual faction unit and group leaf favorites with generated Favorites branches.
+- Faction unit and group leaf favorites are session-based by default, with an optional CBA setting to save them persistently.
 - Persistent client-side Empty Units favorites.
 - Persistent client-side Empty Groups favorites.
 - Persistent client-side Module favorites in the Zeus Create Modules tree.
 - Generated favorite rows for faction leaves, Empty Units, Empty Groups, and Modules select the matching original ZEN row internally so ZEN keeps its normal previews, placement bubbles, and settings.
-- CBA Addon Options for log level, optional faction favorite persistence, and clearing saved Empty Unit, Empty Group, and Module favorites.
+- CBA Addon Options for log level, optional faction favorite persistence, and clearing saved favorites by category.
 
 ## Controls
 
-- Left-click a star: add or remove a favorite.
-- Left-click a generated favorite leaf: select it using the matching original ZEN row behavior.
-- Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
+- Left-click a star on a top-level faction row: add or remove that faction favorite.
+- Left-click a star on a unit, group, Empty, or Module leaf row: add or remove that leaf favorite.
+- Left-click a generated favorite leaf: select it through the matching original ZEN row so previews, placement bubbles, and ZEN settings behave normally.
 - Right-click a generated favorite leaf: jump to the original item in the normal tree.
+- Generated Favorites section rows are not favoritable; only the final leaf rows carry favorite stars.
+- Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
 
 ## Development
 
@@ -103,9 +107,13 @@ Options > Addon Options > ZEN Favorites
 - `Debugging > Log level`: controls RPT logging verbosity.
 - `Persistence > Save faction favorites`: saves current top-level faction favorites immediately, then loads and saves them through the current Arma profile. Off by default.
 - `Persistence > Save faction unit/group favorites`: saves current faction unit and group leaf favorites immediately, then loads and saves them through the current Arma profile. Off by default.
-- `Maintenance > Clear Empty Unit favorites`: clears saved Empty Unit favorites from the current Arma profile.
-- `Maintenance > Clear Empty Group favorites`: clears saved Empty Group favorites from the current Arma profile.
-- `Maintenance > Clear Module favorites`: clears saved Module favorites from the current Arma profile.
+- `Maintenance > Clear Empty Unit favorites`: clears Empty Unit favorites from the current session and Arma profile.
+- `Maintenance > Clear Empty Group favorites`: clears Empty Group favorites from the current session and Arma profile.
+- `Maintenance > Clear faction favorites`: clears top-level faction favorites from the current session and Arma profile.
+- `Maintenance > Clear faction unit/group favorites`: clears faction unit and group leaf favorites from the current session and Arma profile.
+- `Maintenance > Clear Module favorites`: clears Module favorites from the current session and Arma profile.
+
+Maintenance clear toggles reset themselves after clearing.
 
 ## Runtime Log Level
 

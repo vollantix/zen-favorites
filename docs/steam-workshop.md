@@ -13,7 +13,7 @@ The mod is client-side. Favorites are stored per player and are not synced betwe
 [*]Favorited factions move to the top of the list.
 [*]New favorites expand once, then keep the open or collapsed state you choose.
 [*]Favorites are separate per side and per Create mode.
-[*]Faction favorites are session-based by default, with an optional CBA setting to save them in your Arma profile.
+[*]Faction favorites are session-based by default, with an optional CBA setting to save current favorites immediately and keep them in your Arma profile.
 [/list]
 
 [b]Faction Unit and Group Favorites[/b]
@@ -22,7 +22,7 @@ The mod is client-side. Favorites are stored per player and are not synced betwe
 [*]Favorite sections are grouped by source faction and category so entries stay easy to recognize.
 [*]Generated section rows are not favoritable; the individual unit or group leaves carry the favorite star.
 [*]Selecting a favorite uses the matching original ZEN row, keeping normal previews, placement bubbles, and ZEN settings intact.
-[*]Faction unit and group favorites are session-based by default, with an optional CBA setting to save them in your Arma profile.
+[*]Faction unit and group favorites are session-based by default, with an optional CBA setting to save current favorites immediately and keep them in your Arma profile.
 [/list]
 
 [b]Empty Units Favorites[/b]
@@ -53,10 +53,12 @@ The mod is client-side. Favorites are stored per player and are not synced betwe
 
 [h1]Controls[/h1]
 [list]
-[*]Left-click a star: add or remove a favorite.
-[*]Left-click a generated favorite leaf: select it using the matching original ZEN row behavior.
-[*]Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
+[*]Left-click a star on a top-level faction row: add or remove that faction favorite.
+[*]Left-click a star on a unit, group, Empty, or Module leaf row: add or remove that leaf favorite.
+[*]Left-click a generated favorite leaf: select it through the matching original ZEN row so previews, placement bubbles, and ZEN settings behave normally.
 [*]Right-click a generated favorite leaf: jump to the original item in the normal tree.
+[*]Generated Favorites section rows are not favoritable; only the final leaf rows carry favorite stars.
+[*]Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
 [/list]
 
 [h1]Settings[/h1]
@@ -67,10 +69,14 @@ ZEN Favorites settings are available in:
 [*]Debugging > Log level: controls RPT logging verbosity.
 [*]Persistence > Save faction favorites: saves current top-level faction favorites immediately, then loads and saves them through your Arma profile. Off by default.
 [*]Persistence > Save faction unit/group favorites: saves current faction unit and group favorites immediately, then loads and saves them through your Arma profile. Off by default.
-[*]Maintenance > Clear Empty Unit favorites: clears saved Empty Unit favorites from the current Arma profile.
-[*]Maintenance > Clear Empty Group favorites: clears saved Empty Group favorites from the current Arma profile.
-[*]Maintenance > Clear Module favorites: clears saved Module favorites from the current Arma profile.
+[*]Maintenance > Clear Empty Unit favorites: clears Empty Unit favorites from the current session and Arma profile.
+[*]Maintenance > Clear Empty Group favorites: clears Empty Group favorites from the current session and Arma profile.
+[*]Maintenance > Clear faction favorites: clears top-level faction favorites from the current session and Arma profile.
+[*]Maintenance > Clear faction unit/group favorites: clears faction unit and group favorites from the current session and Arma profile.
+[*]Maintenance > Clear Module favorites: clears Module favorites from the current session and Arma profile.
 [/list]
+
+Maintenance clear toggles reset themselves after clearing.
 
 [h1]Server Admins[/h1]
 ZEN Favorites is optional and client-side. Servers do not need to run it, but servers with signature verification enabled should allow the public key shipped in the mod's [b]keys[/b] folder.

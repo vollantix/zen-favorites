@@ -11,6 +11,7 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 - CBA maintenance toggles for clearing Empty Group favorites and Module favorites separately.
 - Individual faction unit and group leaf favorites for non-empty side trees.
 - Optional CBA persistence settings for top-level faction favorites and faction unit/group leaf favorites. Both are off by default.
+- CBA maintenance toggles for clearing top-level faction favorites and faction unit/group favorites separately.
 
 ### Changed
 

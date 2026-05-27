@@ -69,6 +69,8 @@ if ((count _moduleFavorites) != (count _rawModuleFavorites)) then {
 
 zen_favorites_main_clearEmptyFavorites = false;
 zen_favorites_main_clearEmptyGroupFavorites = false;
+zen_favorites_main_clearFactionFavorites = false;
+zen_favorites_main_clearFactionLeafFavorites = false;
 zen_favorites_main_clearModuleFavorites = false;
 ["zen_favorites_main_clearEmptyFavorites", false, nil, "client"] call CBA_settings_fnc_set;
 ["zen_favorites_main_clearEmptyFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
@@ -76,6 +78,12 @@ zen_favorites_main_clearModuleFavorites = false;
 ["zen_favorites_main_clearEmptyGroupFavorites", false, nil, "client"] call CBA_settings_fnc_set;
 ["zen_favorites_main_clearEmptyGroupFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
 ["zen_favorites_main_clearEmptyGroupFavorites", false, nil, "server"] call CBA_settings_fnc_set;
+["zen_favorites_main_clearFactionFavorites", false, nil, "client"] call CBA_settings_fnc_set;
+["zen_favorites_main_clearFactionFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
+["zen_favorites_main_clearFactionFavorites", false, nil, "server"] call CBA_settings_fnc_set;
+["zen_favorites_main_clearFactionLeafFavorites", false, nil, "client"] call CBA_settings_fnc_set;
+["zen_favorites_main_clearFactionLeafFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
+["zen_favorites_main_clearFactionLeafFavorites", false, nil, "server"] call CBA_settings_fnc_set;
 ["zen_favorites_main_clearModuleFavorites", false, nil, "client"] call CBA_settings_fnc_set;
 ["zen_favorites_main_clearModuleFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
 ["zen_favorites_main_clearModuleFavorites", false, nil, "server"] call CBA_settings_fnc_set;
@@ -99,6 +107,24 @@ zen_favorites_main_clearModuleFavorites = false;
         ["zen_favorites_main_clearEmptyGroupFavorites", false, nil, "client"] call CBA_settings_fnc_set;
         ["zen_favorites_main_clearEmptyGroupFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
         ["zen_favorites_main_clearEmptyGroupFavorites", false, nil, "server"] call CBA_settings_fnc_set;
+    };
+
+    if (missionNamespace getVariable ["zen_favorites_main_clearFactionFavorites", false]) then {
+        [] call zen_favorites_main_fnc_clearfactionfavorites;
+
+        zen_favorites_main_clearFactionFavorites = false;
+        ["zen_favorites_main_clearFactionFavorites", false, nil, "client"] call CBA_settings_fnc_set;
+        ["zen_favorites_main_clearFactionFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
+        ["zen_favorites_main_clearFactionFavorites", false, nil, "server"] call CBA_settings_fnc_set;
+    };
+
+    if (missionNamespace getVariable ["zen_favorites_main_clearFactionLeafFavorites", false]) then {
+        [] call zen_favorites_main_fnc_clearfactionleaffavorites;
+
+        zen_favorites_main_clearFactionLeafFavorites = false;
+        ["zen_favorites_main_clearFactionLeafFavorites", false, nil, "client"] call CBA_settings_fnc_set;
+        ["zen_favorites_main_clearFactionLeafFavorites", false, nil, "mission"] call CBA_settings_fnc_set;
+        ["zen_favorites_main_clearFactionLeafFavorites", false, nil, "server"] call CBA_settings_fnc_set;
     };
 
     if (missionNamespace getVariable ["zen_favorites_main_clearModuleFavorites", false]) then {

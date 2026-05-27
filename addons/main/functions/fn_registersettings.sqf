@@ -64,6 +64,24 @@
 ] call CBA_fnc_addSetting;
 
 [
+    "zen_favorites_main_clearFactionFavorites",
+    "CHECKBOX",
+    ["Clear faction favorites", "Turn this on to permanently clear top-level faction favorites from this session and this Arma profile. The checkbox resets itself after clearing."],
+    ["ZEN Favorites", "Maintenance"],
+    false,
+    0
+] call CBA_fnc_addSetting;
+
+[
+    "zen_favorites_main_clearFactionLeafFavorites",
+    "CHECKBOX",
+    ["Clear faction unit/group favorites", "Turn this on to permanently clear faction unit and group favorites from this session and this Arma profile. The checkbox resets itself after clearing."],
+    ["ZEN Favorites", "Maintenance"],
+    false,
+    0
+] call CBA_fnc_addSetting;
+
+[
     "zen_favorites_main_clearModuleFavorites",
     "CHECKBOX",
     ["Clear Module favorites", "Turn this on to permanently clear only the Module favorites saved in this Arma profile. The checkbox resets itself after clearing."],
