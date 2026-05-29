@@ -31,7 +31,7 @@ _tree setVariable ["zen_favorites_main_lastFactionRenderSignature", _renderSigna
 if (_mode == "units") then {
     private _rootCount = _tree tvCount [];
 
-    for "_index" from 0 to ((_rootCount - 1) min 20) do {
+    for "_index" from 0 to (_rootCount - 1) do {
         private _path = [_index];
         private _factionName = _tree tvText _path;
 
@@ -51,7 +51,7 @@ if (_mode == "units") then {
 if (_mode == "groups") then {
     private _factionCount = _tree tvCount [0];
 
-    for "_index" from 0 to ((_factionCount - 1) min 20) do {
+    for "_index" from 0 to (_factionCount - 1) do {
         private _path = [0, _index];
         private _factionName = _tree tvText _path;
 

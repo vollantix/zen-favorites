@@ -4,7 +4,14 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 
 ## [Unreleased]
 
-No user-facing changes yet.
+### Fixed
+
+- Faction root favorite stars now render on every visible faction row instead of only the first 21 rows.
+- Module Favorites now rebuild after ZEN repopulates the module tree following a search, instead of staying stuck on a filtered tree state.
+
+### Changed
+
+- The default RPT log level is now Error for normal play, with Info, Debug, and Trace still available for troubleshooting.
 
 ## [1.1.0] - 2026-05-27
 

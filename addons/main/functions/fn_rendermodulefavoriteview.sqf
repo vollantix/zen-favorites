@@ -10,11 +10,22 @@ private _moduleFavorites = (missionNamespace getVariable ["zen_favorites_main_mo
     {(_x select 2) isEqualType ""}
 };
 private _rootCount = _tree tvCount [];
-// Include root count so delayed ZEN tree population triggers a fresh render.
+private _sourceTreeSignature = [];
+
+for "_index" from 0 to (_rootCount - 1) do {
+    private _path = [_index];
+    private _rootText = _tree tvText _path;
+
+    if (_rootText != "Favorites") then {
+        _sourceTreeSignature pushBack [_rootText, _tree tvCount _path];
+    };
+};
+
+// Include source tree shape so delayed ZEN search recovery triggers a fresh render.
 private _renderSignature = str [
     _idc,
     _searchText,
-    _rootCount,
+    _sourceTreeSignature,
     _moduleFavorites
 ];
 

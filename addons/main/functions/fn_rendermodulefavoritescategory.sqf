@@ -9,36 +9,44 @@ private _favorites = (missionNamespace getVariable ["zen_favorites_main_moduleFa
     {(_x select 0) isEqualType []} &&
     {(_x select 2) isEqualType ""}
 };
-private _signature = str _favorites;
 private _rootCount = _tree tvCount [];
 private _hasFavoritesRoot = false;
+private _sourceTreeSignature = [];
 
 // If an old empty Favorites root is still visible, force one cleanup pass.
 for "_index" from 0 to (_rootCount - 1) do {
-    if ((_tree tvText [_index]) == "Favorites") exitWith {
+    private _path = [_index];
+    private _rootText = _tree tvText _path;
+
+    if (_rootText == "Favorites") then {
         _hasFavoritesRoot = true;
+    } else {
+        _sourceTreeSignature pushBack [_rootText, _tree tvCount _path];
     };
 };
+
+private _signature = str [_favorites, _sourceTreeSignature];
 
 if (
     (_tree getVariable ["zen_favorites_main_moduleFavoritesSignature", ""] == _signature) &&
     {!(_favorites isEqualTo [] && {_hasFavoritesRoot})}
 ) exitWith {};
 
-private _originalRootOrder = _tree getVariable ["zen_favorites_main_moduleOriginalRootOrder", []];
+private _storedOriginalRootOrder = _tree getVariable ["zen_favorites_main_moduleOriginalRootOrder", []];
+private _originalRootOrder = +_storedOriginalRootOrder;
 private _sessionExpandedTextPaths = +(missionNamespace getVariable ["zen_favorites_main_moduleExpandedTextPaths", []]);
 private _expandedTextPaths = +(_tree getVariable ["zen_favorites_main_moduleExpandedTextPaths", _sessionExpandedTextPaths]);
 private _pendingExpandTextPaths = +(_tree getVariable ["zen_favorites_main_modulePendingExpandTextPaths", []]);
 
-if (_originalRootOrder isEqualTo []) then {
-    for "_index" from 0 to (_rootCount - 1) do {
-        private _rootText = _tree tvText [_index];
+for "_index" from 0 to (_rootCount - 1) do {
+    private _rootText = _tree tvText [_index];
 
-        if (_rootText != "Favorites") then {
-            _originalRootOrder pushBack _rootText;
-        };
+    if (_rootText != "Favorites" && {!(_rootText in _originalRootOrder)}) then {
+        _originalRootOrder pushBack _rootText;
     };
+};
 
+if (_originalRootOrder isNotEqualTo _storedOriginalRootOrder) then {
     _tree setVariable ["zen_favorites_main_moduleOriginalRootOrder", _originalRootOrder];
 };
 

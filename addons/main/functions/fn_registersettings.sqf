@@ -4,7 +4,7 @@
 [
     "zen_favorites_main_logLevel",
     "LIST",
-    ["Log level", "Controls how much ZEN Favorites writes to the Arma RPT log. Info is recommended unless you are troubleshooting."],
+    ["Log level", "Controls how much ZEN Favorites writes to the Arma RPT log. Error is recommended for normal play; use Info, Debug, or Trace only while troubleshooting."],
     ["ZEN Favorites", "Debugging"],
     [
         [
@@ -21,7 +21,7 @@
             "Debug",
             "Trace"
         ],
-        ZEN_FAVORITES_LOG_LEVEL_INFO
+        ZEN_FAVORITES_LOG_LEVEL_ERROR
     ],
     0
 ] call CBA_fnc_addSetting;
