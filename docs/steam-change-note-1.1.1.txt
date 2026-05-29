@@ -1,0 +1,11 @@
+## [1.1.1] - 2026-05-29
+
+### Fixed
+- Faction root favorite stars now render on every visible faction row instead of only the first 21 rows.
+- Module Favorites now rebuild after ZEN repopulates the module tree following a search, instead of staying stuck on a filtered tree state.
+
+### Changed
+- The default RPT log level is now Error for normal play, with Info, Debug, and Trace still available for troubleshooting.
+
+### Server Admins
+- This release uses the versioned public key zen_favorites_1.1.1.bikey. Servers using signature verification should update their allowed key from this Workshop version.

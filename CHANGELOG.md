@@ -4,6 +4,10 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 
 ## [Unreleased]
 
+No user-facing changes yet.
+
+## [1.1.1] - 2026-05-29
+
 ### Fixed
 
 - Faction root favorite stars now render on every visible faction row instead of only the first 21 rows.

@@ -111,7 +111,7 @@ ZEN Favorites settings are available in:
 Options > Addon Options > ZEN Favorites
 ```
 
-- `Debugging > Log level`: controls RPT logging verbosity.
+- `Debugging > Log level`: controls RPT logging verbosity. Defaults to Error for normal play.
 - `Persistence > Save faction favorites`: saves current top-level faction favorites immediately, then loads and saves them through the current Arma profile. Off by default.
 - `Persistence > Save faction unit/group favorites`: saves current faction unit and group leaf favorites immediately, then loads and saves them through the current Arma profile. Off by default.
 - `Maintenance > Clear Empty Unit favorites`: clears Empty Unit favorites from the current session and Arma profile.
