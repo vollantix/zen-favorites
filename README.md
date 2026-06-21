@@ -147,9 +147,9 @@ zen_favorites_main_logLevel
 Supported values:
 
 ```sqf
-0 // ERROR
+0 // ERROR, default
 1 // WARN
-2 // INFO, default
+2 // INFO
 3 // DEBUG
 4 // TRACE
 ```
@@ -232,11 +232,14 @@ Turn one on to clear that saved favorite type. Each toggle resets itself after c
 ## Known Quirks
 
 - Favorite leaves that internally select a matching original ZEN row use gold active text instead of Arma's native white tree selection box. The native selection box stays tied to the original row.
+- Selecting a generated favorite can scroll the Create tree down to the matching original ZEN row when that original row is far below the Favorites section.
 
 ## Planned Features
 
 - Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite. Single objects are likely feasible; compositions need more investigation.
 - Additional filtering tools for the Zeus Create menu.
+- Keep the Favorites section in view when selecting generated favorites whose original rows are below the visible page.
+- Move favorite star controls to the left side of tree rows so they do not interfere with the Create tree scrollbar.
 
 ## License
 

@@ -112,10 +112,6 @@ _tree ctrlAddEventHandler ["MouseButtonUp", {
                 private _className = _tree tvData _hoverPath;
                 private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
 
-                if (_originalPath isEqualTo [] && {_className != ""}) then {
-                    _originalPath = [_tree, [], _className] call zen_favorites_main_fnc_findtreepathbydata;
-                };
-
                 if (_originalPath isNotEqualTo []) then {
                     _tree setVariable ["zen_favorites_main_ignoreModuleExpandEvents", true];
 
@@ -487,10 +483,6 @@ _tree ctrlAddEventHandler ["TreeSelChanged", {
     private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
     private _className = _tree tvData _path;
     private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
-
-    if (_originalPath isEqualTo [] && {_className != ""}) then {
-        _originalPath = [_tree, [], _className] call zen_favorites_main_fnc_findtreepathbydata;
-    };
 
     if (_originalPath isEqualTo []) exitWith {
         [ZEN_FAVORITES_LOG_LEVEL_WARN, format [

@@ -5,6 +5,8 @@ ZEN Favorites adds favorite controls directly into the Zeus Enhanced Create tree
 
 The mod is client-side. Favorites are stored per player and are not synced between players or stored on the server.
 
+Saved favorites from unloaded mods are skipped until that mod is loaded again.
+
 [h1]Current Features[/h1]
 [b]Faction Favorites[/b]
 [list]
@@ -93,12 +95,15 @@ The current release process uses versioned keys. When updating the Workshop item
 [h1]Known Quirks[/h1]
 [list]
 [*]Favorite leaves that internally select a matching original ZEN row use gold active text instead of Arma's native white tree selection box. The native selection box stays tied to the original row.
+[*]Selecting a generated favorite can scroll the Create tree down to the matching original ZEN row when that original row is far below the Favorites section.
 [/list]
 
 [h1]Planned Features[/h1]
 [list]
 [*]Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite.
 [*]Additional filtering tools for the Zeus Create menu.
+[*]Keep the Favorites section in view when selecting generated favorites whose original rows are below the visible page.
+[*]Move favorite star controls to the left side of tree rows so they do not interfere with the Create tree scrollbar.
 [/list]
 
 [h1]Source And License[/h1]

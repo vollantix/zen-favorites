@@ -4,7 +4,9 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 
 ## [Unreleased]
 
-No user-facing changes yet.
+### Fixed
+
+- Module favorites from unloaded addons are now hidden until their original module path is available again, instead of resolving through reused ZEN custom module class names.
 
 ## [1.1.1] - 2026-05-29
 

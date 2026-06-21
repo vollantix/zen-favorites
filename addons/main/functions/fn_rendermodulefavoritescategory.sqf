@@ -92,22 +92,18 @@ _tree tvSetValue [_favoritesRootPath, -1000];
 
 {
     private _displayPath = _x select 0;
-    private _className = _x select 1;
     private _originalPath = [_tree, _displayPath] call zen_favorites_main_fnc_findtreepathbytexts;
-
-    if (_originalPath isEqualTo [] && {_className != ""}) then {
-        _originalPath = [_tree, [], _className] call zen_favorites_main_fnc_findtreepathbydata;
-    };
 
     if (_originalPath isEqualTo []) then {
         [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
             "skipped missing Module favorite class=%1 displayPath=%2",
-            _className,
+            _x select 1,
             _displayPath
         ]] call zen_favorites_main_fnc_log;
         continue;
     };
 
+    private _className = _tree tvData _originalPath;
     private _originalSortValue = [_originalPath] call _getOriginalSortValue;
     private _parentPath = +_favoritesRootPath;
     private _relativeBranchPath = [];
@@ -148,7 +144,7 @@ _tree tvSetValue [_favoritesRootPath, -1000];
     } forEach _displayPath;
 
     _tree tvSetData [_parentPath, _className];
-    _tree tvSetValue [_parentPath, _x select 3];
+    _tree tvSetValue [_parentPath, _tree tvValue _originalPath];
     _tree tvSetTooltip [_parentPath, _tree tvTooltip _originalPath];
     _tree tvSetPicture [_parentPath, _tree tvPicture _originalPath];
     _tree tvSetPictureRight [_parentPath, ZEN_FAVORITES_STAR_TEXTURE];

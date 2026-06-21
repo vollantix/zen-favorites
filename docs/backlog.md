@@ -5,11 +5,18 @@ This document tracks planned work, known quirks, and investigation notes. Shippe
 ## Known Quirks
 
 - `ZF-007` Favorite leaves that proxy-select a matching original ZEN row cannot also keep Arma's native white tree selection box on the generated favorite row. The favorite row uses gold active text instead. This is accepted behavior, not a planned fix.
+- `ZF-008` Selecting a generated favorite can scroll the Create tree down to the matching original ZEN row when that original row is far below the Favorites section. This likely happens because the addon proxy-selects the original row so ZEN keeps normal preview and placement behavior. See `ZF-106` for the planned follow-up.
+
+## Investigation Notes
+
+- `ZF-201` One observed session expanded the entire Units tree without direct user action, after which unit leaf stars disappeared in that tree. Groups leaf stars and other BLUFOR unit stars still appeared normally. This may be related to delayed ZEN tree initialization or a tree rebuild finishing after ZEN Favorites rendered. Needs reproduction with debug logging before treating it as confirmed addon behavior.
 
 ## Planned Features
 
 - `ZF-103` Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite.
 - `ZF-105` Additional filtering tools for the Zeus Create menu.
+- `ZF-106` Keep the Favorites section in view when selecting generated favorite leaves whose original ZEN row is below the visible page. Left-click selection should keep focus near the top Favorites section while still preserving ZEN preview and placement behavior.
+- `ZF-107` Move favorite star controls to the left side of tree rows so they do not interfere with the Create tree scrollbar.
 
 ## Release Process
 
