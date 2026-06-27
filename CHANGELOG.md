@@ -4,9 +4,30 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 
 ## [Unreleased]
 
+### Added
+
+- CBA Interface setting to choose whether favorite stars appear on the left side or the original right side of Zeus Create tree rows.
+
+### Changed
+
+- Favorite stars default to the left side of Create tree rows so they no longer interfere with the scrollbar.
+
 ### Fixed
 
 - Module favorites from unloaded addons are now hidden until their original module path is available again, instead of resolving through reused ZEN custom module class names.
+- Favorite star clicks now use the configured star lane and consume the tree click so the row itself is not selected accidentally.
+- Favorite star click bounds now avoid the expand/collapse arrow area and are better aligned for deeper unit and group leaf rows.
+- Left mouse button release no longer toggles favorites after the button-down handler already handled the star click.
+- Generated folder/category body clicks select the generated branch but remain inert for placement.
+- Generated favorite leaves keep their yellow favorite star color after refreshes.
+- Generated Favorites branch rows are treated as navigation only, preventing branch clicks from triggering placement/config lookups.
+- Generated Favorites branch rows no longer jump to source rows when selected, and double-clicking a generated branch toggles it open or closed.
+- Generated Favorites branch rows copy the original source icon instead of inheriting a visible favorite star overlay.
+- Faction Unit Favorites compact generated category paths, while faction Group Favorites use flat qualified rows so synthetic entries never sit at native `CfgGroups` placement depth.
+- Left mouse-up is now consumed after handled favorite star or branch body clicks, preventing generated Favorites branches from leaking into ZEN placement/config selection.
+- Source tree selection is now parked before and restored after generated Favorites branches are rebuilt, preventing shifted selected indexes from triggering `CfgVehicles.` or `CfgGroups/West.` lookups.
+- Switching the favorite star side no longer leaves a stale star on the previous side or disables stars inside generated Favorites sections.
+- Selecting a faction Group favorite no longer triggers missing `CfgGroups` configuration warnings before placing the original group.
 
 ## [1.1.1] - 2026-05-29
 

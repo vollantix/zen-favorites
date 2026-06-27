@@ -26,7 +26,7 @@ private _favoriteEntry = [
     _favoriteId,
     _tree tvValue _path,
     _tree tvText _path,
-    _tree tvPicture _path
+    [_tree, _path] call zen_favorites_main_fnc_gettreeoriginalpicture
 ];
 private _favorites = +(missionNamespace getVariable ["zen_favorites_main_moduleFavorites", []]);
 private _existingIndex = _favorites findIf {

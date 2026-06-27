@@ -55,8 +55,8 @@ Saved favorites from unloaded mods are skipped until that mod is loaded again.
 
 [h1]Controls[/h1]
 [list]
-[*]Left-click a star on a top-level faction row: add or remove that faction favorite.
-[*]Left-click a star on a unit, group, Empty, or Module leaf row: add or remove that leaf favorite.
+[*]Left-click a star on the configured side of a top-level faction row: add or remove that faction favorite.
+[*]Left-click a star on the configured side of a unit, group, Empty, or Module leaf row: add or remove that leaf favorite.
 [*]Left-click a generated favorite leaf: select it through the matching original ZEN row so previews, placement bubbles, and ZEN settings behave normally.
 [*]Right-click a generated favorite leaf: jump to the original item in the normal tree.
 [*]Generated Favorites section rows are not favoritable; only the final leaf rows carry favorite stars.
@@ -76,6 +76,7 @@ ZEN Favorites settings are available in:
 
 [list]
 [*]Debugging > Log level: controls RPT logging verbosity. Defaults to Error for normal play.
+[*]Interface > Favorite star side: chooses whether favorite stars appear on the left side or the original right side of Zeus Create tree rows. Defaults to Left to avoid the scrollbar.
 [*]Persistence > Save faction favorites: saves current top-level faction favorites immediately, then loads and saves them through your Arma profile. Off by default.
 [*]Persistence > Save faction unit/group favorites: saves current faction unit and group favorites immediately, then loads and saves them through your Arma profile. Off by default.
 [*]Maintenance > Clear Empty Unit favorites: clears Empty Unit favorites from the current session and Arma profile.
@@ -103,7 +104,6 @@ The current release process uses versioned keys. When updating the Workshop item
 [*]Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite.
 [*]Additional filtering tools for the Zeus Create menu.
 [*]Keep the Favorites section in view when selecting generated favorites whose original rows are below the visible page.
-[*]Move favorite star controls to the left side of tree rows so they do not interfere with the Create tree scrollbar.
 [/list]
 
 [h1]Source And License[/h1]

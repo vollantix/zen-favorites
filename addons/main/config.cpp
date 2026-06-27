@@ -35,6 +35,7 @@ class CfgFunctions {
 
             class applyfactionfavoriteorder {};
             class clearactivefavoriteproxy {};
+            class clearfavoritestar {};
             class clearemptygroupfavorites {};
             class clearfactionfavorites {};
             class clearfactionleaffavorites {};
@@ -44,11 +45,19 @@ class CfgFunctions {
             class findtreepathbydata {};
             class findtreepathbytexts {};
             class getactivecreatetree {};
+            class getcreatetreeselectionstate {};
             class getcreatetreecontextbyidc {};
             class getfactionleaffavoritedisplaypath {};
+            class getfavoritestarbounds {};
+            class gettreeoriginalpicture {};
+            class gettreepicturekey {};
             class gettreepathtexts {};
+            class guardgeneratedfavoritebranchselection {};
+            class isfavoritestartexture {};
+            class isgeneratedfavoritesbranch {};
             class log {};
             class onzeusdisplayopened {};
+            class parkcreatetreeselection {};
             class removefavoritepathmarker {};
             class clearemptyfavorites {};
             class registersettings {};
@@ -62,14 +71,18 @@ class CfgFunctions {
             class renderfactionrootfavorites {};
             class rendermodulefavoriteview {};
             class rendermodulefavoritescategory {};
+            class restorecreatetreeselection {};
             class restorefavoritetreeexpanded {};
             class setfactionrowexpanded {};
+            class setfavoritestar {};
             class setfavoritetreeexpanded {};
+            class selectfactionleaffavoriteproxy {};
             class selectfavoriteproxy {};
             class showactionhint {};
             class syncfactionfavoritepersistence {};
             class toggleemptyfavorite {};
             class togglefactionleaffavorite {};
+            class togglegeneratedfavoritebranch {};
             class togglemodulefavorite {};
             class toggleselectedrootfavorite {};
         };

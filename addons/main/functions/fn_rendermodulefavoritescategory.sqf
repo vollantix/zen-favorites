@@ -25,13 +25,15 @@ for "_index" from 0 to (_rootCount - 1) do {
     };
 };
 
-private _signature = str [_favorites, _sourceTreeSignature];
+private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
+private _signature = str [_favorites, _starAlignment, _sourceTreeSignature];
 
 if (
     (_tree getVariable ["zen_favorites_main_moduleFavoritesSignature", ""] == _signature) &&
     {!(_favorites isEqualTo [] && {_hasFavoritesRoot})}
 ) exitWith {};
 
+private _selectionState = [_tree, []] call zen_favorites_main_fnc_parkcreatetreeselection;
 private _storedOriginalRootOrder = _tree getVariable ["zen_favorites_main_moduleOriginalRootOrder", []];
 private _originalRootOrder = +_storedOriginalRootOrder;
 private _sessionExpandedTextPaths = +(missionNamespace getVariable ["zen_favorites_main_moduleExpandedTextPaths", []]);
@@ -66,6 +68,7 @@ if (_favorites isEqualTo []) exitWith {
     _tree setVariable ["zen_favorites_main_modulePendingExpandTextPaths", []];
     missionNamespace setVariable ["zen_favorites_main_moduleExpandedTextPaths", []];
     _tree setVariable ["zen_favorites_main_ignoreModuleExpandEvents", false];
+    [_tree, _selectionState] call zen_favorites_main_fnc_restorecreatetreeselection;
 };
 
 private _getOriginalSortValue = {
@@ -86,8 +89,8 @@ private _favoritesRootIndex = _tree tvAdd [[], "Favorites"];
 private _favoritesRootPath = [_favoritesRootIndex];
 private _favoriteBranchTextPaths = [];
 
-// Folder rows need harmless CfgVehicles data so selecting them does not show config popups.
-_tree tvSetData [_favoritesRootPath, "Logic"];
+// The synthetic root is a UI folder only; it must not become a placeable object.
+_tree tvSetData [_favoritesRootPath, ""];
 _tree tvSetValue [_favoritesRootPath, -1000];
 
 {
@@ -130,11 +133,11 @@ _tree tvSetValue [_favoritesRootPath, -1000];
         _parentPath pushBack _existingIndex;
         _relativeBranchPath pushBack _segment;
 
-        // Generated folder rows are not favorites themselves; the leaf carries the source data.
-        _tree tvSetData [_parentPath, "Logic"];
+        // Generated folder rows are UI only; only leaves carry placeable source data.
+        _tree tvSetData [_parentPath, ""];
         _tree tvSetValue [_parentPath, _tree tvValue _originalSegmentPath];
         _tree tvSetTooltip [_parentPath, _tree tvTooltip _originalSegmentPath];
-        _tree tvSetPicture [_parentPath, _tree tvPicture _originalSegmentPath];
+        _tree tvSetPicture [_parentPath, [_tree, _originalSegmentPath] call zen_favorites_main_fnc_gettreeoriginalpicture];
 
         if (_forEachIndex < ((count _displayPath) - 1)) then {
             private _favoriteBranchTextPath = ["Favorites"] + _relativeBranchPath;
@@ -146,10 +149,8 @@ _tree tvSetValue [_favoritesRootPath, -1000];
     _tree tvSetData [_parentPath, _className];
     _tree tvSetValue [_parentPath, _tree tvValue _originalPath];
     _tree tvSetTooltip [_parentPath, _tree tvTooltip _originalPath];
-    _tree tvSetPicture [_parentPath, _tree tvPicture _originalPath];
-    _tree tvSetPictureRight [_parentPath, ZEN_FAVORITES_STAR_TEXTURE];
-    _tree tvSetPictureRightColor [_parentPath, [1, 0.82, 0.25, 1]];
-    _tree tvSetPictureRightColorSelected [_parentPath, [1, 0.82, 0.25, 1]];
+    _tree tvSetPicture [_parentPath, [_tree, _originalPath] call zen_favorites_main_fnc_gettreeoriginalpicture];
+    [_tree, _parentPath, [1, 0.82, 0.25, 1]] call zen_favorites_main_fnc_setfavoritestar;
 } forEach _favorites;
 
 if ((_tree tvCount _favoritesRootPath) == 0) exitWith {
@@ -161,6 +162,7 @@ if ((_tree tvCount _favoritesRootPath) == 0) exitWith {
     _tree setVariable ["zen_favorites_main_modulePendingExpandTextPaths", []];
     missionNamespace setVariable ["zen_favorites_main_moduleExpandedTextPaths", []];
     _tree setVariable ["zen_favorites_main_ignoreModuleExpandEvents", false];
+    [_tree, _selectionState] call zen_favorites_main_fnc_restorecreatetreeselection;
 
     [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
         "removed Module Favorites category because no favorites rendered storedCount=%1",
@@ -200,6 +202,7 @@ _tree setVariable ["zen_favorites_main_moduleFavoriteBranchTextPaths", _favorite
 _tree setVariable ["zen_favorites_main_moduleExpandedTextPaths", _expandedTextPathsAfterRender];
 _tree setVariable ["zen_favorites_main_modulePendingExpandTextPaths", []];
 _tree setVariable ["zen_favorites_main_ignoreModuleExpandEvents", false];
+[_tree, _selectionState] call zen_favorites_main_fnc_restorecreatetreeselection;
 
 [ZEN_FAVORITES_LOG_LEVEL_INFO, format [
     "rendered Module Favorites category count=%1",

@@ -6,6 +6,7 @@ params ["_display", "_tree", "_idc", "_mode", "_side", "_searchText", "_favorite
 private _favoriteKey = format ["%1:%2", _mode, _side];
 private _favoriteStore = missionNamespace getVariable ["zen_favorites_main_factionFavorites", createHashMap];
 private _favorites = _favoriteStore getOrDefault [_favoriteKey, []];
+private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
 private _lastSearchText = _tree getVariable ["zen_favorites_main_lastSearchText", ""];
 private _justClearedSearch = _searchText == "" && {_lastSearchText != ""};
 // Include search text so stars are refreshed after ZEN swaps normal and search rows.
@@ -14,6 +15,7 @@ private _renderSignature = str [
     _mode,
     _side,
     _searchText,
+    _starAlignment,
     _tree tvCount [],
     _favorites
 ];
@@ -36,15 +38,13 @@ if (_mode == "units") then {
         private _factionName = _tree tvText _path;
 
         if (_factionName == "Favorites") then {
-            _tree tvSetPictureRight [_path, ""];
+            [_tree, _path] call zen_favorites_main_fnc_clearfavoritestar;
             continue;
         };
 
         private _color = [_normalColor, _favoriteColor] select (_factionName in _favorites);
 
-        _tree tvSetPictureRight [_path, ZEN_FAVORITES_STAR_TEXTURE];
-        _tree tvSetPictureRightColor [_path, _color];
-        _tree tvSetPictureRightColorSelected [_path, _color];
+        [_tree, _path, _color] call zen_favorites_main_fnc_setfavoritestar;
     };
 };
 
@@ -56,14 +56,12 @@ if (_mode == "groups") then {
         private _factionName = _tree tvText _path;
 
         if (_factionName == "Favorites") then {
-            _tree tvSetPictureRight [_path, ""];
+            [_tree, _path] call zen_favorites_main_fnc_clearfavoritestar;
             continue;
         };
 
         private _color = [_normalColor, _favoriteColor] select (_factionName in _favorites);
 
-        _tree tvSetPictureRight [_path, ZEN_FAVORITES_STAR_TEXTURE];
-        _tree tvSetPictureRightColor [_path, _color];
-        _tree tvSetPictureRightColorSelected [_path, _color];
+        [_tree, _path, _color] call zen_favorites_main_fnc_setfavoritestar;
     };
 };

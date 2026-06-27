@@ -13,11 +13,13 @@ private _favorites = (_favoriteStore getOrDefault [_favoriteKey, []]) select {
 };
 private _rootCount = _tree tvCount [];
 private _childCount = if (_mode == "groups" && {_rootCount > 0}) then {_tree tvCount [0]} else {0};
+private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
 private _renderSignature = str [
     _idc,
     _mode,
     _side,
     _searchText,
+    _starAlignment,
     _rootCount,
     _childCount,
     _favorites
@@ -68,9 +70,11 @@ private _renderPath = {
         private _favoriteId = str _sourceDisplayPath;
         private _color = [_normalColor, _favoriteColor] select (_favoriteId in _favoriteIds);
 
-        _tree tvSetPictureRight [_path, ZEN_FAVORITES_STAR_TEXTURE];
-        _tree tvSetPictureRightColor [_path, _color];
-        _tree tvSetPictureRightColorSelected [_path, _color];
+        if ("Favorites" in _displayPath) then {
+            _color = _favoriteColor;
+        };
+
+        [_tree, _path, _color] call zen_favorites_main_fnc_setfavoritestar;
     } else {
         for "_index" from 0 to (_childCount - 1) do {
             private _childPath = +_path;

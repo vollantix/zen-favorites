@@ -51,7 +51,7 @@ if (_existingIndex == -1) then {
         _favoriteId,
         _tree tvValue _path,
         _tree tvText _path,
-        _tree tvPicture _path
+        [_tree, _path] call zen_favorites_main_fnc_gettreeoriginalpicture
     ];
 
     _favorites pushBack _favoriteEntry;

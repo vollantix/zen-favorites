@@ -57,7 +57,7 @@ private _favoriteEntry = if (_mode == "groups") then {
         _favoriteId,
         _tree tvValue _path,
         _tree tvText _path,
-        _tree tvPicture _path
+        [_tree, _path] call zen_favorites_main_fnc_gettreeoriginalpicture
     ]
 } else {
     [_sourceDisplayPath, _className, _favoriteId]

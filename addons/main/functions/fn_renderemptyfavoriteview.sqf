@@ -11,11 +11,13 @@ if (_mode == "groups") exitWith {
         {(_x select 2) isEqualType ""}
     };
     private _rootCount = _tree tvCount [];
+    private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
     // Include root count so delayed ZEN tree population triggers a fresh render.
     private _renderSignature = str [
         _idc,
         _mode,
         _searchText,
+        _starAlignment,
         _rootCount,
         _emptyFavorites
     ];
@@ -49,9 +51,11 @@ if (_mode == "groups") exitWith {
             private _favoriteId = str _displayPath;
             private _color = [_normalColor, _favoriteColor] select (_favoriteId in _emptyFavoriteIds);
 
-            _tree tvSetPictureRight [_path, ZEN_FAVORITES_STAR_TEXTURE];
-            _tree tvSetPictureRightColor [_path, _color];
-            _tree tvSetPictureRightColorSelected [_path, _color];
+            if ("Favorites" in _displayPath) then {
+                _color = _favoriteColor;
+            };
+
+            [_tree, _path, _color] call zen_favorites_main_fnc_setfavoritestar;
         } else {
             for "_index" from 0 to (_childCount - 1) do {
                 private _childPath = +_path;
@@ -76,11 +80,13 @@ private _emptyFavorites = (missionNamespace getVariable [_emptyStoreKey, []]) se
     {(_x select 1) != ""}
 };
 private _rootCount = _tree tvCount [];
+private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
 // Include root count so delayed ZEN tree population triggers a fresh render.
 private _renderSignature = str [
     _idc,
     _mode,
     _searchText,
+    _starAlignment,
     _rootCount,
     _emptyFavorites
 ];
@@ -120,9 +126,11 @@ private _renderEmptyPath = {
             private _favoriteId = [_className, str _sourceDisplayPath] select (_mode == "groups" && {_className == "zen_compositions_composition"});
             private _color = [_normalColor, _favoriteColor] select (_favoriteId in _emptyFavoriteIds);
 
-            _tree tvSetPictureRight [_path, ZEN_FAVORITES_STAR_TEXTURE];
-            _tree tvSetPictureRightColor [_path, _color];
-            _tree tvSetPictureRightColorSelected [_path, _color];
+            if ("Favorites" in _displayPath) then {
+                _color = _favoriteColor;
+            };
+
+            [_tree, _path, _color] call zen_favorites_main_fnc_setfavoritestar;
         };
     } else {
         for "_index" from 0 to (_childCount - 1) do {

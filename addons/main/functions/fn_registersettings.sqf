@@ -27,6 +27,45 @@
 ] call CBA_fnc_addSetting;
 
 [
+    "zen_favorites_main_starAlignment",
+    "LIST",
+    ["Favorite star side", "Choose where favorite stars appear in the Zeus Create tree. Left avoids the scrollbar; Right restores the original right-edge layout."],
+    ["ZEN Favorites", "Interface"],
+    [
+        [
+            ZEN_FAVORITES_STAR_ALIGNMENT_LEFT,
+            ZEN_FAVORITES_STAR_ALIGNMENT_RIGHT
+        ],
+        [
+            "Left",
+            "Right"
+        ],
+        ZEN_FAVORITES_STAR_ALIGNMENT_LEFT
+    ],
+    0,
+    {
+        private _display = findDisplay ZEN_FAVORITES_IDD_ZEUS_DISPLAY;
+
+        if (!isNull _display) then {
+            private _activeTree = [_display] call zen_favorites_main_fnc_getactivecreatetree;
+            _activeTree params ["_tree"];
+
+            if (!isNull _tree) then {
+                _tree setVariable ["zen_favorites_main_starRows", createHashMap];
+                _tree setVariable ["zen_favorites_main_starRowColors", createHashMap];
+                _tree setVariable ["zen_favorites_main_lastFactionRenderSignature", ""];
+                _tree setVariable ["zen_favorites_main_lastFactionLeafRenderSignature", ""];
+                _tree setVariable ["zen_favorites_main_lastEmptyRenderSignature", ""];
+                _tree setVariable ["zen_favorites_main_lastEmptyGroupsRenderSignature", ""];
+                _tree setVariable ["zen_favorites_main_lastModuleRenderSignature", ""];
+
+                [_display] call zen_favorites_main_fnc_rendercreatetreefavorites;
+            };
+        };
+    }
+] call CBA_fnc_addSetting;
+
+[
     "zen_favorites_main_persistFactionRootFavorites",
     "CHECKBOX",
     ["Save faction favorites", "When enabled, current top-level faction favorites are saved immediately and then loaded from your Arma profile when the addon starts. Default is off. Turning this off keeps live and saved favorites, but stops loading and saving them."],

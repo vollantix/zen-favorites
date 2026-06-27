@@ -22,12 +22,12 @@ ZEN Favorites is client-side. Favorites are stored per player and are not synced
 - Persistent client-side Empty Groups favorites.
 - Persistent client-side Module favorites in the Zeus Create Modules tree.
 - Generated favorite rows for faction leaves, Empty Units, Empty Groups, and Modules select the matching original ZEN row internally so ZEN keeps its normal previews, placement bubbles, and settings.
-- CBA Addon Options for log level, optional faction favorite persistence, and clearing saved favorites by category.
+- CBA Addon Options for log level, favorite star side, optional faction favorite persistence, and clearing saved favorites by category.
 
 ## Controls
 
-- Left-click a star on a top-level faction row: add or remove that faction favorite.
-- Left-click a star on a unit, group, Empty, or Module leaf row: add or remove that leaf favorite.
+- Left-click a star on the configured side of a top-level faction row: add or remove that faction favorite.
+- Left-click a star on the configured side of a unit, group, Empty, or Module leaf row: add or remove that leaf favorite.
 - Left-click a generated favorite leaf: select it through the matching original ZEN row so previews, placement bubbles, and ZEN settings behave normally.
 - Right-click a generated favorite leaf: jump to the original item in the normal tree.
 - Generated Favorites section rows are not favoritable; only the final leaf rows carry favorite stars.
@@ -40,6 +40,12 @@ ZEN Favorites does not override Zeus Enhanced preview settings or call ZEN's pla
 The original Zeus Create entries are not replaced or rewritten. ZEN Favorites decorates them with star controls, may reorder favorited faction roots, and adds generated Favorites sections. Group favorites do not show placement previews because ZEN does not normally preview multiple group units or objects as one placement preview.
 
 ## Development
+
+Tree behavior rules:
+
+- Generated Favorites section, category, and branch rows are navigation only. They must never trigger placement, proxy selection, favorite toggling, or config lookups.
+- Only final leaf rows may select or proxy-select an original ZEN row, and only after validating the row has the expected source data.
+- When changing tree click, selection, or expansion behavior, always preserve the guard that branch rows exit before any `CfgVehicles`, `CfgGroups`, or module class lookup. This prevents the recurring "No entry bin\config.bin/..." error when clicking Favorites branches.
 
 Build and launch the development version:
 
@@ -102,6 +108,7 @@ Do not commit or publish private signing keys. The repository ignores `.hemttpri
 - [Changelog](CHANGELOG.md)
 - [Backlog](docs/backlog.md)
 - [Steam Workshop page text](docs/steam-workshop.md)
+- [Codex tree behavior guide](.codex/tree-behavior.md)
 
 ## Settings
 
@@ -112,6 +119,7 @@ Options > Addon Options > ZEN Favorites
 ```
 
 - `Debugging > Log level`: controls RPT logging verbosity. Defaults to Error for normal play.
+- `Interface > Favorite star side`: chooses whether favorite stars appear on the left side or the original right side of Zeus Create tree rows. Defaults to Left to avoid the scrollbar.
 - `Persistence > Save faction favorites`: saves current top-level faction favorites immediately, then loads and saves them through the current Arma profile. Off by default.
 - `Persistence > Save faction unit/group favorites`: saves current faction unit and group leaf favorites immediately, then loads and saves them through the current Arma profile. Off by default.
 - `Maintenance > Clear Empty Unit favorites`: clears Empty Unit favorites from the current session and Arma profile.
@@ -239,7 +247,6 @@ Turn one on to clear that saved favorite type. Each toggle resets itself after c
 - Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite. Single objects are likely feasible; compositions need more investigation.
 - Additional filtering tools for the Zeus Create menu.
 - Keep the Favorites section in view when selecting generated favorites whose original rows are below the visible page.
-- Move favorite star controls to the left side of tree rows so they do not interfere with the Create tree scrollbar.
 
 ## License
 
