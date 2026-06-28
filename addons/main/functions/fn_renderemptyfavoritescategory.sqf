@@ -104,6 +104,7 @@ private _favoritesRootIndex = _tree tvAdd [[], "Favorites"];
 private _favoritesRootPath = [_favoritesRootIndex];
 private _favoriteBranchTextPaths = [];
 private _favoriteSourcePathMap = createHashMap;
+private _favoriteDisplayPaths = _favorites apply {_x select 0};
 
 // The synthetic root is a UI folder only; it must not become a placeable object.
 _tree tvSetData [_favoritesRootPath, ""];
@@ -129,7 +130,10 @@ _tree tvSetValue [_favoritesRootPath, -1000];
     };
 
     if (_isFlatLayout) then {
-        _relativeDisplayPath = [_relativeDisplayPath joinString " / "];
+        _relativeDisplayPath = [[
+            _relativeDisplayPath,
+            _favoriteDisplayPaths
+        ] call zen_favorites_main_fnc_getshortestuniquefavoritelabel];
     } else {
         if (_isEmptyUnits) then {
             // Empty Units can have deep source paths, so present a compact two-level branch.
@@ -196,7 +200,7 @@ _tree tvSetValue [_favoritesRootPath, -1000];
 
     _tree tvSetData [_parentPath, _className];
     _tree tvSetValue [_parentPath, _originalSortValue];
-    _tree tvSetTooltip [_parentPath, _tree tvTooltip _originalPath];
+    _tree tvSetTooltip [_parentPath, _displayPath joinString " > "];
     _tree tvSetPicture [_parentPath, [_tree, _originalPath] call zen_favorites_main_fnc_gettreeoriginalpicture];
     [_tree, _parentPath, [1, 0.82, 0.25, 1]] call zen_favorites_main_fnc_setfavoritestar;
 

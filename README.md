@@ -21,6 +21,7 @@ ZEN Favorites is client-side. Favorites are stored per player and are not synced
 - Persistent client-side Empty Units favorites with configurable grouped or flat generated layouts.
 - Persistent client-side Empty Groups favorites with configurable grouped or flat generated layouts.
 - Persistent client-side Module favorites with configurable grouped or flat generated layouts.
+- Flat and otherwise qualified favorite rows show the leaf name first, adding parent context only for duplicate names; hover a row to see its full source path.
 - Generated favorite rows for faction leaves, Empty Units, Empty Groups, and Modules select the matching original ZEN row internally so ZEN keeps its normal previews, placement bubbles, and settings.
 - CBA Addon Options for log level, favorite star side, favorite list layouts, optional faction favorite persistence, and clearing saved favorites by category.
 
@@ -121,9 +122,9 @@ Options > Addon Options > ZEN Favorites
 
 - `Debugging > Log level`: controls RPT logging verbosity. Defaults to Error for normal play.
 - `Interface > Favorite star side`: chooses whether favorite stars appear on the left side or the original right side of Zeus Create tree rows. Defaults to Left to avoid the scrollbar.
-- `Interface > Unit favorites layout`: chooses grouped category branches or flat, fully qualified rows for faction and Empty Unit favorites. Defaults to Grouped.
-- `Interface > Group favorites layout`: groups faction Group favorites into `Favorites: <Faction>` sections or shows one flat Favorites list; it also controls grouped or flat Empty Group favorites. Defaults to Grouped.
-- `Interface > Module favorites layout`: chooses original category branches or flat, fully qualified rows for Module favorites. Defaults to Flat to avoid the native grouped-category popup described below.
+- `Interface > Unit favorites layout`: chooses grouped category branches or flat rows with compact leaf-first labels for faction and Empty Unit favorites. Defaults to Grouped.
+- `Interface > Group favorites layout`: groups faction Group favorites into `Favorites: <Faction>` sections or shows one flat list with compact leaf-first labels; it also controls grouped or flat Empty Group favorites. Defaults to Grouped.
+- `Interface > Module favorites layout`: chooses original category branches or flat rows with compact leaf-first labels. Defaults to Flat to avoid the native grouped-category popup described below.
 - `Persistence > Save faction favorites`: saves current top-level faction favorites immediately, then loads and saves them through the current Arma profile. Off by default.
 - `Persistence > Save faction unit/group favorites`: saves current faction unit and group leaf favorites immediately, then loads and saves them through the current Arma profile. Off by default.
 - `Maintenance > Clear Empty Unit favorites`: clears Empty Unit favorites from the current session and Arma profile.

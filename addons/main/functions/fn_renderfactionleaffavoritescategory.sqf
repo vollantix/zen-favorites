@@ -119,6 +119,7 @@ private _sortBranch = {
 private _favoriteRootPaths = [];
 private _favoriteBranchTextPaths = [];
 private _favoriteSourcePathMap = createHashMap;
+private _favoriteSourceDisplayPaths = _favorites apply {_x select 0};
 
 private _getFavoriteRootPath = {
     params ["_rootText"];
@@ -167,7 +168,12 @@ private _getFavoriteRootPath = {
         continue;
     };
 
-    private _relativeDisplayPath = [_sourceDisplayPath, _mode, _tree] call zen_favorites_main_fnc_getfactionleaffavoritedisplaypath;
+    private _relativeDisplayPath = [
+        _sourceDisplayPath,
+        _mode,
+        _tree,
+        _favoriteSourceDisplayPaths
+    ] call zen_favorites_main_fnc_getfactionleaffavoritedisplaypath;
 
     if (_relativeDisplayPath isEqualTo []) then {
         continue;
@@ -225,7 +231,7 @@ private _getFavoriteRootPath = {
 
     _tree tvSetData [_parentPath, _data];
     _tree tvSetValue [_parentPath, _x select 3];
-    _tree tvSetTooltip [_parentPath, _tree tvTooltip _originalPath];
+    _tree tvSetTooltip [_parentPath, _sourceDisplayPath joinString " > "];
     _tree tvSetPicture [_parentPath, [_tree, _originalPath] call zen_favorites_main_fnc_gettreeoriginalpicture];
     [_tree, _parentPath, [1, 0.82, 0.25, 1]] call zen_favorites_main_fnc_setfavoritestar;
 

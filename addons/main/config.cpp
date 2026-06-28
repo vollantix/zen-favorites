@@ -50,6 +50,7 @@ class CfgFunctions {
             class getfavoritelayout {};
             class getfactionleaffavoritedisplaypath {};
             class getfavoritestarbounds {};
+            class getshortestuniquefavoritelabel {};
             class gettreeoriginalpicture {};
             class gettreepicturekey {};
             class gettreepathtexts {};

@@ -42,9 +42,11 @@ Generated Favorites branch rows:
 - Double-clicking the branch body should toggle expand/collapse without jumping to a source row.
 - Unit, Group, and Module Favorites each support `Grouped` and `Flat` layouts through separate CBA Interface settings. Units and Groups default to Grouped; Modules default to Flat.
 - Grouped Unit Favorites compact deep source paths, such as `Favorites > CTRG / Cars > Prowler`; Flat uses one qualified leaf under `Favorites`.
-- Grouped faction Group Favorites use sibling roots such as `BLUFOR > Favorites: CTRG > Infantry / Fire Team`; Flat uses one qualified leaf under `BLUFOR > Favorites`.
-- Grouped Module Favorites follow their source categories; Flat uses one qualified leaf such as `Favorites > Reinforcements / Create LZ`.
+- Grouped faction Group Favorites use sibling roots such as `BLUFOR > Favorites: CTRG > Fire Team`; Flat uses one qualified leaf under `BLUFOR > Favorites`.
+- Grouped Module Favorites follow their source categories; Flat uses the shortest unique leaf label, such as `Favorites > Create LZ`.
 - Layout is presentation only. Both modes must resolve leaves through the same exact source-path map and proxy helper.
+- Qualified single-row favorites use the shortest unique leaf-first label. Add nearest-parent context only when duplicate leaf names require it, and keep the full source path in the tooltip.
+- Visible text paths are also reverse-map keys. Never shorten labels without preserving uniqueness within their generated Favorites root.
 - Every generated grouping row must keep empty `tvData` and pass through the inert branch guard. Module Flat is the default because it avoids generated rows at native Module leaf depth.
 
 Generated favorite leaves:
