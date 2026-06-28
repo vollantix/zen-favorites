@@ -12,6 +12,7 @@ private _moduleFavorites = (missionNamespace getVariable ["zen_favorites_main_mo
 private _rootCount = _tree tvCount [];
 private _sourceTreeSignature = [];
 private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
+private _favoriteLayout = ["modules"] call zen_favorites_main_fnc_getfavoritelayout;
 
 for "_index" from 0 to (_rootCount - 1) do {
     private _path = [_index];
@@ -27,6 +28,7 @@ private _renderSignature = str [
     _idc,
     _searchText,
     _starAlignment,
+    _favoriteLayout,
     _sourceTreeSignature,
     _moduleFavorites
 ];
@@ -60,7 +62,7 @@ private _renderModulePath = {
         private _favoriteId = str _sourceDisplayPath;
         private _color = [_normalColor, _favoriteColor] select (_favoriteId in _moduleFavoriteIds);
 
-        if ("Favorites" in _displayPath) then {
+        if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath) then {
             _color = _favoriteColor;
         };
 

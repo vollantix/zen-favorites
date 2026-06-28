@@ -6,14 +6,13 @@ params ["_tree", ["_path", []]];
 if (isNull _tree || {_path isEqualTo []}) exitWith {};
 
 private _pictureKey = [_tree, _path] call zen_favorites_main_fnc_gettreepicturekey;
-private _legacyKey = str [_path, _tree tvText _path, _tree tvData _path];
 private _originalPictures = _tree getVariable ["zen_favorites_main_originalPictures", createHashMap];
 private _starRows = _tree getVariable ["zen_favorites_main_starRows", createHashMap];
 private _starRowColors = _tree getVariable ["zen_favorites_main_starRowColors", createHashMap];
 private _originalPicture = _originalPictures getOrDefault [_pictureKey, objNull];
 
 if (_originalPicture isEqualTo objNull) then {
-    _originalPicture = _originalPictures getOrDefault [_legacyKey, _tree tvPicture _path];
+    _originalPicture = _tree tvPicture _path;
 };
 
 if ([_originalPicture] call zen_favorites_main_fnc_isfavoritestartexture) then {
@@ -30,8 +29,6 @@ _tree tvSetPictureRightColor [_path, [1, 1, 1, 0]];
 _tree tvSetPictureRightColorSelected [_path, [1, 1, 1, 0]];
 
 _starRows deleteAt _pictureKey;
-_starRows deleteAt _legacyKey;
 _tree setVariable ["zen_favorites_main_starRows", _starRows];
 _starRowColors deleteAt _pictureKey;
-_starRowColors deleteAt _legacyKey;
 _tree setVariable ["zen_favorites_main_starRowColors", _starRowColors];

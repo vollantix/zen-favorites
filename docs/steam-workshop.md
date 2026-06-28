@@ -7,6 +7,8 @@ The mod is client-side. Favorites are stored per player and are not synced betwe
 
 Saved favorites from unloaded mods are skipped until that mod is loaded again.
 
+[b]Latest update:[/b] Favorite stars can now be placed on the left or right, and Unit, Group, and Module Favorites can each use a Grouped or Flat layout through CBA Addon Options. Favorite-tree handling and compatibility with unloaded mods have also been improved.
+
 [h1]Current Features[/h1]
 [b]Faction Favorites[/b]
 [list]
@@ -20,8 +22,8 @@ Saved favorites from unloaded mods are skipped until that mod is loaded again.
 
 [b]Faction Unit and Group Favorites[/b]
 [list]
-[*]Adds generated Favorites branches for individual units and groups inside the non-empty side trees.
-[*]Favorite sections are grouped by source faction and category so entries stay easy to recognize.
+[*]Adds generated Favorites entries for individual units and groups inside the non-empty side trees.
+[*]Unit and Group favorites support Grouped or Flat layouts. Grouped Groups use a separate Favorites section per source faction, such as Favorites: CTRG.
 [*]Generated section rows are not favoritable; the individual unit or group leaves carry the favorite star.
 [*]Selecting a favorite uses the matching original ZEN row, keeping normal previews, placement bubbles, and ZEN settings intact.
 [*]Faction unit and group favorites are session-based by default, with an optional CBA setting to save current favorites immediately and keep them in your Arma profile.
@@ -33,6 +35,7 @@ Saved favorites from unloaded mods are skipped until that mod is loaded again.
 [*]Supports empty units, vehicles, objects, props, and entities.
 [*]Favorited entries stay in their original category and also appear under Favorites.
 [*]Favorites preserve a compact version of the original tree path so entries remain easy to recognize.
+[*]The CBA layout setting can instead show favorites as flat, fully qualified rows.
 [*]Selecting an Empty Units favorite uses the matching original ZEN row, so ZEN Placement keeps its normal preview behavior and settings.
 [*]Empty Units favorites are saved client-side in the Arma profile.
 [/list]
@@ -41,6 +44,7 @@ Saved favorites from unloaded mods are skipped until that mod is loaded again.
 [list]
 [*]Adds a Favorites category at the top of the Empty Groups tree.
 [*]Favorited groups and compositions stay in their original category and also appear under Favorites.
+[*]The Favorites section can use grouped category branches or flat, fully qualified rows. Grouped is the default.
 [*]Selecting an Empty Groups favorite uses the matching original ZEN row, keeping normal group and composition placement behavior intact.
 [*]Empty Groups favorites are saved client-side in the Arma profile.
 [/list]
@@ -49,6 +53,7 @@ Saved favorites from unloaded mods are skipped until that mod is loaded again.
 [list]
 [*]Adds a Favorites category at the top of the Zeus Create Modules tree.
 [*]Favorited modules stay in their original category and also appear under Favorites.
+[*]The Favorites section can follow the original category branches or use flat, fully qualified rows. Flat is the default.
 [*]Selecting a Module favorite uses the matching original ZEN row, keeping normal module selection behavior intact.
 [*]Module favorites are saved client-side in the Arma profile.
 [/list]
@@ -77,6 +82,9 @@ ZEN Favorites settings are available in:
 [list]
 [*]Debugging > Log level: controls RPT logging verbosity. Defaults to Error for normal play.
 [*]Interface > Favorite star side: chooses whether favorite stars appear on the left side or the original right side of Zeus Create tree rows. Defaults to Left to avoid the scrollbar.
+[*]Interface > Unit favorites layout: chooses grouped category branches or flat, fully qualified rows for faction and Empty Unit favorites. Defaults to Grouped.
+[*]Interface > Group favorites layout: groups faction Group favorites into faction-specific sections or shows one flat Favorites list; it also controls grouped or flat Empty Group favorites. Defaults to Grouped.
+[*]Interface > Module favorites layout: chooses original category branches or flat, fully qualified rows for Module favorites. Defaults to Flat.
 [*]Persistence > Save faction favorites: saves current top-level faction favorites immediately, then loads and saves them through your Arma profile. Off by default.
 [*]Persistence > Save faction unit/group favorites: saves current faction unit and group favorites immediately, then loads and saves them through your Arma profile. Off by default.
 [*]Maintenance > Clear Empty Unit favorites: clears Empty Unit favorites from the current session and Arma profile.
@@ -97,6 +105,7 @@ The current release process uses versioned keys. When updating the Workshop item
 [list]
 [*]Favorite leaves that internally select a matching original ZEN row use gold active text instead of Arma's native white tree selection box. The native selection box stays tied to the original row.
 [*]Selecting a generated favorite can scroll the Create tree down to the matching original ZEN row when that original row is far below the Favorites section.
+[*]With Module Favorites set to Grouped, selecting a generated category may show a one-time missing CfgVehicles popup. Arma treats depth-2 Module rows as placeable leaves before addon handlers can cancel selection. Flat is the default and avoids this native-tree limitation.
 [/list]
 
 [h1]Planned Features[/h1]
@@ -104,6 +113,7 @@ The current release process uses versioned keys. When updating the Workshop item
 [*]Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite.
 [*]Additional filtering tools for the Zeus Create menu.
 [*]Keep the Favorites section in view when selecting generated favorites whose original rows are below the visible page.
+[*]Preserve the visible Create tree position when adding a favorite so nearby source rows do not move away.
 [/list]
 
 [h1]Source And License[/h1]

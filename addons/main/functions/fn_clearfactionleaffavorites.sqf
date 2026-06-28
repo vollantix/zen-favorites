@@ -30,7 +30,7 @@ if (!isNull _display) then {
                     private _path = +_parentPath;
                     _path pushBack _index;
 
-                    if ((_tree tvText _path) == "Favorites") then {
+                    if ([_tree tvText _path] call zen_favorites_main_fnc_isfavoritepath) then {
                         _tree tvDelete _path;
                     };
                 };

@@ -7,10 +7,12 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 ### Added
 
 - CBA Interface setting to choose whether favorite stars appear on the left side or the original right side of Zeus Create tree rows.
+- Separate CBA Interface settings for Unit, Group, and Module Favorites layouts, each offering Grouped or Flat.
 
 ### Changed
 
 - Favorite stars default to the left side of Create tree rows so they no longer interfere with the scrollbar.
+- Module Favorites default to Flat; Unit and Group Favorites default to Grouped.
 
 ### Fixed
 
@@ -18,16 +20,23 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 - Favorite star clicks now use the configured star lane and consume the tree click so the row itself is not selected accidentally.
 - Favorite star click bounds now avoid the expand/collapse arrow area and are better aligned for deeper unit and group leaf rows.
 - Left mouse button release no longer toggles favorites after the button-down handler already handled the star click.
-- Generated folder/category body clicks select the generated branch but remain inert for placement.
+- Generated folder/category body clicks remain inert for placement; safe-depth branches can be selected while native placement-depth branches are consumed without selection.
 - Generated favorite leaves keep their yellow favorite star color after refreshes.
-- Generated Favorites branch rows are treated as navigation only, preventing branch clicks from triggering placement/config lookups.
+- Generated Favorites branch rows are treated as navigation only, preventing placement/config lookups outside the accepted Grouped Module limitation.
 - Generated Favorites branch rows no longer jump to source rows when selected, and double-clicking a generated branch toggles it open or closed.
 - Generated Favorites branch rows copy the original source icon instead of inheriting a visible favorite star overlay.
-- Faction Unit Favorites compact generated category paths, while faction Group Favorites use flat qualified rows so synthetic entries never sit at native `CfgGroups` placement depth.
+- Faction Unit and Group Favorites can switch between compact grouped branches and flat qualified rows without changing their original-row proxy behavior.
 - Left mouse-up is now consumed after handled favorite star or branch body clicks, preventing generated Favorites branches from leaking into ZEN placement/config selection.
-- Source tree selection is now parked before and restored after generated Favorites branches are rebuilt, preventing shifted selected indexes from triggering `CfgVehicles.` or `CfgGroups/West.` lookups.
+- Source tree selection is now parked before and restored after generated Favorites branches are rebuilt, preventing shifted indexes from changing the selected source row.
 - Switching the favorite star side no longer leaves a stale star on the previous side or disables stars inside generated Favorites sections.
 - Selecting a faction Group favorite no longer triggers missing `CfgGroups` configuration warnings before placing the original group.
+- Unavailable faction Group favorites now require their exact stored source path and cannot resolve to a similarly named group from another loaded faction or addon.
+- Module Favorites now use exact source-path mappings in both layouts instead of resolving generated leaves through their displayed labels.
+- Grouped faction Group favorites now use safe `Favorites: <Faction>` sections with qualified leaves, avoiding synthetic rows at native `CfgGroups` placement depth.
+
+### Known Quirks
+
+- Grouped Module categories occupy native Module leaf depth. Selecting one may show a one-time missing `CfgVehicles` popup because Arma performs its native lookup before addon handlers can cancel selection. Flat is the default and avoids generated Module category rows.
 
 ## [1.1.1] - 2026-05-29
 

@@ -16,13 +16,13 @@ ZEN Favorites is client-side. Favorites are stored per player and are not synced
 - Faction root favorites for BLUFOR, OPFOR, Independent, and Civilian Units/Groups.
 - Faction root favorites move to the top and preserve the open or collapsed state you choose.
 - Faction root favorites are session-based by default, with an optional CBA setting to save them persistently.
-- Individual faction unit and group leaf favorites with generated Favorites branches.
+- Individual faction Unit and Group favorites with configurable layouts; grouped Groups use one `Favorites: <Faction>` section per source faction.
 - Faction unit and group leaf favorites are session-based by default, with an optional CBA setting to save them persistently.
-- Persistent client-side Empty Units favorites.
-- Persistent client-side Empty Groups favorites.
-- Persistent client-side Module favorites in the Zeus Create Modules tree.
+- Persistent client-side Empty Units favorites with configurable grouped or flat generated layouts.
+- Persistent client-side Empty Groups favorites with configurable grouped or flat generated layouts.
+- Persistent client-side Module favorites with configurable grouped or flat generated layouts.
 - Generated favorite rows for faction leaves, Empty Units, Empty Groups, and Modules select the matching original ZEN row internally so ZEN keeps its normal previews, placement bubbles, and settings.
-- CBA Addon Options for log level, favorite star side, optional faction favorite persistence, and clearing saved favorites by category.
+- CBA Addon Options for log level, favorite star side, favorite list layouts, optional faction favorite persistence, and clearing saved favorites by category.
 
 ## Controls
 
@@ -45,7 +45,7 @@ Tree behavior rules:
 
 - Generated Favorites section, category, and branch rows are navigation only. They must never trigger placement, proxy selection, favorite toggling, or config lookups.
 - Only final leaf rows may select or proxy-select an original ZEN row, and only after validating the row has the expected source data.
-- When changing tree click, selection, or expansion behavior, always preserve the guard that branch rows exit before any `CfgVehicles`, `CfgGroups`, or module class lookup. This prevents the recurring "No entry bin\config.bin/..." error when clicking Favorites branches.
+- When changing tree click, selection, or expansion behavior, always preserve the guard that branch rows exit before any `CfgVehicles`, `CfgGroups`, or module class lookup. This prevents recurring config errors outside the documented opt-in Grouped Module limitation.
 
 Build and launch the development version:
 
@@ -90,13 +90,14 @@ The current signing policy uses HEMTT's default versioned signing authority, whi
 zen_favorites_1.0.0
 zen_favorites_1.0.1
 zen_favorites_1.1.0
+zen_favorites_1.1.1
 ```
 
 For each public release, HEMTT writes a matching public server key and PBO signature:
 
 ```text
-.hemttout\release\keys\zen_favorites_1.1.0.bikey
-.hemttout\release\addons\zen_favorites_main.pbo.zen_favorites_1.1.0.bisign
+.hemttout\release\keys\zen_favorites_1.1.1.bikey
+.hemttout\release\addons\zen_favorites_main.pbo.zen_favorites_1.1.1.bisign
 ```
 
 Server admins using `verifySignatures = 2` should allow the `.bikey` shipped with the current Workshop release. When the Workshop item is updated to a new version, the server key should be updated with it.
@@ -120,6 +121,9 @@ Options > Addon Options > ZEN Favorites
 
 - `Debugging > Log level`: controls RPT logging verbosity. Defaults to Error for normal play.
 - `Interface > Favorite star side`: chooses whether favorite stars appear on the left side or the original right side of Zeus Create tree rows. Defaults to Left to avoid the scrollbar.
+- `Interface > Unit favorites layout`: chooses grouped category branches or flat, fully qualified rows for faction and Empty Unit favorites. Defaults to Grouped.
+- `Interface > Group favorites layout`: groups faction Group favorites into `Favorites: <Faction>` sections or shows one flat Favorites list; it also controls grouped or flat Empty Group favorites. Defaults to Grouped.
+- `Interface > Module favorites layout`: chooses original category branches or flat, fully qualified rows for Module favorites. Defaults to Flat to avoid the native grouped-category popup described below.
 - `Persistence > Save faction favorites`: saves current top-level faction favorites immediately, then loads and saves them through the current Arma profile. Off by default.
 - `Persistence > Save faction unit/group favorites`: saves current faction unit and group leaf favorites immediately, then loads and saves them through the current Arma profile. Off by default.
 - `Maintenance > Clear Empty Unit favorites`: clears Empty Unit favorites from the current session and Arma profile.
@@ -241,12 +245,14 @@ Turn one on to clear that saved favorite type. Each toggle resets itself after c
 
 - Favorite leaves that internally select a matching original ZEN row use gold active text instead of Arma's native white tree selection box. The native selection box stays tied to the original row.
 - Selecting a generated favorite can scroll the Create tree down to the matching original ZEN row when that original row is far below the Favorites section.
+- With Module Favorites set to Grouped, selecting a generated category such as `Favorites > Reinforcements` may show a one-time `No entry 'bin\config.bin/CfgVehicles.'` popup. Arma treats depth-2 Module rows as native placeable leaves before addon handlers can cancel selection; Unit folders are safe because their native leaves are one level deeper. Flat is the default and avoids generated Module category rows.
 
 ## Planned Features
 
 - Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite. Single objects are likely feasible; compositions need more investigation.
 - Additional filtering tools for the Zeus Create menu.
 - Keep the Favorites section in view when selecting generated favorites whose original rows are below the visible page.
+- Preserve the visible Create tree position when adding a favorite so nearby source rows do not move away.
 
 ## License
 

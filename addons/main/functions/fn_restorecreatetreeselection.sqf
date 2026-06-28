@@ -5,15 +5,11 @@ params ["_tree", ["_selectionState", []]];
 
 if (isNull _tree || {_selectionState isEqualTo []}) exitWith {false};
 
-_selectionState params [["_displayPath", []], ["_data", ""]];
+private _displayPath = _selectionState;
 
-if (_displayPath isEqualTo [] || {"Favorites" in _displayPath}) exitWith {false};
+if (_displayPath isEqualTo [] || {[_displayPath] call zen_favorites_main_fnc_isfavoritepath}) exitWith {false};
 
 private _restorePath = [_tree, _displayPath] call zen_favorites_main_fnc_findtreepathbytexts;
-
-if (_restorePath isEqualTo [] && {_data != ""}) then {
-    _restorePath = [_tree, [], _data] call zen_favorites_main_fnc_findtreepathbydata;
-};
 
 if (_restorePath isEqualTo []) exitWith {false};
 if ((tvCurSel _tree) isEqualTo _restorePath) exitWith {true};

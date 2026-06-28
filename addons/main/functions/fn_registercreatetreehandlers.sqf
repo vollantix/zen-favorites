@@ -42,18 +42,7 @@ _tree ctrlAddEventHandler ["MouseButtonDown", {
             _rowBodyStart = _treeLeft + (_treeWidth * 0.090) + (_indentDepth * (_treeWidth * 0.075));
         };
 
-        private _normalizeTexture = {
-            params [["_texture", ""]];
-
-            _texture = toLower _texture;
-
-            if ((_texture select [0, 1]) == "\") then {
-                _texture = _texture select [1];
-            };
-
-            _texture
-        };
-        private _isPictureStar = ([_targetPicture] call _normalizeTexture) == ([ZEN_FAVORITES_STAR_TEXTURE] call _normalizeTexture);
+        private _isPictureStar = [_targetPicture] call zen_favorites_main_fnc_isfavoritestartexture;
         private _isStarRow = !_isGeneratedFavoritesBranch && {(_starRows getOrDefault [_targetKey, false]) || {_isPictureStar}};
         private _isStarClick = _starBounds isNotEqualTo [] &&
             {_isStarRow} &&
@@ -96,8 +85,6 @@ _tree ctrlAddEventHandler ["MouseButtonDown", {
         ]] call zen_favorites_main_fnc_log;
 
         if (_isStarClick) then {
-            _tree setVariable ["zen_favorites_main_lastStarMouseDown", [str [ctrlIDC _tree, _targetPath], diag_tickTime]];
-
             [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
                 "star mouse down handled idc=%1 path=%2 text=%3 x=%4 bounds=%5",
                 ctrlIDC _tree,
@@ -193,7 +180,7 @@ _tree ctrlAddEventHandler ["MouseButtonUp", {
         if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_UNITS_EMPTY && {_hoverPath isNotEqualTo []}) then {
             private _displayPath = [_tree, _hoverPath] call zen_favorites_main_fnc_gettreepathtexts;
 
-            if ("Favorites" in _displayPath && {(_tree tvCount _hoverPath) == 0}) then {
+            if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath && {(_tree tvCount _hoverPath) == 0}) then {
                 private _className = _tree tvData _hoverPath;
 
                 if (_className != "") then {
@@ -220,7 +207,7 @@ _tree ctrlAddEventHandler ["MouseButtonUp", {
         if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_GROUPS_EMPTY && {_hoverPath isNotEqualTo []}) then {
             private _displayPath = [_tree, _hoverPath] call zen_favorites_main_fnc_gettreepathtexts;
 
-            if ("Favorites" in _displayPath && {(_tree tvCount _hoverPath) == 0}) then {
+            if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath && {(_tree tvCount _hoverPath) == 0}) then {
                 private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_emptyGroupsFavoriteSourcePaths", createHashMap];
                 private _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [
                     str _displayPath,
@@ -257,8 +244,9 @@ _tree ctrlAddEventHandler ["MouseButtonUp", {
         if ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_MODULES && {_hoverPath isNotEqualTo []}) then {
             private _displayPath = [_tree, _hoverPath] call zen_favorites_main_fnc_gettreepathtexts;
 
-            if ("Favorites" in _displayPath && {(_tree tvCount _hoverPath) == 0}) then {
-                private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
+            if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath && {(_tree tvCount _hoverPath) == 0}) then {
+                private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_moduleFavoriteSourcePaths", createHashMap];
+                private _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [str _displayPath, []];
                 private _className = _tree tvData _hoverPath;
                 private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
 
@@ -296,7 +284,7 @@ _tree ctrlAddEventHandler ["MouseButtonUp", {
         if (_mode in ["units", "groups"] && {_side != "empty"} && {_hoverPath isNotEqualTo []}) then {
             private _displayPath = [_tree, _hoverPath] call zen_favorites_main_fnc_gettreepathtexts;
 
-            if ("Favorites" in _displayPath && {(_tree tvCount _hoverPath) == 0}) then {
+            if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath && {(_tree tvCount _hoverPath) == 0}) then {
                 private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_factionLeafFavoriteSourcePaths", createHashMap];
                 private _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [
                     str _displayPath,
@@ -305,7 +293,7 @@ _tree ctrlAddEventHandler ["MouseButtonUp", {
                 private _data = _tree tvData _hoverPath;
                 private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
 
-                if (_originalPath isEqualTo [] && {_data != ""}) then {
+                if (_mode == "units" && {_originalPath isEqualTo []} && {_data != ""}) then {
                     _originalPath = [_tree, [], _data] call zen_favorites_main_fnc_findtreepathbydata;
                 };
 
@@ -381,7 +369,7 @@ _tree ctrlAddEventHandler ["TreeExpanded", {
     if (_mode in ["units", "groups"] && {_side != "empty"}) then {
         private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
 
-        if ("Favorites" in _displayPath) then {
+        if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath) then {
             _isFactionLeafFavoritePath = true;
 
             if !(_tree getVariable ["zen_favorites_main_ignoreFactionLeafExpandEvents", false]) then {
@@ -424,7 +412,7 @@ _tree ctrlAddEventHandler ["TreeCollapsed", {
     if (_mode in ["units", "groups"] && {_side != "empty"}) then {
         private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
 
-        if ("Favorites" in _displayPath) then {
+        if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath) then {
             _isFactionLeafFavoritePath = true;
 
             if !(_tree getVariable ["zen_favorites_main_ignoreFactionLeafExpandEvents", false]) then {
@@ -531,7 +519,7 @@ _tree ctrlAddEventHandler ["TreeSelChanged", {
 
     private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
 
-    if !("Favorites" in _displayPath) exitWith {
+    if !([_displayPath] call zen_favorites_main_fnc_isfavoritepath) exitWith {
         call _clearActiveFavorite;
     };
     if ((_tree tvCount _path) > 0) exitWith {};
@@ -545,7 +533,7 @@ _tree ctrlAddEventHandler ["TreeSelChanged", {
 
     if (_originalPath isEqualTo []) exitWith {
         [ZEN_FAVORITES_LOG_LEVEL_WARN, format [
-            "could not resolve Empty Groups favorite shortcut favoritePath=%1 sourceDisplayPath=%2",
+            "could not resolve Empty Groups favorite proxy favoritePath=%1 sourceDisplayPath=%2",
             _path,
             _sourceDisplayPath
         ]] call zen_favorites_main_fnc_log;
@@ -586,13 +574,14 @@ _tree ctrlAddEventHandler ["TreeSelChanged", {
 
     private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
 
-    if !("Favorites" in _displayPath) exitWith {
+    if !([_displayPath] call zen_favorites_main_fnc_isfavoritepath) exitWith {
         call _clearActiveFavorite;
     };
 
     if ((_tree tvCount _path) > 0) exitWith {};
 
-    private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
+    private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_moduleFavoriteSourcePaths", createHashMap];
+    private _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [str _displayPath, []];
     private _className = _tree tvData _path;
     private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
 
@@ -628,6 +617,8 @@ _tree ctrlAddEventHandler ["TreeSelChanged", {
     params ["_tree", "_path"];
 
     // Faction leaf favorites proxy-select the original ZEN row to preserve previews and placement behavior.
+    // Grouped Group favorites must stay as `Favorites: <Faction>` roots with direct leaves.
+    // A synthetic row at native Group depth 4 is resolved as CfgGroups before this handler can redirect it.
     private _treeContext = [ctrlIDC _tree] call zen_favorites_main_fnc_getcreatetreecontextbyidc;
     _treeContext params ["_mode", "_side"];
 
@@ -644,7 +635,7 @@ _tree ctrlAddEventHandler ["TreeSelChanged", {
 
     private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
 
-    if !("Favorites" in _displayPath) exitWith {
+    if !([_displayPath] call zen_favorites_main_fnc_isfavoritepath) exitWith {
         call _clearActiveFavorite;
     };
 

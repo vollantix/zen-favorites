@@ -26,7 +26,9 @@ for "_index" from 0 to (_rootCount - 1) do {
 };
 
 private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
-private _signature = str [_favorites, _starAlignment, _sourceTreeSignature];
+private _favoriteLayout = ["modules"] call zen_favorites_main_fnc_getfavoritelayout;
+private _isFlatLayout = _favoriteLayout == ZEN_FAVORITES_LAYOUT_FLAT;
+private _signature = str [_favorites, _starAlignment, _favoriteLayout, _sourceTreeSignature];
 
 if (
     (_tree getVariable ["zen_favorites_main_moduleFavoritesSignature", ""] == _signature) &&
@@ -63,7 +65,7 @@ for "_index" from (_rootCount - 1) to 0 step -1 do {
 
 if (_favorites isEqualTo []) exitWith {
     _tree setVariable ["zen_favorites_main_moduleFavoritesSignature", _signature];
-    _tree setVariable ["zen_favorites_main_moduleFavoriteBranchTextPaths", []];
+    _tree setVariable ["zen_favorites_main_moduleFavoriteSourcePaths", createHashMap];
     _tree setVariable ["zen_favorites_main_moduleExpandedTextPaths", []];
     _tree setVariable ["zen_favorites_main_modulePendingExpandTextPaths", []];
     missionNamespace setVariable ["zen_favorites_main_moduleExpandedTextPaths", []];
@@ -87,7 +89,7 @@ private _getOriginalSortValue = {
 
 private _favoritesRootIndex = _tree tvAdd [[], "Favorites"];
 private _favoritesRootPath = [_favoritesRootIndex];
-private _favoriteBranchTextPaths = [];
+private _favoriteSourcePathMap = createHashMap;
 
 // The synthetic root is a UI folder only; it must not become a placeable object.
 _tree tvSetData [_favoritesRootPath, ""];
@@ -107,18 +109,24 @@ _tree tvSetValue [_favoritesRootPath, -1000];
     };
 
     private _className = _tree tvData _originalPath;
+    private _relativeDisplayPath = if (_isFlatLayout) then {
+        [_displayPath joinString " / "]
+    } else {
+        +_displayPath
+    };
+    private _pathOffset = (count _displayPath) - (count _relativeDisplayPath);
     private _originalSortValue = [_originalPath] call _getOriginalSortValue;
-    private _parentPath = +_favoritesRootPath;
-    private _relativeBranchPath = [];
+    private _favoritePath = +_favoritesRootPath;
 
     {
         private _segment = _x;
         private _existingIndex = -1;
-        private _childCount = _tree tvCount _parentPath;
-        private _originalSegmentPath = _originalPath select [0, ((count _originalPath) - 1) min (_forEachIndex + 1)];
+        private _childCount = _tree tvCount _favoritePath;
+        private _sourceDepth = ((count _originalPath) - 1) min (_forEachIndex + 1 + _pathOffset);
+        private _originalSegmentPath = _originalPath select [0, _sourceDepth];
 
         for "_childIndex" from 0 to (_childCount - 1) do {
-            private _candidatePath = +_parentPath;
+            private _candidatePath = +_favoritePath;
             _candidatePath pushBack _childIndex;
 
             if ((_tree tvText _candidatePath) == _segment) exitWith {
@@ -127,37 +135,32 @@ _tree tvSetValue [_favoritesRootPath, -1000];
         };
 
         if (_existingIndex == -1) then {
-            _existingIndex = _tree tvAdd [_parentPath, _segment];
+            _existingIndex = _tree tvAdd [_favoritePath, _segment];
         };
 
-        _parentPath pushBack _existingIndex;
-        _relativeBranchPath pushBack _segment;
+        _favoritePath pushBack _existingIndex;
 
-        // Generated folder rows are UI only; only leaves carry placeable source data.
-        _tree tvSetData [_parentPath, ""];
-        _tree tvSetValue [_parentPath, _tree tvValue _originalSegmentPath];
-        _tree tvSetTooltip [_parentPath, _tree tvTooltip _originalSegmentPath];
-        _tree tvSetPicture [_parentPath, [_tree, _originalSegmentPath] call zen_favorites_main_fnc_gettreeoriginalpicture];
+        // Generated folders are inert UI rows; only the final leaf gets source data.
+        _tree tvSetData [_favoritePath, ""];
+        _tree tvSetValue [_favoritePath, _originalSortValue + _forEachIndex];
+        _tree tvSetTooltip [_favoritePath, _tree tvTooltip _originalSegmentPath];
+        _tree tvSetPicture [_favoritePath, [_tree, _originalSegmentPath] call zen_favorites_main_fnc_gettreeoriginalpicture];
+    } forEach _relativeDisplayPath;
 
-        if (_forEachIndex < ((count _displayPath) - 1)) then {
-            private _favoriteBranchTextPath = ["Favorites"] + _relativeBranchPath;
+    _tree tvSetData [_favoritePath, _className];
+    _tree tvSetValue [_favoritePath, _tree tvValue _originalPath];
+    _tree tvSetTooltip [_favoritePath, _tree tvTooltip _originalPath];
+    _tree tvSetPicture [_favoritePath, [_tree, _originalPath] call zen_favorites_main_fnc_gettreeoriginalpicture];
+    [_tree, _favoritePath, [1, 0.82, 0.25, 1]] call zen_favorites_main_fnc_setfavoritestar;
 
-            _favoriteBranchTextPaths pushBack _favoriteBranchTextPath;
-        };
-    } forEach _displayPath;
-
-    _tree tvSetData [_parentPath, _className];
-    _tree tvSetValue [_parentPath, _tree tvValue _originalPath];
-    _tree tvSetTooltip [_parentPath, _tree tvTooltip _originalPath];
-    _tree tvSetPicture [_parentPath, [_tree, _originalPath] call zen_favorites_main_fnc_gettreeoriginalpicture];
-    [_tree, _parentPath, [1, 0.82, 0.25, 1]] call zen_favorites_main_fnc_setfavoritestar;
+    _favoriteSourcePathMap set [str ([_tree, _favoritePath] call zen_favorites_main_fnc_gettreepathtexts), _displayPath];
 } forEach _favorites;
 
 if ((_tree tvCount _favoritesRootPath) == 0) exitWith {
     // Stored favorites can become unavailable when a module-providing mod is missing.
     _tree tvDelete _favoritesRootPath;
     _tree setVariable ["zen_favorites_main_moduleFavoritesSignature", _signature];
-    _tree setVariable ["zen_favorites_main_moduleFavoriteBranchTextPaths", []];
+    _tree setVariable ["zen_favorites_main_moduleFavoriteSourcePaths", createHashMap];
     _tree setVariable ["zen_favorites_main_moduleExpandedTextPaths", []];
     _tree setVariable ["zen_favorites_main_modulePendingExpandTextPaths", []];
     missionNamespace setVariable ["zen_favorites_main_moduleExpandedTextPaths", []];
@@ -198,7 +201,7 @@ private _restoreExpandedTextPaths = +_expandedTextPaths;
 private _expandedTextPathsAfterRender = [_tree, _restoreExpandedTextPaths, "zen_favorites_main_moduleExpandedTextPaths"] call zen_favorites_main_fnc_restorefavoritetreeexpanded;
 
 _tree setVariable ["zen_favorites_main_moduleFavoritesSignature", _signature];
-_tree setVariable ["zen_favorites_main_moduleFavoriteBranchTextPaths", _favoriteBranchTextPaths];
+_tree setVariable ["zen_favorites_main_moduleFavoriteSourcePaths", _favoriteSourcePathMap];
 _tree setVariable ["zen_favorites_main_moduleExpandedTextPaths", _expandedTextPathsAfterRender];
 _tree setVariable ["zen_favorites_main_modulePendingExpandTextPaths", []];
 _tree setVariable ["zen_favorites_main_ignoreModuleExpandEvents", false];

@@ -35,7 +35,7 @@ if (_side == "empty") exitWith {
 };
 
 private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
-private _isGeneratedFavoritePath = "Favorites" in _displayPath;
+private _isGeneratedFavoritePath = [_displayPath] call zen_favorites_main_fnc_isfavoritepath;
 
 if (_isGeneratedFavoritePath) exitWith {
     if ((_tree tvCount _path) == 0) exitWith {

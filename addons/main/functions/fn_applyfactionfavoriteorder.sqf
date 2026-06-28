@@ -67,7 +67,7 @@ if (_mode == "units") then {
         for "_index" from 0 to (_rootCount - 1) do {
             private _rowText = _tree tvText [_index];
 
-            if (_rowText != "Favorites") then {
+            if !([_rowText] call zen_favorites_main_fnc_isfavoritepath) then {
                 _originalOrder pushBack _rowText;
             };
         };
@@ -81,7 +81,7 @@ if (_mode == "units") then {
         private _factionName = _tree tvText _path;
         private _favoriteIndex = _favorites find _factionName;
         private _originalIndex = _originalOrder find _factionName;
-        private _sortValue = if (_factionName == "Favorites") then {
+        private _sortValue = if ([_factionName] call zen_favorites_main_fnc_isfavoritepath) then {
             -1000
         } else {
             if (_favoriteIndex == -1) then {1000 + _originalIndex} else {_favoriteIndex}
@@ -107,7 +107,7 @@ if (_mode == "groups") then {
         for "_index" from 0 to (_factionCount - 1) do {
             private _rowText = _tree tvText [0, _index];
 
-            if (_rowText != "Favorites") then {
+            if !([_rowText] call zen_favorites_main_fnc_isfavoritepath) then {
                 _originalOrder pushBack _rowText;
             };
         };
@@ -121,7 +121,7 @@ if (_mode == "groups") then {
         private _factionName = _tree tvText _path;
         private _favoriteIndex = _favorites find _factionName;
         private _originalIndex = _originalOrder find _factionName;
-        private _sortValue = if (_factionName == "Favorites") then {
+        private _sortValue = if ([_factionName] call zen_favorites_main_fnc_isfavoritepath) then {
             -1000
         } else {
             if (_favoriteIndex == -1) then {1000 + _originalIndex} else {_favoriteIndex}

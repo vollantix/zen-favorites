@@ -13,7 +13,7 @@ if !(_mode in ["units", "groups"] && {_side != "empty"}) exitWith {false};
 
 private _displayPath = [_tree, _favoritePath] call zen_favorites_main_fnc_gettreepathtexts;
 
-if !("Favorites" in _displayPath) exitWith {false};
+if !([_displayPath] call zen_favorites_main_fnc_isfavoritepath) exitWith {false};
 
 private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_factionLeafFavoriteSourcePaths", createHashMap];
 private _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [
@@ -23,7 +23,7 @@ private _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [
 private _data = _tree tvData _favoritePath;
 private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
 
-if (_originalPath isEqualTo [] && {_data != ""}) then {
+if (_mode == "units" && {_originalPath isEqualTo []} && {_data != ""}) then {
     _originalPath = [_tree, [], _data] call zen_favorites_main_fnc_findtreepathbydata;
 };
 

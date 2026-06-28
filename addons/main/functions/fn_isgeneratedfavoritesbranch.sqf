@@ -8,4 +8,4 @@ if ((_tree tvCount _path) == 0) exitWith {false};
 
 private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
 
-"Favorites" in _displayPath
+[_displayPath] call zen_favorites_main_fnc_isfavoritepath

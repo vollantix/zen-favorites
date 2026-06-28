@@ -4,7 +4,9 @@
 params [["_displayPath", []]];
 
 private _sourceDisplayPath = +_displayPath;
-private _favoritesIndex = _sourceDisplayPath find "Favorites";
+private _favoritesIndex = _sourceDisplayPath findIf {
+    [_x] call zen_favorites_main_fnc_isfavoritepath
+};
 
 if (_favoritesIndex >= 0) then {
     _sourceDisplayPath deleteAt _favoritesIndex;

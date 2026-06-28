@@ -11,6 +11,31 @@ private _treeContext = [ctrlIDC _tree] call zen_favorites_main_fnc_getcreatetree
 _treeContext params ["_mode", "_side"];
 private _ignoreVariables = [];
 
+[_tree, "zen_favorites_main_activeEmptyUnitsFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
+[_tree, "zen_favorites_main_activeEmptyGroupsFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
+[_tree, "zen_favorites_main_activeModuleFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
+[_tree, "zen_favorites_main_activeFactionLeafFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
+
+// Arma interprets a Module category at depth 2 as a placeable native leaf before
+// scripted selection handlers can redirect it. Avoid selecting it here, although
+// the native tree can still select it once and show the documented CfgVehicles popup.
+private _isNativePlacementDepth =
+    (ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_MODULES && {(count _path) == 2};
+
+if (_isNativePlacementDepth) exitWith {
+    ctrlSetFocus _tree;
+
+    [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
+        "consumed generated Favorites branch at native placement depth path=%1 displayPath=%2 mode=%3 side=%4",
+        _path,
+        _displayPath,
+        _mode,
+        _side
+    ]] call zen_favorites_main_fnc_log;
+
+    true
+};
+
 switch (true) do {
     case ((ctrlIDC _tree) == ZEN_FAVORITES_IDC_CREATE_UNITS_EMPTY): {
         _ignoreVariables = [
@@ -38,11 +63,6 @@ switch (true) do {
         ];
     };
 };
-
-[_tree, "zen_favorites_main_activeEmptyUnitsFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
-[_tree, "zen_favorites_main_activeEmptyGroupsFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
-[_tree, "zen_favorites_main_activeModuleFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
-[_tree, "zen_favorites_main_activeFactionLeafFavoritePath"] call zen_favorites_main_fnc_clearactivefavoriteproxy;
 
 {
     _tree setVariable [_x, true];

@@ -1,6 +1,27 @@
 #include "..\script_component.hpp"
 
 // Register user-facing CBA settings for debugging and maintenance actions.
+private _refreshOpenZeusTree = {
+    private _display = findDisplay ZEN_FAVORITES_IDD_ZEUS_DISPLAY;
+
+    if (!isNull _display) then {
+        private _activeTree = [_display] call zen_favorites_main_fnc_getactivecreatetree;
+        _activeTree params ["_tree"];
+
+        if (!isNull _tree) then {
+            _tree setVariable ["zen_favorites_main_emptyFavoritesSignature", ""];
+            _tree setVariable ["zen_favorites_main_factionLeafFavoritesSignature", ""];
+            _tree setVariable ["zen_favorites_main_moduleFavoritesSignature", ""];
+            _tree setVariable ["zen_favorites_main_lastEmptyRenderSignature", ""];
+            _tree setVariable ["zen_favorites_main_lastEmptyGroupsRenderSignature", ""];
+            _tree setVariable ["zen_favorites_main_lastFactionLeafRenderSignature", ""];
+            _tree setVariable ["zen_favorites_main_lastModuleRenderSignature", ""];
+
+            [_display] call zen_favorites_main_fnc_rendercreatetreefavorites;
+        };
+    };
+};
+
 [
     "zen_favorites_main_logLevel",
     "LIST",
@@ -24,6 +45,66 @@
         ZEN_FAVORITES_LOG_LEVEL_ERROR
     ],
     0
+] call CBA_fnc_addSetting;
+
+[
+    "zen_favorites_main_unitFavoritesLayout",
+    "LIST",
+    ["Unit favorites layout", "Choose whether generated Unit Favorites use compact category branches or flat, fully qualified rows. Applies to faction and Empty Units tabs. Grouped is the default."],
+    ["ZEN Favorites", "Interface"],
+    [
+        [
+            ZEN_FAVORITES_LAYOUT_GROUPED,
+            ZEN_FAVORITES_LAYOUT_FLAT
+        ],
+        [
+            "Grouped",
+            "Flat"
+        ],
+        ZEN_FAVORITES_LAYOUT_GROUPED
+    ],
+    0,
+    _refreshOpenZeusTree
+] call CBA_fnc_addSetting;
+
+[
+    "zen_favorites_main_groupFavoritesLayout",
+    "LIST",
+    ["Group favorites layout", "Choose whether generated Group Favorites are grouped into faction-specific sections or shown as flat, fully qualified rows. Also controls grouped or flat presentation in Empty Groups. Grouped is the default."],
+    ["ZEN Favorites", "Interface"],
+    [
+        [
+            ZEN_FAVORITES_LAYOUT_GROUPED,
+            ZEN_FAVORITES_LAYOUT_FLAT
+        ],
+        [
+            "Grouped",
+            "Flat"
+        ],
+        ZEN_FAVORITES_LAYOUT_GROUPED
+    ],
+    0,
+    _refreshOpenZeusTree
+] call CBA_fnc_addSetting;
+
+[
+    "zen_favorites_main_moduleFavoritesLayout",
+    "LIST",
+    ["Module favorites layout", "Choose whether generated Module Favorites follow their original category branches or use flat, fully qualified rows. Flat is the default because Arma can show a one-time CfgVehicles popup when a generated Grouped category is first selected."],
+    ["ZEN Favorites", "Interface"],
+    [
+        [
+            ZEN_FAVORITES_LAYOUT_GROUPED,
+            ZEN_FAVORITES_LAYOUT_FLAT
+        ],
+        [
+            "Grouped",
+            "Flat"
+        ],
+        ZEN_FAVORITES_LAYOUT_FLAT
+    ],
+    0,
+    _refreshOpenZeusTree
 ] call CBA_fnc_addSetting;
 
 [

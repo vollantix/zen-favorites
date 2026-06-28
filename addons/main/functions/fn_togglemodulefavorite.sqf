@@ -17,8 +17,21 @@ if ((_tree tvCount _path) > 0) exitWith {
 
 private _className = _tree tvData _path;
 private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
-private _isGeneratedFavoritePath = ("Favorites" in _displayPath);
+private _isGeneratedFavoritePath = [_displayPath] call zen_favorites_main_fnc_isfavoritepath;
 private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
+
+if (_isGeneratedFavoritePath) then {
+    private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_moduleFavoriteSourcePaths", createHashMap];
+    _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [str _displayPath, []];
+};
+
+if (_sourceDisplayPath isEqualTo []) exitWith {
+    [ZEN_FAVORITES_LOG_LEVEL_WARN, format [
+        "cannot toggle Module favorite: missing source path path=%1",
+        _displayPath
+    ]] call zen_favorites_main_fnc_log;
+};
+
 private _favoriteId = str _sourceDisplayPath;
 private _favoriteEntry = [
     _sourceDisplayPath,
@@ -47,10 +60,14 @@ if (_existingIndex == -1) then {
 
     _favorites pushBack _favoriteEntry;
 
-    // New favorites expand their own generated branch once, then user state takes over.
-    private _pendingBranchTextPaths = [];
+    // New favorites open their generated path once; later user expansion state wins.
+    private _pendingExpandTextPaths = +(_tree getVariable ["zen_favorites_main_modulePendingExpandTextPaths", []]);
 
-    if ((count _sourceDisplayPath) > 1) then {
+    if !(["Favorites"] in _pendingExpandTextPaths) then {
+        _pendingExpandTextPaths pushBack ["Favorites"];
+    };
+
+    if ((["modules"] call zen_favorites_main_fnc_getfavoritelayout) == ZEN_FAVORITES_LAYOUT_GROUPED) then {
         private _relativeBranchPath = [];
 
         for "_index" from 0 to ((count _sourceDisplayPath) - 2) do {
@@ -58,27 +75,13 @@ if (_existingIndex == -1) then {
 
             private _favoriteBranchTextPath = ["Favorites"] + _relativeBranchPath;
 
-            if !(_favoriteBranchTextPath in _pendingBranchTextPaths) then {
-                _pendingBranchTextPaths pushBack _favoriteBranchTextPath;
+            if !(_favoriteBranchTextPath in _pendingExpandTextPaths) then {
+                _pendingExpandTextPaths pushBack _favoriteBranchTextPath;
             };
         };
     };
 
-    if (_pendingBranchTextPaths isNotEqualTo []) then {
-        private _pendingExpandTextPaths = +(_tree getVariable ["zen_favorites_main_modulePendingExpandTextPaths", []]);
-
-        if !(["Favorites"] in _pendingExpandTextPaths) then {
-            _pendingExpandTextPaths pushBack ["Favorites"];
-        };
-
-        {
-            if !(_x in _pendingExpandTextPaths) then {
-                _pendingExpandTextPaths pushBack _x;
-            };
-        } forEach _pendingBranchTextPaths;
-
-        _tree setVariable ["zen_favorites_main_modulePendingExpandTextPaths", _pendingExpandTextPaths];
-    };
+    _tree setVariable ["zen_favorites_main_modulePendingExpandTextPaths", _pendingExpandTextPaths];
 
     [format ["Added Module favorite: %1", _sourceDisplayPath select -1]] call zen_favorites_main_fnc_showactionhint;
 

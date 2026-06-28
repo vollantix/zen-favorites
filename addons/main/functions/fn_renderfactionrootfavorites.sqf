@@ -37,7 +37,7 @@ if (_mode == "units") then {
         private _path = [_index];
         private _factionName = _tree tvText _path;
 
-        if (_factionName == "Favorites") then {
+        if ([_factionName] call zen_favorites_main_fnc_isfavoritepath) then {
             [_tree, _path] call zen_favorites_main_fnc_clearfavoritestar;
             continue;
         };
@@ -55,7 +55,7 @@ if (_mode == "groups") then {
         private _path = [0, _index];
         private _factionName = _tree tvText _path;
 
-        if (_factionName == "Favorites") then {
+        if ([_factionName] call zen_favorites_main_fnc_isfavoritepath) then {
             [_tree, _path] call zen_favorites_main_fnc_clearfavoritestar;
             continue;
         };

@@ -16,7 +16,7 @@ if ((_tree tvCount _path) > 0) exitWith {
 };
 
 private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
-private _isGeneratedFavoritePath = "Favorites" in _displayPath;
+private _isGeneratedFavoritePath = [_displayPath] call zen_favorites_main_fnc_isfavoritepath;
 private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_factionLeafFavoriteSourcePaths", createHashMap];
 private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
 
@@ -59,17 +59,22 @@ if (_existingIndex == -1) then {
     // New favorites expand their generated branch once, then manual state is remembered.
     private _relativeDisplayPath = [_sourceDisplayPath, _mode, _tree] call zen_favorites_main_fnc_getfactionleaffavoritedisplaypath;
     private _pendingExpandTextPaths = +(_tree getVariable [format ["zen_favorites_main_factionLeafPendingExpandTextPaths_%1_%2", _mode, _side], []]);
-    private _favoriteRootTextPath = if (_mode == "groups") then {
-        [_tree tvText [0], "Favorites"]
+    private _isGroupedFactionGroups = _mode == "groups" && {([_mode] call zen_favorites_main_fnc_getfavoritelayout) == ZEN_FAVORITES_LAYOUT_GROUPED};
+    private _favoriteRootTextPath = if (_isGroupedFactionGroups) then {
+        [_tree tvText [0], format ["Favorites: %1", _relativeDisplayPath param [0, "Other"]]]
     } else {
-        ["Favorites"]
+        if (_mode == "groups") then {
+            [_tree tvText [0], "Favorites"]
+        } else {
+            ["Favorites"]
+        }
     };
 
     if !(_favoriteRootTextPath in _pendingExpandTextPaths) then {
         _pendingExpandTextPaths pushBack _favoriteRootTextPath;
     };
 
-    if ((count _relativeDisplayPath) > 1) then {
+    if (!_isGroupedFactionGroups && {(count _relativeDisplayPath) > 1}) then {
         private _relativeBranchPath = [];
 
         for "_index" from 0 to ((count _relativeDisplayPath) - 2) do {

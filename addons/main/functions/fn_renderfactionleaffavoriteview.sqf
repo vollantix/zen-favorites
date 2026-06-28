@@ -14,12 +14,14 @@ private _favorites = (_favoriteStore getOrDefault [_favoriteKey, []]) select {
 private _rootCount = _tree tvCount [];
 private _childCount = if (_mode == "groups" && {_rootCount > 0}) then {_tree tvCount [0]} else {0};
 private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
+private _favoriteLayout = [_mode] call zen_favorites_main_fnc_getfavoritelayout;
 private _renderSignature = str [
     _idc,
     _mode,
     _side,
     _searchText,
     _starAlignment,
+    _favoriteLayout,
     _rootCount,
     _childCount,
     _favorites
@@ -44,7 +46,7 @@ if (_searchText == "") then {
         private _path = +_favoritesParentPath;
         _path pushBack _index;
 
-        if ((_tree tvText _path) == "Favorites") then {
+        if ([_tree tvText _path] call zen_favorites_main_fnc_isfavoritepath) then {
             _tree tvDelete _path;
         };
     };
@@ -63,14 +65,14 @@ private _renderPath = {
         private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
         private _favoriteSourcePathMap = _tree getVariable ["zen_favorites_main_factionLeafFavoriteSourcePaths", createHashMap];
 
-        if ("Favorites" in _displayPath) then {
+        if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath) then {
             _sourceDisplayPath = _favoriteSourcePathMap getOrDefault [str _displayPath, _sourceDisplayPath];
         };
 
         private _favoriteId = str _sourceDisplayPath;
         private _color = [_normalColor, _favoriteColor] select (_favoriteId in _favoriteIds);
 
-        if ("Favorites" in _displayPath) then {
+        if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath) then {
             _color = _favoriteColor;
         };
 
@@ -87,7 +89,7 @@ private _renderPath = {
 
 if (_mode == "units") then {
     for "_index" from 0 to (_rootCount - 1) do {
-        if ((_tree tvText [_index]) != "Favorites") then {
+        if !([_tree tvText [_index]] call zen_favorites_main_fnc_isfavoritepath) then {
             [[_index]] call _renderPath;
         };
     };
@@ -97,7 +99,7 @@ if (_mode == "groups" && {_rootCount > 0}) then {
     for "_index" from 0 to ((_tree tvCount [0]) - 1) do {
         private _path = [0, _index];
 
-        if ((_tree tvText _path) != "Favorites") then {
+        if !([_tree tvText _path] call zen_favorites_main_fnc_isfavoritepath) then {
             [_path] call _renderPath;
         };
     };

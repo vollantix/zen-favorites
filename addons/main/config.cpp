@@ -47,6 +47,7 @@ class CfgFunctions {
             class getactivecreatetree {};
             class getcreatetreeselectionstate {};
             class getcreatetreecontextbyidc {};
+            class getfavoritelayout {};
             class getfactionleaffavoritedisplaypath {};
             class getfavoritestarbounds {};
             class gettreeoriginalpicture {};
@@ -54,6 +55,7 @@ class CfgFunctions {
             class gettreepathtexts {};
             class guardgeneratedfavoritebranchselection {};
             class isfavoritestartexture {};
+            class isfavoritepath {};
             class isgeneratedfavoritesbranch {};
             class log {};
             class onzeusdisplayopened {};
@@ -65,7 +67,6 @@ class CfgFunctions {
             class rendercreatetreefavorites {};
             class renderemptyfavoriteview {};
             class renderemptyfavoritescategory {};
-            class renderfactionstars {};
             class renderfactionleaffavoriteview {};
             class renderfactionleaffavoritescategory {};
             class renderfactionrootfavorites {};

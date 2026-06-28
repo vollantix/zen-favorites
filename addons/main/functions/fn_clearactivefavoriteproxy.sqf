@@ -12,7 +12,7 @@ private _activeFavoritePath = _tree getVariable [_activePathVariable, []];
 if (_activeFavoritePath isNotEqualTo []) then {
     private _displayPath = [_tree, _activeFavoritePath] call zen_favorites_main_fnc_gettreepathtexts;
 
-    if ("Favorites" in _displayPath) then {
+    if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath) then {
         _tree tvSetColor [_activeFavoritePath, _normalColor];
     };
 };

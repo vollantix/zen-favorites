@@ -8,6 +8,7 @@ params [
 ];
 
 private _relativeDisplayPath = +_sourceDisplayPath;
+private _favoriteLayout = [_mode] call zen_favorites_main_fnc_getfavoritelayout;
 
 if (
     _mode == "groups" &&
@@ -19,14 +20,24 @@ if (
     _relativeDisplayPath deleteAt 0;
 };
 
-if (_mode == "groups") exitWith {
-    // A generated row at four-level CfgGroups depth is interpreted as a native
-    // group before proxy selection runs. Keep faction Group favorites flat.
+if (_favoriteLayout == ZEN_FAVORITES_LAYOUT_FLAT) exitWith {
     if ((count _relativeDisplayPath) > 1) then {
         [_relativeDisplayPath joinString " / "]
     } else {
         _relativeDisplayPath
     }
+};
+
+if (_mode == "groups") exitWith {
+    // Grouped faction Groups use one safe root per faction with qualified leaves.
+    if ((count _relativeDisplayPath) > 1) then {
+        private _factionText = _relativeDisplayPath select 0;
+        private _leafText = (_relativeDisplayPath select [1]) joinString " / ";
+
+        _relativeDisplayPath = [_factionText, _leafText];
+    };
+
+    _relativeDisplayPath
 };
 
 if ((count _relativeDisplayPath) > 2) then {

@@ -9,4 +9,4 @@ private _path = tvCurSel _tree;
 
 if (_path isEqualTo []) exitWith {[]};
 
-[[_tree, _path] call zen_favorites_main_fnc_gettreepathtexts, _tree tvData _path]
+[_tree, _path] call zen_favorites_main_fnc_gettreepathtexts

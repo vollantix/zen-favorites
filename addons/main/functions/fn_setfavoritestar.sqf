@@ -6,22 +6,16 @@ params ["_tree", ["_path", []], ["_color", [1, 1, 1, 1]]];
 if (isNull _tree || {_path isEqualTo []}) exitWith {};
 
 private _pictureKey = [_tree, _path] call zen_favorites_main_fnc_gettreepicturekey;
-private _legacyKey = str [_path, _tree tvText _path, _tree tvData _path];
 private _originalPictures = _tree getVariable ["zen_favorites_main_originalPictures", createHashMap];
 private _starRows = _tree getVariable ["zen_favorites_main_starRows", createHashMap];
 private _starRowColors = _tree getVariable ["zen_favorites_main_starRowColors", createHashMap];
 private _cachedOriginalPicture = _originalPictures getOrDefault [_pictureKey, objNull];
 private _originalPicture = _cachedOriginalPicture;
-private _legacyOriginalPicture = _originalPictures getOrDefault [_legacyKey, objNull];
 private _visiblePicture = _tree tvPicture _path;
 private _alignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
 
 if (_alignment isEqualType "") then {
     _alignment = parseNumber (_alignment == "right");
-};
-
-if (_originalPicture isEqualTo objNull) then {
-    _originalPicture = _legacyOriginalPicture;
 };
 
 if (_originalPicture isEqualTo objNull) then {

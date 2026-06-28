@@ -26,7 +26,7 @@ if (_className == "" && {_mode != "groups"}) exitWith {
 };
 
 private _displayPath = [_tree, _path] call zen_favorites_main_fnc_gettreepathtexts;
-private _isGeneratedFavoritePath = ("Favorites" in _displayPath);
+private _isGeneratedFavoritePath = [_displayPath] call zen_favorites_main_fnc_isfavoritepath;
 private _sourceDisplayPath = [_displayPath] call zen_favorites_main_fnc_removefavoritepathmarker;
 
 if (_mode == "groups" && {_isGeneratedFavoritePath}) then {
@@ -88,20 +88,25 @@ if (_existingIndex == -1) then {
             "zen_favorites_main_emptyUnitsPendingExpandTextPaths",
             "zen_favorites_main_emptyGroupsPendingExpandTextPaths"
         ] select (_mode == "groups");
+        private _favoriteLayout = [_mode] call zen_favorites_main_fnc_getfavoritelayout;
 
-        if ((count _favoriteDisplayPath) > 1) then {
-            private _leafText = _favoriteDisplayPath param [(count _favoriteDisplayPath) - 1, ""];
-            private _categoryParts = _favoriteDisplayPath select [0, ((count _favoriteDisplayPath) - 1) max 0];
+        if (_favoriteLayout == ZEN_FAVORITES_LAYOUT_FLAT) then {
+            _favoriteDisplayPath = [_favoriteDisplayPath joinString " / "];
+        } else {
+            if ((count _favoriteDisplayPath) > 1) then {
+                private _leafText = _favoriteDisplayPath param [(count _favoriteDisplayPath) - 1, ""];
+                private _categoryParts = _favoriteDisplayPath select [0, ((count _favoriteDisplayPath) - 1) max 0];
 
-            if (_mode == "groups" && {(count _categoryParts) > 1}) then {
-                private _rootCategoryText = _categoryParts select 0;
-                private _subCategoryText = (_categoryParts select [1]) joinString " / ";
+                if (_mode == "groups" && {(count _categoryParts) > 1}) then {
+                    private _rootCategoryText = _categoryParts select 0;
+                    private _subCategoryText = (_categoryParts select [1]) joinString " / ";
 
-                _favoriteDisplayPath = [_rootCategoryText, _subCategoryText, _leafText];
-            } else {
-                private _categoryText = if (_categoryParts isEqualTo []) then {"Favorites"} else {_categoryParts joinString " / "};
+                    _favoriteDisplayPath = [_rootCategoryText, _subCategoryText, _leafText];
+                } else {
+                    private _categoryText = if (_categoryParts isEqualTo []) then {"Favorites"} else {_categoryParts joinString " / "};
 
-                _favoriteDisplayPath = [_categoryText, _leafText];
+                    _favoriteDisplayPath = [_categoryText, _leafText];
+                };
             };
         };
 
@@ -119,21 +124,19 @@ if (_existingIndex == -1) then {
             };
         };
 
-        if (_pendingBranchTextPaths isNotEqualTo []) then {
-            private _pendingExpandTextPaths = +(_tree getVariable [_pendingStateVariable, []]);
+        private _pendingExpandTextPaths = +(_tree getVariable [_pendingStateVariable, []]);
 
-            if !(["Favorites"] in _pendingExpandTextPaths) then {
-                _pendingExpandTextPaths pushBack ["Favorites"];
-            };
-
-            {
-                if !(_x in _pendingExpandTextPaths) then {
-                    _pendingExpandTextPaths pushBack _x;
-                };
-            } forEach _pendingBranchTextPaths;
-
-            _tree setVariable [_pendingStateVariable, _pendingExpandTextPaths];
+        if !(["Favorites"] in _pendingExpandTextPaths) then {
+            _pendingExpandTextPaths pushBack ["Favorites"];
         };
+
+        {
+            if !(_x in _pendingExpandTextPaths) then {
+                _pendingExpandTextPaths pushBack _x;
+            };
+        } forEach _pendingBranchTextPaths;
+
+        _tree setVariable [_pendingStateVariable, _pendingExpandTextPaths];
     };
 
     [format ["Added Empty favorite: %1", _sourceDisplayPath select -1]] call zen_favorites_main_fnc_showactionhint;

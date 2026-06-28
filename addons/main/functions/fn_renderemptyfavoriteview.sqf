@@ -12,12 +12,14 @@ if (_mode == "groups") exitWith {
     };
     private _rootCount = _tree tvCount [];
     private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
+    private _favoriteLayout = [_mode] call zen_favorites_main_fnc_getfavoritelayout;
     // Include root count so delayed ZEN tree population triggers a fresh render.
     private _renderSignature = str [
         _idc,
         _mode,
         _searchText,
         _starAlignment,
+        _favoriteLayout,
         _rootCount,
         _emptyFavorites
     ];
@@ -51,7 +53,7 @@ if (_mode == "groups") exitWith {
             private _favoriteId = str _displayPath;
             private _color = [_normalColor, _favoriteColor] select (_favoriteId in _emptyFavoriteIds);
 
-            if ("Favorites" in _displayPath) then {
+            if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath) then {
                 _color = _favoriteColor;
             };
 
@@ -81,12 +83,14 @@ private _emptyFavorites = (missionNamespace getVariable [_emptyStoreKey, []]) se
 };
 private _rootCount = _tree tvCount [];
 private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
+private _favoriteLayout = [_mode] call zen_favorites_main_fnc_getfavoritelayout;
 // Include root count so delayed ZEN tree population triggers a fresh render.
 private _renderSignature = str [
     _idc,
     _mode,
     _searchText,
     _starAlignment,
+    _favoriteLayout,
     _rootCount,
     _emptyFavorites
 ];
@@ -126,7 +130,7 @@ private _renderEmptyPath = {
             private _favoriteId = [_className, str _sourceDisplayPath] select (_mode == "groups" && {_className == "zen_compositions_composition"});
             private _color = [_normalColor, _favoriteColor] select (_favoriteId in _emptyFavoriteIds);
 
-            if ("Favorites" in _displayPath) then {
+            if ([_displayPath] call zen_favorites_main_fnc_isfavoritepath) then {
                 _color = _favoriteColor;
             };
 

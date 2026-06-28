@@ -21,14 +21,16 @@ if (_mode == "groups") then {
 };
 
 private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
-private _signature = str [_favoriteKey, _favorites, _starAlignment, _tree tvCount _favoritesParentPath];
+private _favoriteLayout = [_mode] call zen_favorites_main_fnc_getfavoritelayout;
+private _isGroupedFactionGroups = _mode == "groups" && {_favoriteLayout == ZEN_FAVORITES_LAYOUT_GROUPED};
+private _signature = str [_favoriteKey, _favorites, _starAlignment, _favoriteLayout, _tree tvCount _favoritesParentPath];
 private _hasFavoritesRoot = false;
 
 for "_index" from 0 to ((_tree tvCount _favoritesParentPath) - 1) do {
     private _path = +_favoritesParentPath;
     _path pushBack _index;
 
-    if ((_tree tvText _path) == "Favorites") exitWith {
+    if ([_tree tvText _path] call zen_favorites_main_fnc_isfavoritepath) exitWith {
         _hasFavoritesRoot = true;
     };
 };
@@ -54,7 +56,7 @@ if (_originalOrder isEqualTo []) then {
         _path pushBack _index;
         private _rowText = _tree tvText _path;
 
-        if (_rowText != "Favorites") then {
+        if !([_rowText] call zen_favorites_main_fnc_isfavoritepath) then {
             _originalOrder pushBack _rowText;
         };
     };
@@ -69,7 +71,7 @@ for "_index" from ((_tree tvCount _favoritesParentPath) - 1) to 0 step -1 do {
     private _path = +_favoritesParentPath;
     _path pushBack _index;
 
-    if ((_tree tvText _path) == "Favorites") then {
+    if ([_tree tvText _path] call zen_favorites_main_fnc_isfavoritepath) then {
         _tree tvDelete _path;
     };
 };
@@ -114,22 +116,44 @@ private _sortBranch = {
     };
 };
 
-private _favoritesRootIndex = _tree tvAdd [_favoritesParentPath, "Favorites"];
-private _favoritesRootPath = +_favoritesParentPath;
-_favoritesRootPath pushBack _favoritesRootIndex;
+private _favoriteRootPaths = [];
 private _favoriteBranchTextPaths = [];
 private _favoriteSourcePathMap = createHashMap;
 
-// The synthetic root is a UI folder only; it must not become a placeable object.
-_tree tvSetData [_favoritesRootPath, ""];
-_tree tvSetValue [_favoritesRootPath, -1000];
+private _getFavoriteRootPath = {
+    params ["_rootText"];
+
+    private _rootPath = [];
+
+    for "_index" from 0 to ((_tree tvCount _favoritesParentPath) - 1) do {
+        private _candidatePath = +_favoritesParentPath;
+        _candidatePath pushBack _index;
+
+        if ((_tree tvText _candidatePath) == _rootText) exitWith {
+            _rootPath = _candidatePath;
+        };
+    };
+
+    if (_rootPath isEqualTo []) then {
+        private _rootIndex = _tree tvAdd [_favoritesParentPath, _rootText];
+        _rootPath = +_favoritesParentPath;
+        _rootPath pushBack _rootIndex;
+
+        // Synthetic roots are UI folders only and must never become placeable rows.
+        _tree tvSetData [_rootPath, ""];
+        _tree tvSetValue [_rootPath, -1000 + count _favoriteRootPaths];
+        _favoriteRootPaths pushBack _rootPath;
+    };
+
+    _rootPath
+};
 
 {
     private _sourceDisplayPath = _x select 0;
     private _data = _x select 1;
     private _originalPath = [_tree, _sourceDisplayPath] call zen_favorites_main_fnc_findtreepathbytexts;
 
-    if (_originalPath isEqualTo [] && {_data != ""}) then {
+    if (_mode == "units" && {_originalPath isEqualTo []} && {_data != ""}) then {
         _originalPath = [_tree, [], _data] call zen_favorites_main_fnc_findtreepathbydata;
     };
 
@@ -149,8 +173,19 @@ _tree tvSetValue [_favoritesRootPath, -1000];
         continue;
     };
 
+    private _rootText = "Favorites";
+
+    if (_isGroupedFactionGroups) then {
+        private _factionText = _relativeDisplayPath param [0, "Other"];
+        private _leafParts = _relativeDisplayPath select [1];
+        private _leafText = if (_leafParts isEqualTo []) then {_x select 4} else {_leafParts joinString " / "};
+
+        _rootText = format ["Favorites: %1", _factionText];
+        _relativeDisplayPath = [_leafText];
+    };
+
     private _originalSortValue = [_originalPath] call _getOriginalSortValue;
-    private _parentPath = +_favoritesRootPath;
+    private _parentPath = [_rootText] call _getFavoriteRootPath;
 
     {
         private _segment = _x;
@@ -197,9 +232,8 @@ _tree tvSetValue [_favoritesRootPath, -1000];
     _favoriteSourcePathMap set [str ([_tree, _parentPath] call zen_favorites_main_fnc_gettreepathtexts), _sourceDisplayPath];
 } forEach _favorites;
 
-if ((_tree tvCount _favoritesRootPath) == 0) exitWith {
+if (_favoriteRootPaths isEqualTo []) exitWith {
     // Stored favorites can become unavailable when the source addon is missing.
-    _tree tvDelete _favoritesRootPath;
     _tree setVariable ["zen_favorites_main_factionLeafFavoritesSignature", _signature];
     _tree setVariable ["zen_favorites_main_factionLeafFavoriteBranchTextPaths", []];
     _tree setVariable ["zen_favorites_main_factionLeafFavoriteSourcePaths", createHashMap];
@@ -222,8 +256,8 @@ for "_index" from 0 to ((_tree tvCount _favoritesParentPath) - 1) do {
     private _rowText = _tree tvText _path;
     private _favoriteIndex = _rootFavorites find _rowText;
     private _originalIndex = _originalOrder find _rowText;
-    private _sortValue = if (_rowText == "Favorites") then {
-        -1000
+    private _sortValue = if ([_rowText] call zen_favorites_main_fnc_isfavoritepath) then {
+        _tree tvValue _path
     } else {
         if (_favoriteIndex == -1) then {
             1000 + ([(_tree tvCount _favoritesParentPath), _originalIndex] select (_originalIndex >= 0))
@@ -235,9 +269,11 @@ for "_index" from 0 to ((_tree tvCount _favoritesParentPath) - 1) do {
     _tree tvSetValue [_path, _sortValue];
 };
 
-_tree tvSortByValue [_favoritesParentPath, true];
+{
+    [_x] call _sortBranch;
+} forEach _favoriteRootPaths;
 
-[_favoritesRootPath] call _sortBranch;
+_tree tvSortByValue [_favoritesParentPath, true];
 
 private _restoreExpandedTextPaths = +_expandedTextPaths;
 

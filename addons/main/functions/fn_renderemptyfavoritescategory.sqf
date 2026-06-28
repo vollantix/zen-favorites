@@ -11,7 +11,9 @@ private _favorites = (missionNamespace getVariable [_storeKey, []]) select {
     {(_x select 1) != ""}
 };
 private _starAlignment = missionNamespace getVariable ["zen_favorites_main_starAlignment", ZEN_FAVORITES_STAR_ALIGNMENT_LEFT];
-private _signature = str [_favorites, _starAlignment];
+private _favoriteLayout = [_mode] call zen_favorites_main_fnc_getfavoritelayout;
+private _isFlatLayout = _favoriteLayout == ZEN_FAVORITES_LAYOUT_FLAT;
+private _signature = str [_favorites, _starAlignment, _favoriteLayout];
 private _rootCount = _tree tvCount [];
 private _hasFavoritesRoot = false;
 
@@ -27,12 +29,10 @@ if (
     {!(_favorites isEqualTo [] && {_hasFavoritesRoot})}
 ) exitWith {};
 
-private _favoritesParentPath = [];
-private _selectionState = [_tree, _favoritesParentPath] call zen_favorites_main_fnc_parkcreatetreeselection;
+private _selectionState = [_tree, []] call zen_favorites_main_fnc_parkcreatetreeselection;
 private _originalRootOrder = _tree getVariable ["zen_favorites_main_emptyOriginalRootOrder", []];
 private _isEmptyUnits = _mode == "units";
 private _isEmptyGroups = _mode == "groups";
-private _usesSharedExpansion = _isEmptyUnits || {_isEmptyGroups};
 private _expandedStateVariable = [
     "zen_favorites_main_emptyUnitsExpandedTextPaths",
     "zen_favorites_main_emptyGroupsExpandedTextPaths"
@@ -45,16 +45,8 @@ private _ignoreExpandVariable = [
     "zen_favorites_main_ignoreEmptyUnitsExpandEvents",
     "zen_favorites_main_ignoreEmptyGroupsExpandEvents"
 ] select _isEmptyGroups;
-private _expandedTextPaths = if (_usesSharedExpansion) then {
-    +(missionNamespace getVariable [_expandedStateVariable, (_tree getVariable [_expandedStateVariable, []])])
-} else {
-    []
-};
-private _pendingExpandTextPaths = if (_usesSharedExpansion) then {
-    +(_tree getVariable [_pendingStateVariable, []])
-} else {
-    []
-};
+private _expandedTextPaths = +(missionNamespace getVariable [_expandedStateVariable, (_tree getVariable [_expandedStateVariable, []])]);
+private _pendingExpandTextPaths = +(_tree getVariable [_pendingStateVariable, []]);
 
 if (_originalRootOrder isEqualTo []) then {
     for "_index" from 0 to (_rootCount - 1) do {
@@ -68,10 +60,8 @@ if (_originalRootOrder isEqualTo []) then {
     _tree setVariable ["zen_favorites_main_emptyOriginalRootOrder", _originalRootOrder];
 };
 
-if (_usesSharedExpansion) then {
-    // Rendering deletes and rebuilds rows; ignore those synthetic expand/collapse events.
-    _tree setVariable [_ignoreExpandVariable, true];
-};
+// Rendering deletes and rebuilds rows; ignore those synthetic expand/collapse events.
+_tree setVariable [_ignoreExpandVariable, true];
 
 for "_index" from (_rootCount - 1) to 0 step -1 do {
     if ((_tree tvText [_index]) == "Favorites") then {
@@ -79,34 +69,21 @@ for "_index" from (_rootCount - 1) to 0 step -1 do {
     };
 };
 
-if (_favoritesParentPath isNotEqualTo []) then {
-    for "_index" from ((_tree tvCount _favoritesParentPath) - 1) to 0 step -1 do {
-        private _path = +_favoritesParentPath;
-        _path pushBack _index;
-
-        if ((_tree tvText _path) == "Favorites") then {
-            _tree tvDelete _path;
-        };
-    };
-};
-
 if (_favorites isEqualTo []) exitWith {
     _tree setVariable ["zen_favorites_main_emptyFavoritesSignature", _signature];
 
-    if (_usesSharedExpansion) then {
-        if (_isEmptyGroups) then {
-            _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteBranchTextPaths", []];
-            _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteSourcePaths", createHashMap];
-        } else {
-            _tree setVariable ["zen_favorites_main_emptyUnitsFavoriteBranchTextPaths", []];
-        };
-
-        _tree setVariable [_expandedStateVariable, []];
-        _tree setVariable [_pendingStateVariable, []];
-        missionNamespace setVariable [_expandedStateVariable, []];
-        _tree setVariable [_ignoreExpandVariable, false];
-        [_tree, _selectionState] call zen_favorites_main_fnc_restorecreatetreeselection;
+    if (_isEmptyGroups) then {
+        _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteBranchTextPaths", []];
+        _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteSourcePaths", createHashMap];
+    } else {
+        _tree setVariable ["zen_favorites_main_emptyUnitsFavoriteBranchTextPaths", []];
     };
+
+    _tree setVariable [_expandedStateVariable, []];
+    _tree setVariable [_pendingStateVariable, []];
+    missionNamespace setVariable [_expandedStateVariable, []];
+    _tree setVariable [_ignoreExpandVariable, false];
+    [_tree, _selectionState] call zen_favorites_main_fnc_restorecreatetreeselection;
 };
 
 private _getOriginalSortValue = {
@@ -123,9 +100,8 @@ private _getOriginalSortValue = {
     _value
 };
 
-private _favoritesRootIndex = _tree tvAdd [_favoritesParentPath, "Favorites"];
-private _favoritesRootPath = +_favoritesParentPath;
-_favoritesRootPath pushBack _favoritesRootIndex;
+private _favoritesRootIndex = _tree tvAdd [[], "Favorites"];
+private _favoritesRootPath = [_favoritesRootIndex];
 private _favoriteBranchTextPaths = [];
 private _favoriteSourcePathMap = createHashMap;
 
@@ -152,34 +128,37 @@ _tree tvSetValue [_favoritesRootPath, -1000];
         continue;
     };
 
-    if (_isEmptyUnits) then {
-        // Empty Units can have deep source paths, so present a compact two-level branch.
-        private _leafText = _relativeDisplayPath param [(count _relativeDisplayPath) - 1, ""];
-        private _categoryParts = _relativeDisplayPath select [0, ((count _relativeDisplayPath) - 1) max 0];
-        private _categoryText = if (_categoryParts isEqualTo []) then {"Favorites"} else {_categoryParts joinString " / "};
+    if (_isFlatLayout) then {
+        _relativeDisplayPath = [_relativeDisplayPath joinString " / "];
+    } else {
+        if (_isEmptyUnits) then {
+            // Empty Units can have deep source paths, so present a compact two-level branch.
+            private _leafText = _relativeDisplayPath param [(count _relativeDisplayPath) - 1, ""];
+            private _categoryParts = _relativeDisplayPath select [0, ((count _relativeDisplayPath) - 1) max 0];
+            private _categoryText = if (_categoryParts isEqualTo []) then {"Favorites"} else {_categoryParts joinString " / "};
 
-        _relativeDisplayPath = [_categoryText, _leafText];
-    };
+            _relativeDisplayPath = [_categoryText, _leafText];
+        };
 
-    if (_isEmptyGroups && {count _relativeDisplayPath > 1}) then {
-        // Empty Groups keep one extra category level for readable composition grouping.
-        private _leafText = _relativeDisplayPath param [(count _relativeDisplayPath) - 1, ""];
-        private _categoryParts = _relativeDisplayPath select [0, ((count _relativeDisplayPath) - 1) max 0];
+        if (_isEmptyGroups && {count _relativeDisplayPath > 1}) then {
+            // Empty Groups keep one extra category level for readable composition grouping.
+            private _leafText = _relativeDisplayPath param [(count _relativeDisplayPath) - 1, ""];
+            private _categoryParts = _relativeDisplayPath select [0, ((count _relativeDisplayPath) - 1) max 0];
 
-        if ((count _categoryParts) > 1) then {
-            private _rootCategoryText = _categoryParts select 0;
-            private _subCategoryText = (_categoryParts select [1]) joinString " / ";
+            if ((count _categoryParts) > 1) then {
+                private _rootCategoryText = _categoryParts select 0;
+                private _subCategoryText = (_categoryParts select [1]) joinString " / ";
 
-            _relativeDisplayPath = [_rootCategoryText, _subCategoryText, _leafText];
-        } else {
-            _relativeDisplayPath = [_categoryParts param [0, "Favorites"], _leafText];
+                _relativeDisplayPath = [_rootCategoryText, _subCategoryText, _leafText];
+            } else {
+                _relativeDisplayPath = [_categoryParts param [0, "Favorites"], _leafText];
+            };
         };
     };
 
     private _pathOffset = (count _displayPath) - (count _relativeDisplayPath);
     private _originalSortValue = [_originalPath] call _getOriginalSortValue;
     private _parentPath = +_favoritesRootPath;
-    private _relativeBranchPath = [];
 
     {
         private _segment = _x;
@@ -201,7 +180,6 @@ _tree tvSetValue [_favoritesRootPath, -1000];
         };
 
         _parentPath pushBack _existingIndex;
-        _relativeBranchPath pushBack _segment;
 
         // Generated folder rows are UI only; only leaves carry placeable source data.
         _tree tvSetData [_parentPath, ""];
@@ -212,12 +190,7 @@ _tree tvSetValue [_favoritesRootPath, -1000];
         if (_forEachIndex < ((count _relativeDisplayPath) - 1)) then {
             private _favoriteBranchTextPath = [_tree, _parentPath] call zen_favorites_main_fnc_gettreepathtexts;
 
-            if (_usesSharedExpansion) then {
-                _favoriteBranchTextPaths pushBack _favoriteBranchTextPath;
-            } else {
-                _tree tvExpand _parentPath;
-                _favoriteBranchTextPaths pushBack _favoriteBranchTextPath;
-            };
+            _favoriteBranchTextPaths pushBack _favoriteBranchTextPath;
         };
     } forEach _relativeDisplayPath;
 
@@ -238,20 +211,18 @@ if ((_tree tvCount _favoritesRootPath) == 0) exitWith {
     _tree tvDelete _favoritesRootPath;
     _tree setVariable ["zen_favorites_main_emptyFavoritesSignature", _signature];
 
-    if (_usesSharedExpansion) then {
-        if (_isEmptyGroups) then {
-            _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteBranchTextPaths", []];
-            _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteSourcePaths", createHashMap];
-        } else {
-            _tree setVariable ["zen_favorites_main_emptyUnitsFavoriteBranchTextPaths", []];
-        };
-
-        _tree setVariable [_expandedStateVariable, []];
-        _tree setVariable [_pendingStateVariable, []];
-        missionNamespace setVariable [_expandedStateVariable, []];
-        _tree setVariable [_ignoreExpandVariable, false];
-        [_tree, _selectionState] call zen_favorites_main_fnc_restorecreatetreeselection;
+    if (_isEmptyGroups) then {
+        _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteBranchTextPaths", []];
+        _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteSourcePaths", createHashMap];
+    } else {
+        _tree setVariable ["zen_favorites_main_emptyUnitsFavoriteBranchTextPaths", []];
     };
+
+    _tree setVariable [_expandedStateVariable, []];
+    _tree setVariable [_pendingStateVariable, []];
+    missionNamespace setVariable [_expandedStateVariable, []];
+    _tree setVariable [_ignoreExpandVariable, false];
+    [_tree, _selectionState] call zen_favorites_main_fnc_restorecreatetreeselection;
 
     [ZEN_FAVORITES_LOG_LEVEL_DEBUG, format [
         "removed Empty Favorites category because no favorites rendered mode=%1 storedCount=%2",
@@ -260,41 +231,22 @@ if ((_tree tvCount _favoritesRootPath) == 0) exitWith {
     ]] call zen_favorites_main_fnc_log;
 };
 
-if (_favoritesParentPath isEqualTo []) then {
-    private _newRootCount = _tree tvCount [];
+private _newRootCount = _tree tvCount [];
 
-    for "_index" from 0 to (_newRootCount - 1) do {
-        private _path = [_index];
-        private _rootText = _tree tvText _path;
-        private _originalIndex = _originalRootOrder find _rootText;
-        private _sortValue = if (_rootText == "Favorites") then {
-            -1000
-        } else {
-            1000 + ([_newRootCount, _originalIndex] select (_originalIndex >= 0))
-        };
-
-        _tree tvSetValue [_path, _sortValue];
+for "_index" from 0 to (_newRootCount - 1) do {
+    private _path = [_index];
+    private _rootText = _tree tvText _path;
+    private _originalIndex = _originalRootOrder find _rootText;
+    private _sortValue = if (_rootText == "Favorites") then {
+        -1000
+    } else {
+        1000 + ([_newRootCount, _originalIndex] select (_originalIndex >= 0))
     };
 
-    _tree tvSortByValue [[], true];
-} else {
-    private _childCount = _tree tvCount _favoritesParentPath;
-
-    for "_index" from 0 to (_childCount - 1) do {
-        private _path = +_favoritesParentPath;
-        _path pushBack _index;
-
-        if ((_tree tvText _path) == "Favorites") then {
-            _tree tvSetValue [_path, -1000];
-        };
-    };
-
-    _tree tvSortByValue [_favoritesParentPath, true];
+    _tree tvSetValue [_path, _sortValue];
 };
 
-if (!_usesSharedExpansion) then {
-    _tree tvExpand _favoritesRootPath;
-};
+_tree tvSortByValue [[], true];
 
 private _sortFavoritesPath = +_favoritesRootPath;
 
@@ -306,57 +258,26 @@ while {true} do {
     _sortFavoritesPath pushBack 0;
 };
 
-if (_usesSharedExpansion) then {
-    private _restoreExpandedTextPaths = +_expandedTextPaths;
+private _restoreExpandedTextPaths = +_expandedTextPaths;
 
-    {
-        if !(_x in _restoreExpandedTextPaths) then {
-            _restoreExpandedTextPaths pushBack _x;
-        };
-    } forEach _pendingExpandTextPaths;
-
-    private _expandedTextPathsAfterRender = [_tree, _restoreExpandedTextPaths, _expandedStateVariable] call zen_favorites_main_fnc_restorefavoritetreeexpanded;
-
-    if (_isEmptyGroups) then {
-        _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteBranchTextPaths", _favoriteBranchTextPaths];
-        _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteSourcePaths", _favoriteSourcePathMap];
-    } else {
-        _tree setVariable ["zen_favorites_main_emptyUnitsFavoriteBranchTextPaths", _favoriteBranchTextPaths];
+{
+    if !(_x in _restoreExpandedTextPaths) then {
+        _restoreExpandedTextPaths pushBack _x;
     };
+} forEach _pendingExpandTextPaths;
 
-    _tree setVariable [_expandedStateVariable, _expandedTextPathsAfterRender];
-    _tree setVariable [_pendingStateVariable, []];
-    _tree setVariable [_ignoreExpandVariable, false];
+private _expandedTextPathsAfterRender = [_tree, _restoreExpandedTextPaths, _expandedStateVariable] call zen_favorites_main_fnc_restorefavoritetreeexpanded;
+
+if (_isEmptyGroups) then {
+    _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteBranchTextPaths", _favoriteBranchTextPaths];
+    _tree setVariable ["zen_favorites_main_emptyGroupsFavoriteSourcePaths", _favoriteSourcePathMap];
 } else {
-    {
-        private _pathToExpand = +_favoritesRootPath;
-        private _found = true;
-
-        {
-            private _segment = _x;
-            private _foundChildPath = [];
-
-            for "_index" from 0 to ((_tree tvCount _pathToExpand) - 1) do {
-                private _candidatePath = +_pathToExpand;
-                _candidatePath pushBack _index;
-
-                if ((_tree tvText _candidatePath) == _segment) exitWith {
-                    _foundChildPath = _candidatePath;
-                };
-            };
-
-            if (_foundChildPath isEqualTo []) exitWith {
-                _found = false;
-            };
-
-            _pathToExpand = _foundChildPath;
-        } forEach _x;
-
-        if (_found) then {
-            _tree tvExpand _pathToExpand;
-        };
-    } forEach _favoriteBranchTextPaths;
+    _tree setVariable ["zen_favorites_main_emptyUnitsFavoriteBranchTextPaths", _favoriteBranchTextPaths];
 };
+
+_tree setVariable [_expandedStateVariable, _expandedTextPathsAfterRender];
+_tree setVariable [_pendingStateVariable, []];
+_tree setVariable [_ignoreExpandVariable, false];
 
 _tree setVariable ["zen_favorites_main_emptyFavoritesSignature", _signature];
 [_tree, _selectionState] call zen_favorites_main_fnc_restorecreatetreeselection;
