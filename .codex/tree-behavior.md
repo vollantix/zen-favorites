@@ -98,6 +98,14 @@ Proxy selection is used so generated favorite leaves behave like the original ZE
 - Group favorites normally do not show placement previews because ZEN does not preview multiple units or objects as one placement preview.
 - ZEN preview settings are not overridden by this addon.
 
+## Deferred Leaf Rendering
+
+- New favorites added from source leaves defer the generated Favorites rebuild for `ZEN_FAVORITES_LEAF_RENDER_DELAY` seconds after the latest addition.
+- The normal 0.2-second view refresh must still update source-row star colors while the generated branch rebuild is deferred.
+- Each new source addition restarts the delay and pending expansion paths accumulate, so the generated rows appear and expand together after the user pauses.
+- Removing a favorite or acting on an existing generated row cancels the delay and rebuilds immediately; stale generated rows must not linger.
+- This batching applies only to generated leaf favorites. Top-level faction sorting remains immediate.
+
 ## Regression Checklist
 
 After tree behavior changes, test these manually in Arma:

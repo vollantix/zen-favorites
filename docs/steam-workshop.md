@@ -7,7 +7,7 @@ The mod is client-side. Favorites are stored per player and are not synced betwe
 
 Saved favorites from unloaded mods are skipped until that mod is loaded again.
 
-[b]Latest update:[/b] Favorite stars can now be placed on the left or right, and Unit, Group, and Module Favorites can each use a Grouped or Flat layout through CBA Addon Options. Compact favorite labels keep long names readable, while improved tree handling safely skips favorites from unloaded mods.
+[b]Latest update:[/b] Favorite stars can now be placed on the left or right, and Unit, Group, and Module Favorites can each use a Grouped or Flat layout through CBA Addon Options. Compact labels keep long names readable, new leaf additions briefly batch before Favorites expands, and improved tree handling safely skips favorites from unloaded mods.
 
 [h1]Current Features[/h1]
 [b]Faction Favorites[/b]
@@ -66,6 +66,7 @@ Saved favorites from unloaded mods are skipped until that mod is loaded again.
 [*]Left-click a generated favorite leaf: select it through the matching original ZEN row so previews, placement bubbles, and ZEN settings behave normally.
 [*]Right-click a generated favorite leaf: jump to the original item in the normal tree.
 [*]Generated Favorites section rows are not favoritable; only the final leaf rows carry favorite stars.
+[*]New leaf favorites are collected briefly while you keep clicking nearby source rows. After you pause, the Favorites section updates once and expands the newly added entries together.
 [*]Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
 [/list]
 

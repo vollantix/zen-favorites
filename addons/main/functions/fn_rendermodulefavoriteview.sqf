@@ -3,6 +3,10 @@
 // Refresh Module tree favorite branch and star colors.
 params ["_tree", "_idc", "_searchText", "_favoriteColor", "_normalColor"];
 
+private _isLeafFavoriteRenderDeferred = diag_tickTime < (_tree getVariable [
+    "zen_favorites_main_leafFavoriteRenderDeferredUntil",
+    0
+]);
 private _moduleFavorites = (missionNamespace getVariable ["zen_favorites_main_moduleFavorites", []]) select {
     (_x isEqualType []) &&
     {count _x >= 6} &&
@@ -30,7 +34,8 @@ private _renderSignature = str [
     _starAlignment,
     _favoriteLayout,
     _sourceTreeSignature,
-    _moduleFavorites
+    _moduleFavorites,
+    _isLeafFavoriteRenderDeferred
 ];
 
 if ((_tree getVariable ["zen_favorites_main_lastModuleRenderSignature", ""]) == _renderSignature) exitWith {};
@@ -38,7 +43,9 @@ if ((_tree getVariable ["zen_favorites_main_lastModuleRenderSignature", ""]) == 
 _tree setVariable ["zen_favorites_main_lastModuleRenderSignature", _renderSignature];
 
 if (_searchText == "") then {
-    [_tree] call zen_favorites_main_fnc_rendermodulefavoritescategory;
+    if (!_isLeafFavoriteRenderDeferred) then {
+        [_tree] call zen_favorites_main_fnc_rendermodulefavoritescategory;
+    };
 } else {
     // Search results are transient; hide generated Favorites branches while searching.
     for "_index" from ((_tree tvCount []) - 1) to 0 step -1 do {

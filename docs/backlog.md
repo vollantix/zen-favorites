@@ -12,12 +12,14 @@ This document tracks planned work, known quirks, and investigation notes. Shippe
 
 - `ZF-201` One observed session expanded the entire Units tree without direct user action, after which unit leaf stars disappeared in that tree. Groups leaf stars and other BLUFOR unit stars still appeared normally. This may be related to delayed ZEN tree initialization or a tree rebuild finishing after ZEN Favorites rendered. Needs reproduction with debug logging before treating it as confirmed addon behavior.
 
+## Next Release
+
+- `ZF-106` Keep the Favorites section in view when selecting generated favorite leaves whose original ZEN row is below the visible page. Left-click selection should keep focus near the top Favorites section while still preserving ZEN preview and placement behavior.
+
 ## Planned Features
 
 - `ZF-103` Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite.
 - `ZF-105` Additional filtering tools for the Zeus Create menu.
-- `ZF-106` Keep the Favorites section in view when selecting generated favorite leaves whose original ZEN row is below the visible page. Left-click selection should keep focus near the top Favorites section while still preserving ZEN preview and placement behavior.
-- `ZF-108` Preserve the current Create tree scroll/list position when adding a new favorite. Adding a Favorites entry at the top should not push the visible source rows down, so Zeus can keep favoriting nearby items without losing their place.
 
 ## Release Process
 

@@ -67,6 +67,7 @@ private _existingIndex = _favorites findIf {
 
     _storedId == _favoriteId
 };
+private _addedFavorite = false;
 
 if (_existingIndex == -1) then {
     if (_isGeneratedFavoritePath) exitWith {
@@ -79,6 +80,7 @@ if (_existingIndex == -1) then {
     };
 
     _favorites pushBack _favoriteEntry;
+    _addedFavorite = true;
 
     if (_mode in ["units", "groups"]) then {
         // New favorites expand their own generated branch once, then user state takes over.
@@ -163,6 +165,15 @@ if (_existingIndex == -1) then {
     ]] call zen_favorites_main_fnc_log;
 };
 
+// Batch source-row additions so several nearby leaves can be starred before Favorites moves the tree.
+// Batch source-row additions so several nearby leaves can be starred before Favorites moves the tree.
+private _deferRender = _addedFavorite && {!_isGeneratedFavoritePath};
+
+_tree setVariable [
+    "zen_favorites_main_leafFavoriteRenderDeferredUntil",
+    [0, diag_tickTime + ZEN_FAVORITES_LEAF_RENDER_DELAY] select _deferRender
+];
+
 missionNamespace setVariable [_storeKey, _favorites];
 profileNamespace setVariable [_storeKey, _favorites];
 saveProfileNamespace;
@@ -173,7 +184,7 @@ _tree setVariable ["zen_favorites_main_lastEmptyGroupsRenderSignature", ""];
 if (_mode in ["units", "groups"]) then {
     _tree setVariable ["zen_favorites_main_emptyFavoritesSignature", ""];
 
-    if (ctrlText ((ctrlParent _tree) displayCtrl 283) == "") then {
+    if (!_deferRender && {ctrlText ((ctrlParent _tree) displayCtrl 283) == ""}) then {
         [_tree, _mode] call zen_favorites_main_fnc_renderemptyfavoritescategory;
     };
 };

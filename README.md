@@ -32,6 +32,7 @@ ZEN Favorites is client-side. Favorites are stored per player and are not synced
 - Left-click a generated favorite leaf: select it through the matching original ZEN row so previews, placement bubbles, and ZEN settings behave normally.
 - Right-click a generated favorite leaf: jump to the original item in the normal tree.
 - Generated Favorites section rows are not favoritable; only the final leaf rows carry favorite stars.
+- New leaf favorites are collected briefly while you keep clicking nearby source rows. After you pause, the Favorites section updates once and expands the newly added entries together.
 - Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
 
 ## Previews and ZEN Settings

@@ -14,6 +14,7 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 - Favorite stars default to the left side of Create tree rows so they no longer interfere with the scrollbar.
 - Module Favorites default to Flat; Unit and Group Favorites default to Grouped.
 - Qualified favorite rows now show the leaf name first and add only enough parent context to distinguish duplicate names; their full source path remains available in the tooltip.
+- New leaf favorites are collected for a brief moment before the expanded Favorites section rebuilds, allowing several nearby source rows to be favorited without moving the tree after every click.
 
 ### Fixed
 

@@ -47,6 +47,7 @@ private _existingIndex = _favorites findIf {
     {count _x >= 3} &&
     {(_x select 2) == _favoriteId}
 };
+private _addedFavorite = false;
 
 if (_existingIndex == -1) then {
     if (_isGeneratedFavoritePath) exitWith {
@@ -59,6 +60,7 @@ if (_existingIndex == -1) then {
     };
 
     _favorites pushBack _favoriteEntry;
+    _addedFavorite = true;
 
     // New favorites open their generated path once; later user expansion state wins.
     private _pendingExpandTextPaths = +(_tree getVariable ["zen_favorites_main_modulePendingExpandTextPaths", []]);
@@ -105,6 +107,15 @@ if (_existingIndex == -1) then {
     ]] call zen_favorites_main_fnc_log;
 };
 
+// Batch source-row additions so several nearby leaves can be starred before Favorites moves the tree.
+// Batch source-row additions so several nearby leaves can be starred before Favorites moves the tree.
+private _deferRender = _addedFavorite && {!_isGeneratedFavoritePath};
+
+_tree setVariable [
+    "zen_favorites_main_leafFavoriteRenderDeferredUntil",
+    [0, diag_tickTime + ZEN_FAVORITES_LEAF_RENDER_DELAY] select _deferRender
+];
+
 missionNamespace setVariable ["zen_favorites_main_moduleFavorites", _favorites];
 profileNamespace setVariable ["zen_favorites_main_moduleFavorites", _favorites];
 saveProfileNamespace;
@@ -112,7 +123,7 @@ saveProfileNamespace;
 _tree setVariable ["zen_favorites_main_moduleFavoritesSignature", ""];
 _tree setVariable ["zen_favorites_main_lastModuleRenderSignature", ""];
 
-if (ctrlText ((ctrlParent _tree) displayCtrl 283) == "") then {
+if (!_deferRender && {ctrlText ((ctrlParent _tree) displayCtrl 283) == ""}) then {
     [_tree] call zen_favorites_main_fnc_rendermodulefavoritescategory;
 };
 

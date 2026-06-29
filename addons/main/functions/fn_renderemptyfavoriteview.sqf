@@ -3,6 +3,11 @@
 // Refresh Empty tree favorite branches and star colors for Units or Groups.
 params ["_tree", "_idc", "_mode", "_searchText", "_favoriteColor", "_normalColor"];
 
+private _isLeafFavoriteRenderDeferred = diag_tickTime < (_tree getVariable [
+    "zen_favorites_main_leafFavoriteRenderDeferredUntil",
+    0
+]);
+
 if (_mode == "groups") exitWith {
     private _emptyStoreKey = format ["zen_favorites_main_emptyFavorites_%1", _mode];
     private _emptyFavorites = (missionNamespace getVariable [_emptyStoreKey, []]) select {
@@ -21,7 +26,8 @@ if (_mode == "groups") exitWith {
         _starAlignment,
         _favoriteLayout,
         _rootCount,
-        _emptyFavorites
+        _emptyFavorites,
+        _isLeafFavoriteRenderDeferred
     ];
 
     if ((_tree getVariable ["zen_favorites_main_lastEmptyGroupsRenderSignature", ""]) == _renderSignature) exitWith {};
@@ -29,7 +35,9 @@ if (_mode == "groups") exitWith {
     _tree setVariable ["zen_favorites_main_lastEmptyGroupsRenderSignature", _renderSignature];
 
     if (_searchText == "") then {
-        [_tree, _mode] call zen_favorites_main_fnc_renderemptyfavoritescategory;
+        if (!_isLeafFavoriteRenderDeferred) then {
+            [_tree, _mode] call zen_favorites_main_fnc_renderemptyfavoritescategory;
+        };
     } else {
         // Search results are transient; hide generated Favorites branches while searching.
         for "_index" from ((_tree tvCount []) - 1) to 0 step -1 do {
@@ -92,7 +100,8 @@ private _renderSignature = str [
     _starAlignment,
     _favoriteLayout,
     _rootCount,
-    _emptyFavorites
+    _emptyFavorites,
+    _isLeafFavoriteRenderDeferred
 ];
 
 if ((_tree getVariable ["zen_favorites_main_lastEmptyRenderSignature", ""]) == _renderSignature) exitWith {};
@@ -100,7 +109,9 @@ if ((_tree getVariable ["zen_favorites_main_lastEmptyRenderSignature", ""]) == _
 _tree setVariable ["zen_favorites_main_lastEmptyRenderSignature", _renderSignature];
 
 if (_searchText == "") then {
-    [_tree, _mode] call zen_favorites_main_fnc_renderemptyfavoritescategory;
+    if (!_isLeafFavoriteRenderDeferred) then {
+        [_tree, _mode] call zen_favorites_main_fnc_renderemptyfavoritescategory;
+    };
 } else {
     // Search results are transient; hide generated Favorites branches while searching.
     for "_index" from ((_tree tvCount []) - 1) to 0 step -1 do {

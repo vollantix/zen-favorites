@@ -3,6 +3,10 @@
 // Refresh non-empty Units/Groups leaf favorite branches and leaf star colors.
 params ["_tree", "_idc", "_mode", "_side", "_searchText", "_favoriteColor", "_normalColor"];
 
+private _isLeafFavoriteRenderDeferred = diag_tickTime < (_tree getVariable [
+    "zen_favorites_main_leafFavoriteRenderDeferredUntil",
+    0
+]);
 private _favoriteKey = format ["%1:%2", _mode, _side];
 private _favoriteStore = missionNamespace getVariable ["zen_favorites_main_factionLeafFavorites", createHashMap];
 private _favorites = (_favoriteStore getOrDefault [_favoriteKey, []]) select {
@@ -24,7 +28,8 @@ private _renderSignature = str [
     _favoriteLayout,
     _rootCount,
     _childCount,
-    _favorites
+    _favorites,
+    _isLeafFavoriteRenderDeferred
 ];
 
 if ((_tree getVariable ["zen_favorites_main_lastFactionLeafRenderSignature", ""]) == _renderSignature) exitWith {};
@@ -32,7 +37,9 @@ if ((_tree getVariable ["zen_favorites_main_lastFactionLeafRenderSignature", ""]
 _tree setVariable ["zen_favorites_main_lastFactionLeafRenderSignature", _renderSignature];
 
 if (_searchText == "") then {
-    [_tree, _mode, _side] call zen_favorites_main_fnc_renderfactionleaffavoritescategory;
+    if (!_isLeafFavoriteRenderDeferred) then {
+        [_tree, _mode, _side] call zen_favorites_main_fnc_renderfactionleaffavoritescategory;
+    };
 } else {
     // Search results are transient; hide generated Favorites branches while searching.
     private _favoritesParentPath = [];
