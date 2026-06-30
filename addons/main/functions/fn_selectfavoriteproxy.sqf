@@ -84,6 +84,19 @@ _tree tvSetCurSel _originalPath;
     if (_extraIgnoreExpandVariable != "") then {
         _tree setVariable [_extraIgnoreExpandVariable, false];
     };
+
+    // The real selection must remain on the source row for ZEN, but the user
+    // should continue seeing the generated Favorites section at the top.
+    _tree ctrlSetScrollValues [0, -1];
+
+    [{
+        params ["_tree"];
+
+        if (isNull _tree) exitWith {};
+
+        // Expansion changes settle after this callback, so pin the viewport once more.
+        _tree ctrlSetScrollValues [0, -1];
+    }, [_tree]] call CBA_fnc_execNextFrame;
 }, [
     _tree,
     _expandedTextPaths,

@@ -4,10 +4,15 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 
 ## [Unreleased]
 
+No user-facing changes yet.
+
+## [1.2.0] - 2026-06-30
+
 ### Added
 
 - CBA Interface setting to choose whether favorite stars appear on the left side or the original right side of Zeus Create tree rows.
 - Separate CBA Interface settings for Unit, Group, and Module Favorites layouts, each offering Grouped or Flat.
+- Separate CBA Persistence settings for Unit, Group, Module, and Empty favorites.
 
 ### Changed
 
@@ -15,9 +20,13 @@ All notable user-facing changes to ZEN Favorites are tracked here.
 - Module Favorites default to Flat; Unit and Group Favorites default to Grouped.
 - Qualified favorite rows now show the leaf name first and add only enough parent context to distinguish duplicate names; their full source path remains available in the tooltip.
 - New leaf favorites are collected for a brief moment before the expanded Favorites section rebuilds, allowing several nearby source rows to be favorited without moving the tree after every click.
+- Persistence now follows the Zeus category, with Units, Groups, Modules, and Empty favorites all saved by default to preserve existing user data. Turning persistence off removes that category's saved copy without clearing current favorites.
+- CBA setting hover text now explains each option in player-facing language and states its default behavior.
 
 ### Fixed
 
+- Batched Favorite rebuilds now preserve the Create tree viewport instead of letting native selection restoration cause a large scroll jump.
+- Selecting a generated favorite now keeps the Favorites section visible instead of scrolling the Create tree down to the internally selected source row.
 - Module favorites from unloaded addons are now hidden until their original module path is available again, instead of resolving through reused ZEN custom module class names.
 - Favorite star clicks now use the configured star lane and consume the tree click so the row itself is not selected accidentally.
 - Favorite star click bounds now avoid the expand/collapse arrow area and are better aligned for deeper unit and group leaf rows.

@@ -175,8 +175,7 @@ _tree setVariable [
 ];
 
 missionNamespace setVariable [_storeKey, _favorites];
-profileNamespace setVariable [_storeKey, _favorites];
-saveProfileNamespace;
+["empty"] call zen_favorites_main_fnc_savefavoritecategory;
 _tree setVariable ["zen_favorites_main_emptyFavoritesSignature", str _favorites];
 _tree setVariable ["zen_favorites_main_lastEmptyRenderSignature", ""];
 _tree setVariable ["zen_favorites_main_lastEmptyGroupsRenderSignature", ""];

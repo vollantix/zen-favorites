@@ -1,11 +1,13 @@
 #include "..\script_component.hpp"
 
-// Move native tree selection away from a parent that is about to receive generated Favorites rows.
+// Preserve viewport/selection, then move native selection away from rows that will be rebuilt.
 params ["_tree", ["_parentPath", []]];
 
 private _selectionState = [_tree] call zen_favorites_main_fnc_getcreatetreeselectionstate;
 
-if (isNull _tree) exitWith {_selectionState};
+if (isNull _tree) exitWith {[_selectionState, []]};
+
+private _scrollValues = ctrlScrollValues _tree;
 
 private _candidatePath = [];
 
@@ -25,4 +27,4 @@ if (_candidatePath isNotEqualTo [] && {!([_tree, _candidatePath] call zen_favori
     _tree tvSetCurSel _candidatePath;
 };
 
-_selectionState
+[_selectionState, _scrollValues]

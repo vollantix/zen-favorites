@@ -15,15 +15,14 @@ ZEN Favorites is client-side. Favorites are stored per player and are not synced
 
 - Faction root favorites for BLUFOR, OPFOR, Independent, and Civilian Units/Groups.
 - Faction root favorites move to the top and preserve the open or collapsed state you choose.
-- Faction root favorites are session-based by default, with an optional CBA setting to save them persistently.
+- Unit faction and leaf favorites are saved between missions by default under one CBA persistence setting.
 - Individual faction Unit and Group favorites with configurable layouts; grouped Groups use one `Favorites: <Faction>` section per source faction.
-- Faction unit and group leaf favorites are session-based by default, with an optional CBA setting to save them persistently.
-- Persistent client-side Empty Units favorites with configurable grouped or flat generated layouts.
-- Persistent client-side Empty Groups favorites with configurable grouped or flat generated layouts.
-- Persistent client-side Module favorites with configurable grouped or flat generated layouts.
+- Group faction and leaf favorites are saved between missions by default under one CBA persistence setting.
+- Empty Units and Empty Groups favorites are saved by default under one configurable persistence setting.
+- Module favorites are saved by default under their own configurable persistence setting.
 - Flat and otherwise qualified favorite rows show the leaf name first, adding parent context only for duplicate names; hover a row to see its full source path.
 - Generated favorite rows for faction leaves, Empty Units, Empty Groups, and Modules select the matching original ZEN row internally so ZEN keeps its normal previews, placement bubbles, and settings.
-- CBA Addon Options for log level, favorite star side, favorite list layouts, optional faction favorite persistence, and clearing saved favorites by category.
+- CBA Addon Options for log level, favorite star side, favorite list layouts, category-based persistence, and clearing favorites by type.
 
 ## Controls
 
@@ -32,7 +31,7 @@ ZEN Favorites is client-side. Favorites are stored per player and are not synced
 - Left-click a generated favorite leaf: select it through the matching original ZEN row so previews, placement bubbles, and ZEN settings behave normally.
 - Right-click a generated favorite leaf: jump to the original item in the normal tree.
 - Generated Favorites section rows are not favoritable; only the final leaf rows carry favorite stars.
-- New leaf favorites are collected briefly while you keep clicking nearby source rows. After you pause, the Favorites section updates once and expands the newly added entries together.
+- New leaf favorites are collected briefly while you keep clicking nearby source rows. After you pause, the Favorites section updates once, expands the newly added entries together, and retains the current tree position.
 - Hold Shift while placing an Empty Units favorite: rotate the placement preview, following normal ZEN Placement behavior.
 
 ## Previews and ZEN Settings
@@ -92,14 +91,14 @@ The current signing policy uses HEMTT's default versioned signing authority, whi
 zen_favorites_1.0.0
 zen_favorites_1.0.1
 zen_favorites_1.1.0
-zen_favorites_1.1.1
+zen_favorites_1.2.0
 ```
 
 For each public release, HEMTT writes a matching public server key and PBO signature:
 
 ```text
-.hemttout\release\keys\zen_favorites_1.1.1.bikey
-.hemttout\release\addons\zen_favorites_main.pbo.zen_favorites_1.1.1.bisign
+.hemttout\release\keys\zen_favorites_1.2.0.bikey
+.hemttout\release\addons\zen_favorites_main.pbo.zen_favorites_1.2.0.bisign
 ```
 
 Server admins using `verifySignatures = 2` should allow the `.bikey` shipped with the current Workshop release. When the Workshop item is updated to a new version, the server key should be updated with it.
@@ -112,6 +111,16 @@ Do not commit or publish private signing keys. The repository ignores `.hemttpri
 - [Backlog](docs/backlog.md)
 - [Steam Workshop page text](docs/steam-workshop.md)
 - [Codex tree behavior guide](.codex/tree-behavior.md)
+- [Release process guide](docs/release-process.md)
+
+The Steam Workshop description has a hard limit of 8,000 UTF-8 bytes, including BBCode and line breaks. Keep `docs/steam-workshop.md` at or below the project target of 6,500 bytes to preserve at least 1,500 bytes for future updates.
+
+Check the current size with:
+
+```powershell
+$text = [System.IO.File]::ReadAllText((Resolve-Path "docs/steam-workshop.md"))
+[System.Text.Encoding]::UTF8.GetByteCount($text)
+```
 
 ## Settings
 
@@ -121,13 +130,17 @@ ZEN Favorites settings are available in:
 Options > Addon Options > ZEN Favorites
 ```
 
-- `Debugging > Log level`: controls RPT logging verbosity. Defaults to Error for normal play.
-- `Interface > Favorite star side`: chooses whether favorite stars appear on the left side or the original right side of Zeus Create tree rows. Defaults to Left to avoid the scrollbar.
-- `Interface > Unit favorites layout`: chooses grouped category branches or flat rows with compact leaf-first labels for faction and Empty Unit favorites. Defaults to Grouped.
-- `Interface > Group favorites layout`: groups faction Group favorites into `Favorites: <Faction>` sections or shows one flat list with compact leaf-first labels; it also controls grouped or flat Empty Group favorites. Defaults to Grouped.
-- `Interface > Module favorites layout`: chooses original category branches or flat rows with compact leaf-first labels. Defaults to Flat to avoid the native grouped-category popup described below.
-- `Persistence > Save faction favorites`: saves current top-level faction favorites immediately, then loads and saves them through the current Arma profile. Off by default.
-- `Persistence > Save faction unit/group favorites`: saves current faction unit and group leaf favorites immediately, then loads and saves them through the current Arma profile. Off by default.
+- `Debugging > Log level`: chooses how much information is written to Arma's log file. Defaults to Error for normal play.
+- `Interface > Favorite star side`: places stars on the left or right of Create tree rows. Defaults to Left to avoid the scrollbar.
+- `Interface > Unit favorites layout`: uses category folders or one flat list for faction Units and Empty Units. Defaults to Grouped.
+- `Interface > Group favorites layout`: uses faction/category folders or one flat list for faction Groups and Empty Groups. Defaults to Grouped.
+- `Interface > Module favorites layout`: keeps module categories or shows one flat list. Defaults to Flat.
+- `Persistence > Save Unit favorites`: saves Unit factions and individual Unit favorites between missions. Defaults to On.
+- `Persistence > Save Group favorites`: saves Group factions and individual Group favorites between missions. Defaults to On.
+- `Persistence > Save Module favorites`: saves Module favorites between missions. Defaults to On.
+- `Persistence > Save Empty favorites`: saves both Empty Units and Empty Groups favorites between missions. Defaults to On.
+
+Enabling persistence saves the current favorites immediately. Disabling it deletes that category's saved copy but keeps the current favorites for the rest of the mission.
 - `Maintenance > Clear Empty Unit favorites`: clears Empty Unit favorites from the current session and Arma profile.
 - `Maintenance > Clear Empty Group favorites`: clears Empty Group favorites from the current session and Arma profile.
 - `Maintenance > Clear faction favorites`: clears top-level faction favorites from the current session and Arma profile.
@@ -202,12 +215,14 @@ Empty Group favorites are stored in the Arma profile:
 profileNamespace getVariable ["zen_favorites_main_emptyFavorites_groups", []];
 ```
 
-Faction root and faction leaf favorites are session-based by default. When their persistence settings are enabled, current favorites are saved immediately and then stored in the Arma profile as profile-safe arrays:
+Unit and Group faction/leaf favorites are saved by default. Their category persistence settings save only the matching `units:*` or `groups:*` entries in these shared profile stores:
 
 ```sqf
 profileNamespace getVariable ["zen_favorites_main_factionFavorites", []];
 profileNamespace getVariable ["zen_favorites_main_factionLeafFavorites", []];
 ```
+
+Units and Groups share these two profile stores. `zen_favorites_main_fnc_savefavoritecategory` updates only the matching `units:*` or `groups:*` keys, and `zen_favorites_main_fnc_syncfavoritepersistence` removes only the disabled category's saved keys. Live mission favorites are never cleared by a persistence toggle.
 
 View saved Empty Unit favorites in the debug console:
 
@@ -254,7 +269,6 @@ Turn one on to clear that saved favorite type. Each toggle resets itself after c
 - Optional no-simulation placement modifier, such as holding Ctrl while placing an Empty favorite. Single objects are likely feasible; compositions need more investigation.
 - Additional filtering tools for the Zeus Create menu.
 - Keep the Favorites section in view when selecting generated favorites whose original rows are below the visible page.
-- Preserve the visible Create tree position when adding a favorite so nearby source rows do not move away.
 
 ## License
 

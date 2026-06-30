@@ -117,8 +117,7 @@ _tree setVariable [
 ];
 
 missionNamespace setVariable ["zen_favorites_main_moduleFavorites", _favorites];
-profileNamespace setVariable ["zen_favorites_main_moduleFavorites", _favorites];
-saveProfileNamespace;
+["modules"] call zen_favorites_main_fnc_savefavoritecategory;
 
 _tree setVariable ["zen_favorites_main_moduleFavoritesSignature", ""];
 _tree setVariable ["zen_favorites_main_lastModuleRenderSignature", ""];

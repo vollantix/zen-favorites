@@ -75,13 +75,14 @@ class CfgFunctions {
             class rendermodulefavoritescategory {};
             class restorecreatetreeselection {};
             class restorefavoritetreeexpanded {};
+            class savefavoritecategory {};
             class setfactionrowexpanded {};
             class setfavoritestar {};
             class setfavoritetreeexpanded {};
             class selectfactionleaffavoriteproxy {};
             class selectfavoriteproxy {};
             class showactionhint {};
-            class syncfactionfavoritepersistence {};
+            class syncfavoritepersistence {};
             class toggleemptyfavorite {};
             class togglefactionleaffavorite {};
             class togglegeneratedfavoritebranch {};

@@ -127,13 +127,7 @@ _tree setVariable [
 _favoriteStore set [_favoriteKey, _favorites];
 missionNamespace setVariable ["zen_favorites_main_factionLeafFavorites", _favoriteStore];
 
-if (missionNamespace getVariable ["zen_favorites_main_persistFactionLeafFavorites", false]) then {
-    profileNamespace setVariable [
-        "zen_favorites_main_factionLeafFavorites",
-        [_favoriteStore] call zen_favorites_main_fnc_favoritehashmaptoarray
-    ];
-    saveProfileNamespace;
-};
+[_mode] call zen_favorites_main_fnc_savefavoritecategory;
 
 _tree setVariable ["zen_favorites_main_factionLeafFavoritesSignature", ""];
 _tree setVariable ["zen_favorites_main_lastFactionLeafRenderSignature", ""];

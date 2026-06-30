@@ -1,19 +1,37 @@
 #include "..\script_component.hpp"
 
-// Restore a source-tree selection after generated Favorites rows were inserted or removed.
-params ["_tree", ["_selectionState", []]];
+// Restore source selection and the viewport after generated Favorites rows were rebuilt.
+params ["_tree", ["_restoreState", []]];
 
-if (isNull _tree || {_selectionState isEqualTo []}) exitWith {false};
+if (isNull _tree) exitWith {false};
 
-private _displayPath = _selectionState;
+private _selectionState = _restoreState param [0, []];
+private _scrollValues = _restoreState param [1, []];
+private _restoredSelection = false;
 
-if (_displayPath isEqualTo [] || {[_displayPath] call zen_favorites_main_fnc_isfavoritepath}) exitWith {false};
+if (_selectionState isNotEqualTo [] && {!([_selectionState] call zen_favorites_main_fnc_isfavoritepath)}) then {
+    private _restorePath = [_tree, _selectionState] call zen_favorites_main_fnc_findtreepathbytexts;
 
-private _restorePath = [_tree, _displayPath] call zen_favorites_main_fnc_findtreepathbytexts;
+    if (_restorePath isNotEqualTo []) then {
+        if ((tvCurSel _tree) isNotEqualTo _restorePath) then {
+            _tree tvSetCurSel _restorePath;
+        };
 
-if (_restorePath isEqualTo []) exitWith {false};
-if ((tvCurSel _tree) isEqualTo _restorePath) exitWith {true};
+        _restoredSelection = true;
+    };
+};
 
-_tree tvSetCurSel _restorePath;
+if ((count _scrollValues) >= 2) then {
+    // tvSetCurSel can scroll again after this frame, so enforce the captured viewport once more.
+    _tree ctrlSetScrollValues _scrollValues;
 
-true
+    [{
+        params ["_tree", "_scrollValues"];
+
+        if (!isNull _tree) then {
+            _tree ctrlSetScrollValues _scrollValues;
+        };
+    }, [_tree, _scrollValues]] call CBA_fnc_execNextFrame;
+};
+
+_restoredSelection

@@ -25,7 +25,7 @@ private _refreshOpenZeusTree = {
 [
     "zen_favorites_main_logLevel",
     "LIST",
-    ["Log level", "Controls how much ZEN Favorites writes to the Arma RPT log. Error is recommended for normal play; use Info, Debug, or Trace only while troubleshooting."],
+    ["Log level", "Choose how much information ZEN Favorites writes to Arma's log file. Keep this on Error for normal play. Use a more detailed level only when troubleshooting."],
     ["ZEN Favorites", "Debugging"],
     [
         [
@@ -50,7 +50,7 @@ private _refreshOpenZeusTree = {
 [
     "zen_favorites_main_unitFavoritesLayout",
     "LIST",
-    ["Unit favorites layout", "Choose whether generated Unit Favorites use compact category branches or flat, fully qualified rows. Applies to faction and Empty Units tabs. Grouped is the default."],
+    ["Unit favorites layout", "Grouped keeps Unit favorites in category folders. Flat shows them in one list. This applies to faction Units and Empty Units. Default: Grouped."],
     ["ZEN Favorites", "Interface"],
     [
         [
@@ -70,7 +70,7 @@ private _refreshOpenZeusTree = {
 [
     "zen_favorites_main_groupFavoritesLayout",
     "LIST",
-    ["Group favorites layout", "Choose whether generated Group Favorites are grouped into faction-specific sections or shown as flat, fully qualified rows. Also controls grouped or flat presentation in Empty Groups. Grouped is the default."],
+    ["Group favorites layout", "Grouped keeps Group favorites under faction and category folders. Flat shows them in one list. This also applies to Empty Groups. Default: Grouped."],
     ["ZEN Favorites", "Interface"],
     [
         [
@@ -90,7 +90,7 @@ private _refreshOpenZeusTree = {
 [
     "zen_favorites_main_moduleFavoritesLayout",
     "LIST",
-    ["Module favorites layout", "Choose whether generated Module Favorites follow their original category branches or use flat, fully qualified rows. Flat is the default because Arma can show a one-time CfgVehicles popup when a generated Grouped category is first selected."],
+    ["Module favorites layout", "Grouped keeps the original module categories. Flat shows all Module favorites in one list and avoids a possible one-time Arma warning when opening a Grouped category. Default: Flat."],
     ["ZEN Favorites", "Interface"],
     [
         [
@@ -110,7 +110,7 @@ private _refreshOpenZeusTree = {
 [
     "zen_favorites_main_starAlignment",
     "LIST",
-    ["Favorite star side", "Choose where favorite stars appear in the Zeus Create tree. Left avoids the scrollbar; Right restores the original right-edge layout."],
+    ["Favorite star side", "Choose which side of each Zeus Create row shows the favorite star. Left is recommended because it stays clear of the scrollbar. Default: Left."],
     ["ZEN Favorites", "Interface"],
     [
         [
@@ -147,37 +147,65 @@ private _refreshOpenZeusTree = {
 ] call CBA_fnc_addSetting;
 
 [
-    "zen_favorites_main_persistFactionRootFavorites",
+    "zen_favorites_main_persistUnitFavorites",
     "CHECKBOX",
-    ["Save faction favorites", "When enabled, current top-level faction favorites are saved immediately and then loaded from your Arma profile when the addon starts. Default is off. Turning this off keeps live and saved favorites, but stops loading and saving them."],
+    ["Save Unit favorites", "On: save Unit factions and favorites for future missions. Off: delete the saved copy but keep current favorites for this mission. Default: On."],
     ["ZEN Favorites", "Persistence"],
-    false,
+    true,
     0,
     {
         params ["_value"];
 
-        ["zen_favorites_main_factionFavorites", _value, "top-level faction favorites"] call zen_favorites_main_fnc_syncfactionfavoritepersistence;
+        ["units", _value] call zen_favorites_main_fnc_syncfavoritepersistence;
     }
 ] call CBA_fnc_addSetting;
 
 [
-    "zen_favorites_main_persistFactionLeafFavorites",
+    "zen_favorites_main_persistGroupFavorites",
     "CHECKBOX",
-    ["Save faction unit/group favorites", "When enabled, current faction unit and group favorites are saved immediately and then loaded from your Arma profile when the addon starts. Default is off. Turning this off keeps live and saved favorites, but stops loading and saving them."],
+    ["Save Group favorites", "On: save Group factions and favorites for future missions. Off: delete the saved copy but keep current favorites for this mission. Default: On."],
     ["ZEN Favorites", "Persistence"],
-    false,
+    true,
     0,
     {
         params ["_value"];
 
-        ["zen_favorites_main_factionLeafFavorites", _value, "faction unit/group favorites"] call zen_favorites_main_fnc_syncfactionfavoritepersistence;
+        ["groups", _value] call zen_favorites_main_fnc_syncfavoritepersistence;
+    }
+] call CBA_fnc_addSetting;
+
+[
+    "zen_favorites_main_persistModuleFavorites",
+    "CHECKBOX",
+    ["Save Module favorites", "On: save Module favorites for future missions. Off: delete the saved copy but keep current favorites for this mission. Default: On."],
+    ["ZEN Favorites", "Persistence"],
+    true,
+    0,
+    {
+        params ["_value"];
+
+        ["modules", _value] call zen_favorites_main_fnc_syncfavoritepersistence;
+    }
+] call CBA_fnc_addSetting;
+
+[
+    "zen_favorites_main_persistEmptyFavorites",
+    "CHECKBOX",
+    ["Save Empty favorites", "On: save favorites from both Empty Units and Empty Groups for future missions. Off: delete the saved copies but keep current favorites for this mission. Default: On."],
+    ["ZEN Favorites", "Persistence"],
+    true,
+    0,
+    {
+        params ["_value"];
+
+        ["empty", _value] call zen_favorites_main_fnc_syncfavoritepersistence;
     }
 ] call CBA_fnc_addSetting;
 
 [
     "zen_favorites_main_clearEmptyGroupFavorites",
     "CHECKBOX",
-    ["Clear Empty Group favorites", "Turn this on to permanently clear only the Empty Groups favorites saved in this Arma profile. The checkbox resets itself after clearing."],
+    ["Clear Empty Group favorites", "Clear all Empty Group favorites now, including the saved copy. This switch turns itself off after clearing."],
     ["ZEN Favorites", "Maintenance"],
     false,
     0
@@ -186,7 +214,7 @@ private _refreshOpenZeusTree = {
 [
     "zen_favorites_main_clearFactionFavorites",
     "CHECKBOX",
-    ["Clear faction favorites", "Turn this on to permanently clear top-level faction favorites from this session and this Arma profile. The checkbox resets itself after clearing."],
+    ["Clear faction favorites", "Clear favorited faction rows from both Units and Groups, including saved copies. Individual unit and group favorites are not cleared. This switch turns itself off after clearing."],
     ["ZEN Favorites", "Maintenance"],
     false,
     0
@@ -195,7 +223,7 @@ private _refreshOpenZeusTree = {
 [
     "zen_favorites_main_clearFactionLeafFavorites",
     "CHECKBOX",
-    ["Clear faction unit/group favorites", "Turn this on to permanently clear faction unit and group favorites from this session and this Arma profile. The checkbox resets itself after clearing."],
+    ["Clear faction unit/group favorites", "Clear all individual faction Unit and Group favorites, including saved copies. Favorited faction rows are not cleared. This switch turns itself off after clearing."],
     ["ZEN Favorites", "Maintenance"],
     false,
     0
@@ -204,7 +232,7 @@ private _refreshOpenZeusTree = {
 [
     "zen_favorites_main_clearModuleFavorites",
     "CHECKBOX",
-    ["Clear Module favorites", "Turn this on to permanently clear only the Module favorites saved in this Arma profile. The checkbox resets itself after clearing."],
+    ["Clear Module favorites", "Clear all Module favorites now, including the saved copy. This switch turns itself off after clearing."],
     ["ZEN Favorites", "Maintenance"],
     false,
     0
@@ -213,7 +241,7 @@ private _refreshOpenZeusTree = {
 [
     "zen_favorites_main_clearEmptyFavorites",
     "CHECKBOX",
-    ["Clear Empty Unit favorites", "Turn this on to permanently clear only the Empty Units favorites saved in this Arma profile. The checkbox resets itself after clearing."],
+    ["Clear Empty Unit favorites", "Clear all Empty Unit favorites now, including the saved copy. This switch turns itself off after clearing."],
     ["ZEN Favorites", "Maintenance"],
     false,
     0

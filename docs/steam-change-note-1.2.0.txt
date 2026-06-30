@@ -1,0 +1,19 @@
+Version 1.2.0 - 30 June 2026
+
+ADDED
+- Favorite stars can be placed on the left or right side of the Zeus Create tree.
+- Unit, Group, and Module Favorites can use Grouped or Flat layouts.
+- Separate persistence settings for Unit, Group, Module, and Empty favorites. All are enabled by default to preserve existing saved favorites.
+
+IMPROVED
+- Long favorite names now keep the leaf name visible and add only the parent context needed to distinguish duplicates.
+- New favorites briefly batch before the Favorites section updates, making it easier to favorite several nearby entries.
+- All CBA setting hover text now explains the options in player-facing language.
+
+FIXED
+- Favorite tree position is preserved when batched entries are added or an original row is selected internally.
+- Favorites from unloaded mods are hidden until their source mod is loaded again.
+- Multiple tree interaction, star alignment, branch selection, and faction ordering issues have been corrected.
+
+SERVER ADMINS
+- This release uses the versioned public key zen_favorites_1.2.0.bikey. Servers using signature verification should update their allowed key from this Workshop version.

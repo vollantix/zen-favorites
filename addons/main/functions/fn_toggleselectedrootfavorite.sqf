@@ -127,13 +127,7 @@ if (_factionName in _favorites) then {
 _favoriteStore set [_favoriteKey, _favorites];
 missionNamespace setVariable ["zen_favorites_main_factionFavorites", _favoriteStore];
 
-if (missionNamespace getVariable ["zen_favorites_main_persistFactionRootFavorites", false]) then {
-    profileNamespace setVariable [
-        "zen_favorites_main_factionFavorites",
-        [_favoriteStore] call zen_favorites_main_fnc_favoritehashmaptoarray
-    ];
-    saveProfileNamespace;
-};
+[_mode] call zen_favorites_main_fnc_savefavoritecategory;
 
 if (!_isSearching) then {
     [_display, true] call zen_favorites_main_fnc_applyfactionfavoriteorder;
