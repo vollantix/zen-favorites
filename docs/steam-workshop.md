@@ -54,7 +54,6 @@ Releases currently use versioned keys, so update the server key from the same Wo
 [h1]Known Quirks[/h1]
 [list]
 [*]Favorite leaves that internally select a matching original ZEN row use gold active text instead of Arma's native white tree selection box. The native selection box stays tied to the original row.
-[*]Selecting a generated favorite can scroll the Create tree down to the matching original ZEN row when that original row is far below the Favorites section.
 [*]With Module Favorites set to Grouped, selecting a generated category may show a one-time missing CfgVehicles popup. Arma treats depth-2 Module rows as placeable leaves before addon handlers can cancel selection. Flat is the default and avoids this native-tree limitation.
 [/list]
 

@@ -261,7 +261,6 @@ Turn one on to clear that saved favorite type. Each toggle resets itself after c
 ## Known Quirks
 
 - Favorite leaves that internally select a matching original ZEN row use gold active text instead of Arma's native white tree selection box. The native selection box stays tied to the original row.
-- Selecting a generated favorite can scroll the Create tree down to the matching original ZEN row when that original row is far below the Favorites section.
 - With Module Favorites set to Grouped, selecting a generated category such as `Favorites > Reinforcements` may show a one-time `No entry 'bin\config.bin/CfgVehicles.'` popup. Arma treats depth-2 Module rows as native placeable leaves before addon handlers can cancel selection; Unit folders are safe because their native leaves are one level deeper. Flat is the default and avoids generated Module category rows.
 
 ## Planned Features
